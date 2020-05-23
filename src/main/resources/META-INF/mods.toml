@@ -1,0 +1,12 @@
+modLoader="javafml"
+loaderVersion="[31,)"
+issueTrackerURL="https://github.com/Brass-Goggled-Coders/Interspace/issues"
+
+[[mods]]
+    modId="interspace"
+    version="${file.jarVersion}"
+    displayName="Interspace"
+    authors="SkySom, DivineAspect"
+    description='''
+
+    '''
