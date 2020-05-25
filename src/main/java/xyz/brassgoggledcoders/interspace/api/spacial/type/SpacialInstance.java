@@ -14,14 +14,17 @@ public class SpacialInstance implements INBTSerializable<CompoundNBT> {
 
     }
 
-
     @Override
     public CompoundNBT serializeNBT() {
-        return null;
+        return new CompoundNBT();
     }
 
     @Override
     public void deserializeNBT(CompoundNBT nbt) {
 
+    }
+
+    public SpacialType getType() {
+        return this.spacialType;
     }
 }

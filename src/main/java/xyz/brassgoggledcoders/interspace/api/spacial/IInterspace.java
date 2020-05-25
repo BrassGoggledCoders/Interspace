@@ -1,6 +1,8 @@
 package xyz.brassgoggledcoders.interspace.api.spacial;
 
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.world.chunk.IChunk;
+import net.minecraftforge.common.util.INBTSerializable;
 import xyz.brassgoggledcoders.interspace.api.spacial.item.SpacialItem;
 import xyz.brassgoggledcoders.interspace.api.spacial.query.InterspaceInsert;
 import xyz.brassgoggledcoders.interspace.api.spacial.query.InterspaceQuery;
