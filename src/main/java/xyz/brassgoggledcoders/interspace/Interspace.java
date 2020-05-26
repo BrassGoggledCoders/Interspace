@@ -1,5 +1,8 @@
 package xyz.brassgoggledcoders.interspace;
 
+import com.hrznstudio.titanium.tab.TitaniumTab;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootParameterSet;
 import net.minecraftforge.common.MinecraftForge;
@@ -18,6 +21,7 @@ import xyz.brassgoggledcoders.interspace.api.spacial.IInterspace;
 import xyz.brassgoggledcoders.interspace.api.spacial.item.SpacialItemType;
 import xyz.brassgoggledcoders.interspace.api.spacial.type.SpacialType;
 import xyz.brassgoggledcoders.interspace.content.InterspaceBlocks;
+import xyz.brassgoggledcoders.interspace.content.InterspaceItems;
 import xyz.brassgoggledcoders.interspace.content.InterspaceSpacialItemTypes;
 import xyz.brassgoggledcoders.interspace.content.InterspaceSpacialTypes;
 import xyz.brassgoggledcoders.interspace.datagen.InterspaceDataGen;
@@ -29,11 +33,13 @@ import xyz.brassgoggledcoders.interspace.sql.DatabaseWrapper;
 public class Interspace {
     public static final String ID = "interspace";
     public static final Logger LOGGER = LogManager.getLogger(ID);
+    public static final ItemGroup ITEM_GROUP = new TitaniumTab(ID, InterspaceItems.MIRROR.lazyMap(ItemStack::new));
 
     public Interspace() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
         InterspaceBlocks.REGISTER.register(modEventBus);
+        InterspaceItems.register(modEventBus);
         InterspaceSpacialItemTypes.register(modEventBus);
         InterspaceSpacialTypes.register(modEventBus);
 

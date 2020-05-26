@@ -1,3 +1,8 @@
 {
-  "block.interspace.nafasi": "Block of Nafasi"
+  "block.interspace.nafasi": "Block of Nafasi",
+  "item.interspace.mirror": "Interspace Mirror",
+  "spacial_type.interspace.basic_cache": "Basic Cache",
+  "spacial_type.interspace.empty": "Nothingness",
+  "text.interspace.gaze": "You gaze into the Mirror and see: ",
+  "text.interspace.nothing": "Nothingness"
 }

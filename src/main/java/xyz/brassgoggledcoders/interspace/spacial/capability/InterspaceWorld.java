@@ -12,14 +12,14 @@ import xyz.brassgoggledcoders.interspace.api.spacial.IInterspace;
 import xyz.brassgoggledcoders.interspace.api.spacial.item.SpacialItem;
 import xyz.brassgoggledcoders.interspace.api.spacial.query.InterspaceInsert;
 import xyz.brassgoggledcoders.interspace.api.spacial.query.InterspaceQuery;
-import xyz.brassgoggledcoders.interspace.api.spacial.query.InterspaceRemove;
 import xyz.brassgoggledcoders.interspace.api.spacial.type.SpacialInstance;
+import xyz.brassgoggledcoders.interspace.content.InterspaceSpacialTypes;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Future;
 
 public class InterspaceWorld implements IInterspace {
     private final CompletableFuture<Void> worldSetup;
@@ -46,7 +46,7 @@ public class InterspaceWorld implements IInterspace {
 
     @Override
     @Nonnull
-    public Future<List<SpacialItem>> query(@Nonnull InterspaceQuery query) {
+    public CompletableFuture<List<SpacialItem>> query(@Nonnull InterspaceQuery query) {
         if (worldSetup.isDone()) {
             return InterspaceAPI.getInterspaceClient().query(query);
         } else {
@@ -56,14 +56,14 @@ public class InterspaceWorld implements IInterspace {
 
     @Override
     @Nonnull
-    public <T> Future<T> remove(@Nonnull InterspaceRemove<T> interspaceRemove) {
-        return CompletableFuture.completedFuture(null);
+    public CompletableFuture<List<SpacialItem>> remove(@Nonnull InterspaceQuery query) {
+        return CompletableFuture.completedFuture(Lists.newArrayList());
     }
 
     @Override
     @Nonnull
-    public Future<Integer> insert(@Nonnull InterspaceInsert interspaceInsert) {
-        return CompletableFuture.completedFuture(0);
+    public CompletableFuture<Integer> insert(@Nonnull InterspaceInsert interspaceInsert) {
+        return InterspaceAPI.getInterspaceClient().insert(interspaceInsert);
     }
 
     @Override
@@ -91,6 +91,12 @@ public class InterspaceWorld implements IInterspace {
         if (spacialInstance == null) {
             inactiveChunks.add(chunkPos);
         }
+    }
+
+    @Nullable
+    @Override
+    public SpacialInstance getSpacialInstance(ChunkPos chunkPos) {
+        return activeChunks.get(chunkPos);
     }
 
 

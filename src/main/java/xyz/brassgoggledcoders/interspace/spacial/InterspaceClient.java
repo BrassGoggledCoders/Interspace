@@ -2,8 +2,6 @@ package xyz.brassgoggledcoders.interspace.spacial;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import net.minecraft.nbt.JsonToNBT;
-import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.IWorld;
@@ -19,7 +17,6 @@ import xyz.brassgoggledcoders.interspace.sql.DatabaseTableNames;
 import xyz.brassgoggledcoders.interspace.sql.DatabaseWrapper;
 import xyz.brassgoggledcoders.interspace.sql.SQLStatements;
 
-import java.sql.SQLType;
 import java.sql.Types;
 import java.util.List;
 import java.util.Map;
@@ -59,7 +56,7 @@ public class InterspaceClient implements IInterspaceClient {
     }
 
     @Override
-    public Future<List<SpacialItem>> query(InterspaceQuery query) {
+    public CompletableFuture<List<SpacialItem>> query(InterspaceQuery query) {
         return CompletableFuture.completedFuture(Lists.newArrayList());
     }
 

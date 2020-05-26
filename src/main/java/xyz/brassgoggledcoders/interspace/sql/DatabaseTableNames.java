@@ -12,7 +12,7 @@ public class DatabaseTableNames {
                 .replace(":", "_")
                 .replace("/", "_")
                 .replace(".", "_");
-        this.itemTableName = tableName + "_item";
+        this.itemTableName = tableName + "_items";
         this.markerTableName = tableName + "_markers";
         this.chunkTableName = tableName + "_chunks";
     }
