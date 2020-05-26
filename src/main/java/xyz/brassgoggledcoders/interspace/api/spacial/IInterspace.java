@@ -22,7 +22,7 @@ public interface IInterspace {
     <T> Future<T> remove(@Nonnull InterspaceRemove<T> interspaceRemove);
 
     @Nonnull
-    <T> Future<Integer> insert(@Nonnull InterspaceInsert<T> interspaceInsert);
+    <T> Future<Integer> insert(@Nonnull InterspaceInsert interspaceInsert);
 
     void onChunkLoad(@Nonnull IChunk chunk);
 

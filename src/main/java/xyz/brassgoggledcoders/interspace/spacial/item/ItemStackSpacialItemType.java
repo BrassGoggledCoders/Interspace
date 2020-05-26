@@ -16,9 +16,9 @@ public class ItemStackSpacialItemType extends SpacialItemType<ItemStack> {
     public ItemStack fromSpacialItem(@Nonnull SpacialItem spacialItem) {
         Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(spacialItem.getRegistryName()));
         if (item != null) {
-            ItemStack itemStack = new ItemStack(item, spacialItem.getAmount());
-            if (spacialItem.getData() != null) {
-                itemStack.setTag(spacialItem.getData());
+            ItemStack itemStack = new ItemStack(item, spacialItem.getCount());
+            if (spacialItem.getNBT() != null) {
+                itemStack.setTag(spacialItem.getNBT());
             }
             return itemStack;
         }

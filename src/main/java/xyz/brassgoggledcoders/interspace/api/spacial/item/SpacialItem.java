@@ -21,12 +21,12 @@ public class SpacialItem {
         return registryName;
     }
 
-    public int getAmount() {
+    public int getCount() {
         return amount;
     }
 
     @Nullable
-    public CompoundNBT getData() {
+    public CompoundNBT getNBT() {
         return data;
     }
 

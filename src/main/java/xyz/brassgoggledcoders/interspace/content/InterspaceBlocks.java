@@ -23,5 +23,4 @@ public class InterspaceBlocks {
                 .hardnessAndResistance(5.0F, 6.0F)
                 .sound(SoundType.METAL);
     }
-
 }

@@ -1,6 +1,7 @@
 package xyz.brassgoggledcoders.interspace;
 
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.storage.loot.LootParameterSet;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.event.RegistryEvent;

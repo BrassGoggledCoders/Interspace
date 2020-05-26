@@ -4,6 +4,7 @@ import net.minecraft.data.DataGenerator;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
 import net.minecraftforge.client.model.generators.ExistingFileHelper;
 import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
+import xyz.brassgoggledcoders.interspace.datagen.lang.InterspaceUSLangProvider;
 import xyz.brassgoggledcoders.interspace.datagen.loot.InterspaceLootTableProvider;
 import xyz.brassgoggledcoders.interspace.datagen.model.InterspaceBlockStateProvider;
 import xyz.brassgoggledcoders.interspace.datagen.model.InterspaceItemModelProvider;
@@ -25,6 +26,7 @@ public class InterspaceDataGen {
             BlockStateProvider blockStateProvider = new InterspaceBlockStateProvider(dataGenerator, existingFileHelper);
             dataGenerator.addProvider(blockStateProvider);
             dataGenerator.addProvider(new InterspaceItemModelProvider(dataGenerator, blockStateProvider.models().existingFileHelper));
+            dataGenerator.addProvider(new InterspaceUSLangProvider(dataGenerator));
         }
     }
 }

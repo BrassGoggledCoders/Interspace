@@ -2,15 +2,17 @@ package xyz.brassgoggledcoders.interspace.sql;
 
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
+import org.apache.commons.lang3.tuple.Pair;
 import org.sqlite.javax.SQLiteConnectionPoolDataSource;
 import xyz.brassgoggledcoders.interspace.Interspace;
 
 import javax.annotation.Nullable;
-import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
@@ -48,8 +50,45 @@ public class DatabaseWrapper implements AutoCloseable {
                 PreparedStatement preparedStatement = connection.prepareStatement(sql);
                 prepared.accept(preparedStatement);
                 if (!preparedStatement.execute()) {
-                   return preparedStatement.getUpdateCount();
+                    return preparedStatement.getUpdateCount();
                 }
+            } catch (SQLException sqlException) {
+                Interspace.LOGGER.error("Failed to query Interspace Database", sqlException);
+            }
+            return 0;
+        });
+    }
+
+    public <U> Integer batchInsert(String sql, Collection<U> inserts, ThrowingBiConsumer<PreparedStatement, U, SQLException> preparations) {
+        try {
+            int inserted = 0;
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            for (U insert : inserts) {
+                preparations.accept(preparedStatement, insert);
+                preparedStatement.addBatch();
+            }
+            for (int amountInserted : preparedStatement.executeBatch()) {
+                inserted += amountInserted;
+            }
+            return inserted;
+        } catch (SQLException sqlException) {
+            Interspace.LOGGER.error("Failed to query Interspace Database", sqlException);
+        }
+        return 0;
+    }
+
+    public CompletableFuture<Integer> multiInsert(List<Pair<String, ThrowingConsumer<PreparedStatement, SQLException>>> inserts) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                int inserted = 0;
+                for (Pair<String, ThrowingConsumer<PreparedStatement, SQLException>> insert : inserts) {
+                    PreparedStatement preparedStatement = connection.prepareStatement(insert.getLeft());
+                    insert.getRight().accept(preparedStatement);
+                    if (!preparedStatement.execute()) {
+                        inserted += preparedStatement.getUpdateCount();
+                    }
+                }
+                return inserted;
             } catch (SQLException sqlException) {
                 Interspace.LOGGER.error("Failed to query Interspace Database", sqlException);
             }
@@ -87,7 +126,9 @@ public class DatabaseWrapper implements AutoCloseable {
         }
 
         SQLiteConnectionPoolDataSource dataSource = new SQLiteConnectionPoolDataSource();
-        dataSource.setUrl(new File(event.getServer().getDataDirectory(), "interspace.db").getAbsolutePath());
+        dataSource.setUrl("jdbc:sqlite:" + event.getServer().getActiveAnvilConverter().getSavesDir()
+                .resolve(event.getServer().getFolderName()).resolve("interspace.db").toString());
+
         try {
             instance = new DatabaseWrapper(dataSource.getConnection());
         } catch (SQLException sqlException) {
@@ -104,5 +145,10 @@ public class DatabaseWrapper implements AutoCloseable {
         } catch (Exception e) {
             Interspace.LOGGER.error("Failed to Close Database Connection", e);
         }
+    }
+
+    public static ThrowingConsumer<PreparedStatement, SQLException> nothing() {
+        return preparedStatement -> {
+        };
     }
 }

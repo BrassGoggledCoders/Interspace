@@ -2,11 +2,11 @@ package xyz.brassgoggledcoders.interspace.spacial.capability;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.chunk.IChunk;
 import org.apache.commons.lang3.tuple.Pair;
+import xyz.brassgoggledcoders.interspace.Interspace;
 import xyz.brassgoggledcoders.interspace.api.InterspaceAPI;
 import xyz.brassgoggledcoders.interspace.api.spacial.IInterspace;
 import xyz.brassgoggledcoders.interspace.api.spacial.item.SpacialItem;
@@ -22,16 +22,19 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
 public class InterspaceWorld implements IInterspace {
-    private final Future<Integer> worldSetup;
+    private final CompletableFuture<Void> worldSetup;
 
+    private final IWorld world;
     private final Map<ChunkPos, SpacialInstance> activeChunks;
     private final List<ChunkPos> inactiveChunks;
 
     public InterspaceWorld(IWorld world) {
-        worldSetup = InterspaceAPI.getInterspaceClient()
-                .setupWorld(world);
-        activeChunks = Maps.newHashMap();
-        inactiveChunks = Lists.newArrayList();
+        this.world = world;
+        this.worldSetup = InterspaceAPI.getInterspaceClient()
+                .setupWorld(world)
+                .thenAccept(amount -> Interspace.LOGGER.debug("Added {} tables", amount));
+        this.activeChunks = Maps.newHashMap();
+        this.inactiveChunks = Lists.newArrayList();
     }
 
     @Override
@@ -59,7 +62,7 @@ public class InterspaceWorld implements IInterspace {
 
     @Override
     @Nonnull
-    public <T> Future<Integer> insert(@Nonnull InterspaceInsert<T> interspaceInsert) {
+    public Future<Integer> insert(@Nonnull InterspaceInsert interspaceInsert) {
         return CompletableFuture.completedFuture(0);
     }
 
@@ -68,13 +71,14 @@ public class InterspaceWorld implements IInterspace {
         ChunkPos chunkPos = chunk.getPos();
         inactiveChunks.remove(chunkPos);
         InterspaceAPI.getInterspaceClient()
-                .setupChunk(chunk)
+                .setupChunk(world, chunk)
                 .thenAccept(this::acceptSpacialPair);
     }
 
     private void acceptSpacialPair(Pair<ChunkPos, SpacialInstance> spacialPair) {
         if (!this.inactiveChunks.contains(spacialPair.getKey())) {
             this.activeChunks.put(spacialPair.getKey(), spacialPair.getValue());
+            spacialPair.getRight().onLoad();
         } else {
             this.inactiveChunks.remove(spacialPair.getKey());
         }
