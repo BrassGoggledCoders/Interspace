@@ -1,7 +1,8 @@
 {
   "replace": false,
   "values": [
-    "interspace:nafasi"
+    "interspace:nafasi",
+    "interspace:obelisk_core"
   ],
   "optional": []
 }

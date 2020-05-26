@@ -15,6 +15,7 @@ public class InterspaceItemModelProvider extends ItemModelProvider {
     @Override
     protected void registerModels() {
         this.withExistingParent("nafasi", modLoc("block/nafasi"));
+        this.withExistingParent("obelisk_core", modLoc("block/obelisk_core"));
 
         this.singleTexture("mirror", mcLoc("item/handheld"), modLoc("item/mirror"));
     }

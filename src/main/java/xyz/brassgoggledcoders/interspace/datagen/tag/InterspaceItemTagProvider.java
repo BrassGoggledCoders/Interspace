@@ -15,7 +15,7 @@ public class InterspaceItemTagProvider extends ItemTagsProvider {
     @Override
     protected void registerTags() {
         this.getBuilder(InterspaceItemTags.NAFASI)
-                .add(InterspaceBlocks.NAFASI.getSecondary());
+                .add(InterspaceBlocks.NAFASI.getSecondary(), InterspaceBlocks.NAFASI.getSecondary());
     }
 
     @Override

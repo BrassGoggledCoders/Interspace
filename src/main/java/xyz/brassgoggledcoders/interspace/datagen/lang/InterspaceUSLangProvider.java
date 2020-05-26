@@ -17,6 +17,7 @@ public class InterspaceUSLangProvider extends LanguageProvider {
     @Override
     protected void addTranslations() {
         this.add(InterspaceBlocks.NAFASI.getPrimary(), "Block of Nafasi");
+        this.add(InterspaceBlocks.OBELISK_CORE.getPrimary(), "Obelisk Core");
 
         this.add(InterspaceItems.MIRROR.get(), "Interspace Mirror");
 

@@ -15,7 +15,7 @@ public class InterspaceBlockTagProvider extends BlockTagsProvider {
     @Override
     protected void registerTags() {
         this.getBuilder(InterspaceBlockTags.NAFASI)
-                .add(InterspaceBlocks.NAFASI.getPrimary());
+                .add(InterspaceBlocks.NAFASI.getPrimary(), InterspaceBlocks.OBELISK_CORE.getPrimary());
     }
 
     @Override

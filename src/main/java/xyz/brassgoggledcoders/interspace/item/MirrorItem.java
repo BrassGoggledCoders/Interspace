@@ -3,7 +3,9 @@ package xyz.brassgoggledcoders.interspace.item;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.text.ITextComponent;
@@ -50,5 +52,12 @@ public class MirrorItem extends Item {
                     return ActionResult.resultSuccess(itemStack);
                 })
                 .orElseGet(() -> ActionResult.resultPass(itemStack));
+    }
+
+    @Override
+    @Nonnull
+    public ActionResultType onItemUse(@Nonnull ItemUseContext context) {
+
+        return super.onItemUse(context);
     }
 }
