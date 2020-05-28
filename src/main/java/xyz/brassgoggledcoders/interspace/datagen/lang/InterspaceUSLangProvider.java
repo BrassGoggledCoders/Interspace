@@ -5,6 +5,7 @@ import net.minecraftforge.common.data.LanguageProvider;
 import xyz.brassgoggledcoders.interspace.Interspace;
 import xyz.brassgoggledcoders.interspace.api.spacial.type.SpacialType;
 import xyz.brassgoggledcoders.interspace.content.InterspaceBlocks;
+import xyz.brassgoggledcoders.interspace.content.InterspaceEntities;
 import xyz.brassgoggledcoders.interspace.content.InterspaceItems;
 import xyz.brassgoggledcoders.interspace.content.InterspaceSpacialTypes;
 
@@ -20,6 +21,9 @@ public class InterspaceUSLangProvider extends LanguageProvider {
         this.add(InterspaceBlocks.OBELISK_CORE.getPrimary(), "Obelisk Core");
 
         this.add(InterspaceItems.MIRROR.get(), "Interspace Mirror");
+        this.add(InterspaceItems.QUERY_SLATE.get(), "Interspace Query Slate");
+
+        this.add(InterspaceEntities.QUERY_SLATE.get(), "Interspace Query Slate");
 
         this.add(InterspaceSpacialTypes.BASIC_CACHE.get(), "Basic Cache");
         this.add(InterspaceSpacialTypes.EMPTY.get(), "Nothingness");

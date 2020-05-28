@@ -21,4 +21,5 @@ public interface IInterspaceClient {
 
     CompletableFuture<Integer> insert(InterspaceInsert insert);
 
+    CompletableFuture<List<SpacialItem>> remove(InterspaceQuery query);
 }

@@ -1,15 +1,18 @@
 package xyz.brassgoggledcoders.interspace;
 
 import com.hrznstudio.titanium.tab.TitaniumTab;
+import net.minecraft.client.renderer.ItemRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.entity.ItemFrameRenderer;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.storage.loot.LootParameterSet;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.IForgeRegistryEntry;
@@ -20,10 +23,7 @@ import xyz.brassgoggledcoders.interspace.api.InterspaceAPI;
 import xyz.brassgoggledcoders.interspace.api.spacial.IInterspace;
 import xyz.brassgoggledcoders.interspace.api.spacial.item.SpacialItemType;
 import xyz.brassgoggledcoders.interspace.api.spacial.type.SpacialType;
-import xyz.brassgoggledcoders.interspace.content.InterspaceBlocks;
-import xyz.brassgoggledcoders.interspace.content.InterspaceItems;
-import xyz.brassgoggledcoders.interspace.content.InterspaceSpacialItemTypes;
-import xyz.brassgoggledcoders.interspace.content.InterspaceSpacialTypes;
+import xyz.brassgoggledcoders.interspace.content.*;
 import xyz.brassgoggledcoders.interspace.datagen.InterspaceDataGen;
 import xyz.brassgoggledcoders.interspace.nbt.EmptyNBTStorage;
 import xyz.brassgoggledcoders.interspace.spacial.InterspaceClient;
@@ -42,10 +42,12 @@ public class Interspace {
         InterspaceItems.register(modEventBus);
         InterspaceSpacialItemTypes.register(modEventBus);
         InterspaceSpacialTypes.register(modEventBus);
+        InterspaceEntities.register(modEventBus);
 
-        modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(InterspaceDataGen::gatherData);
+        modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::newRegistry);
+        modEventBus.addListener(this::clientSetup);
 
         MinecraftForge.EVENT_BUS.addListener(DatabaseWrapper::handleServerStart);
         MinecraftForge.EVENT_BUS.addListener(DatabaseWrapper::handleServerStop);
@@ -55,6 +57,17 @@ public class Interspace {
 
     private void commonSetup(FMLCommonSetupEvent event) {
         CapabilityManager.INSTANCE.register(IInterspace.class, new EmptyNBTStorage<>(), () -> null);
+    }
+
+    private void clientSetup(FMLClientSetupEvent event) {
+        EntityRendererManager rendererManager = event.getMinecraftSupplier()
+                .get()
+                .getRenderManager();
+        ItemRenderer itemRenderer = event.getMinecraftSupplier()
+                .get()
+                .getItemRenderer();
+
+        rendererManager.register(InterspaceEntities.QUERY_SLATE.get(), new ItemFrameRenderer(rendererManager, itemRenderer));
     }
 
     @SuppressWarnings("unchecked")

@@ -17,7 +17,8 @@ public class InterspaceItemModelProvider extends ItemModelProvider {
         this.withExistingParent("nafasi", modLoc("block/nafasi"));
         this.withExistingParent("obelisk_core", modLoc("block/obelisk_core"));
 
-        this.singleTexture("mirror", mcLoc("item/handheld"), modLoc("item/mirror"));
+        this.singleTexture("query_slate", mcLoc("item/generated"), "layer0", mcLoc("item/item_frame"));
+        this.singleTexture("mirror", mcLoc("item/handheld"), "layer0", modLoc("item/mirror"));
     }
 
     @Override

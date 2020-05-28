@@ -49,14 +49,16 @@ public class ObeliskCoreBlock extends Block {
     public BlockState updatePostPlacement(BlockState state, Direction facing, BlockState facingState, IWorld world,
                                           BlockPos currentPos, BlockPos facingPos) {
         return state.with(BlockStateProperties.ATTACHED, (facing.getAxis() == Direction.Axis.Y ||
-                facingState.getBlock().isIn(InterspaceBlockTags.NAFASI)) && this.isValid(world, currentPos));
+                facingState.getBlock().isIn(InterspaceBlockTags.NAFASI)) && isValid(world, currentPos));
     }
 
-    private boolean isValid(IWorld world, BlockPos pos) {
-
+    public static boolean isValid(IWorld world, BlockPos pos) {
         boolean valid = BlockPos.getAllInBox(pos.add(1, 0, 1), pos.add(-1, 0, -1))
                 .allMatch(blockPos -> world.getBlockState(blockPos).getBlock().isIn(InterspaceBlockTags.NAFASI));
         BlockPos up = pos.up();
-        return valid && (world.getBlockState(pos.up()).getBlock() == this || this.isValid(world, up));
+        if (valid && world.getBlockState(up).getBlock() instanceof ObeliskCoreBlock) {
+            return isValid(world, up);
+        }
+        return valid;
     }
 }

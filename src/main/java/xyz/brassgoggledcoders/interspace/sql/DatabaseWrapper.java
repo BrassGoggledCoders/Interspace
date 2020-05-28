@@ -1,5 +1,6 @@
 package xyz.brassgoggledcoders.interspace.sql;
 
+import com.google.common.collect.Lists;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
 import org.apache.commons.lang3.tuple.Pair;
@@ -12,6 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
@@ -25,22 +27,26 @@ public class DatabaseWrapper implements AutoCloseable {
         this.connection = connection;
     }
 
-    public <T> Future<T> query(String sql, ThrowingConsumer<PreparedStatement, SQLException> prepared,
-                               ThrowingFunction<ResultSet, T, SQLException> resultSetParser) {
+    public <T> CompletableFuture<List<T>> query(String sql, ThrowingConsumer<PreparedStatement, SQLException> prepared,
+                                                ThrowingFunction<ResultSet, T, SQLException> resultSetParser) {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 PreparedStatement preparedStatement = connection.prepareStatement(sql);
                 prepared.accept(preparedStatement);
-                if (preparedStatement.execute()) {
-                    ResultSet resultSet = preparedStatement.getResultSet();
+                List<T> results = Lists.newArrayList();
+                ResultSet resultSet = preparedStatement.executeQuery();
+                while (resultSet.next()) {
                     T value = resultSetParser.apply(resultSet);
-                    resultSet.close();
-                    return value;
+                    if (value != null) {
+                        results.add(value);
+                    }
                 }
+                resultSet.close();
+                return results;
             } catch (SQLException sqlException) {
                 Interspace.LOGGER.error("Failed to query Interspace Database", sqlException);
             }
-            return null;
+            return Collections.emptyList();
         });
     }
 

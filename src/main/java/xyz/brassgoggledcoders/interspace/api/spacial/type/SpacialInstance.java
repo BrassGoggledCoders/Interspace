@@ -4,6 +4,13 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.chunk.IChunk;
 import net.minecraftforge.common.util.INBTSerializable;
+import xyz.brassgoggledcoders.interspace.api.InterspaceAPI;
+import xyz.brassgoggledcoders.interspace.api.spacial.item.SpacialItem;
+import xyz.brassgoggledcoders.interspace.api.spacial.query.InterspaceQuery;
+
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 public class SpacialInstance implements INBTSerializable<CompoundNBT> {
     private final SpacialType spacialType;
@@ -45,5 +52,9 @@ public class SpacialInstance implements INBTSerializable<CompoundNBT> {
 
     public SpacialType getType() {
         return this.spacialType;
+    }
+
+    public CompletableFuture<List<SpacialItem>> remove(Map<String, String> queryMarkers) {
+        return InterspaceAPI.getInterspaceClient().remove(new InterspaceQuery(this.getWorld(), this.getChunk(), queryMarkers));
     }
 }

@@ -3,6 +3,7 @@ package xyz.brassgoggledcoders.interspace.content;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.IForgeRegistry;
 import xyz.brassgoggledcoders.interspace.Interspace;
 import xyz.brassgoggledcoders.interspace.api.spacial.type.SpacialInstance;
 import xyz.brassgoggledcoders.interspace.api.spacial.type.SpacialType;

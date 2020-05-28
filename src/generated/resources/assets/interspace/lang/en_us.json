@@ -1,9 +1,11 @@
 {
   "block.interspace.nafasi": "Block of Nafasi",
   "block.interspace.obelisk_core": "Obelisk Core",
+  "entity.interspace.query_slate": "Interspace Query Slate",
   "item.interspace.mirror": "Interspace Mirror",
+  "item.interspace.query_slate": "Interspace Query Slate",
   "spacial_type.interspace.basic_cache": "Basic Cache",
   "spacial_type.interspace.empty": "Nothingness",
-  "text.interspace.gaze": "You gaze into the Mirror and see: ",
+  "text.interspace.gaze": "You gaze into the Mirror and see: %s",
   "text.interspace.nothing": "Nothingness"
 }
