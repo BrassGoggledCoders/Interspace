@@ -1,7 +1,9 @@
 package xyz.brassgoggledcoders.interspace.api.spacial;
 
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.chunk.IChunk;
+import net.minecraftforge.common.util.INBTSerializable;
 import xyz.brassgoggledcoders.interspace.api.spacial.item.SpacialItem;
 import xyz.brassgoggledcoders.interspace.api.spacial.query.InterspaceInsert;
 import xyz.brassgoggledcoders.interspace.api.spacial.query.InterspaceQuery;
@@ -12,7 +14,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-public interface IInterspace {
+public interface IInterspace extends INBTSerializable<CompoundNBT> {
     void tick();
 
     @Nonnull
@@ -28,6 +30,6 @@ public interface IInterspace {
 
     void onChunkUnload(@Nonnull IChunk chunk);
 
-    @Nullable
-    SpacialInstance getSpacialInstance(ChunkPos chunkPos);
+    @Nonnull
+    SpacialInstance getSpacialInstance(IChunk chunk);
 }

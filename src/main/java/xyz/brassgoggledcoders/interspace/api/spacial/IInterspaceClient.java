@@ -15,8 +15,6 @@ import java.util.concurrent.CompletableFuture;
 public interface IInterspaceClient {
     CompletableFuture<Integer> setupWorld(IWorld world);
 
-    CompletableFuture<Pair<ChunkPos, SpacialInstance>> setupChunk(IWorld world, IChunk chunk);
-
     CompletableFuture<List<SpacialItem>> query(InterspaceQuery query);
 
     CompletableFuture<Integer> insert(InterspaceInsert insert);

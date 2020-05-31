@@ -14,6 +14,7 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import net.minecraftforge.registries.RegistryBuilder;
@@ -25,6 +26,7 @@ import xyz.brassgoggledcoders.interspace.api.spacial.item.SpacialItemType;
 import xyz.brassgoggledcoders.interspace.api.spacial.type.SpacialType;
 import xyz.brassgoggledcoders.interspace.content.*;
 import xyz.brassgoggledcoders.interspace.datagen.InterspaceDataGen;
+import xyz.brassgoggledcoders.interspace.json.SpacialEntryManager;
 import xyz.brassgoggledcoders.interspace.nbt.EmptyNBTStorage;
 import xyz.brassgoggledcoders.interspace.spacial.InterspaceClient;
 import xyz.brassgoggledcoders.interspace.sql.DatabaseWrapper;
@@ -34,6 +36,8 @@ public class Interspace {
     public static final String ID = "interspace";
     public static final Logger LOGGER = LogManager.getLogger(ID);
     public static final ItemGroup ITEM_GROUP = new TitaniumTab(ID, InterspaceItems.MIRROR.lazyMap(ItemStack::new));
+
+    public final SpacialEntryManager spacialEntryManager;
 
     public Interspace() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -51,8 +55,12 @@ public class Interspace {
 
         MinecraftForge.EVENT_BUS.addListener(DatabaseWrapper::handleServerStart);
         MinecraftForge.EVENT_BUS.addListener(DatabaseWrapper::handleServerStop);
+        MinecraftForge.EVENT_BUS.addListener(this::serverAboutToStart);
+
+        spacialEntryManager = new SpacialEntryManager();
 
         InterspaceAPI.setInterspaceClient(new InterspaceClient());
+        InterspaceAPI.setSpacialEntryManager(spacialEntryManager);
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
@@ -68,6 +76,10 @@ public class Interspace {
                 .getItemRenderer();
 
         rendererManager.register(InterspaceEntities.QUERY_SLATE.get(), new ItemFrameRenderer(rendererManager, itemRenderer));
+    }
+
+    private void serverAboutToStart(FMLServerAboutToStartEvent event) {
+        event.getServer().getResourceManager().addReloadListener(spacialEntryManager);
     }
 
     @SuppressWarnings("unchecked")

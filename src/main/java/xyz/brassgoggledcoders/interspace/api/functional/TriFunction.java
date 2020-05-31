@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.interspace.api.function;
+package xyz.brassgoggledcoders.interspace.api.functional;
 
 @FunctionalInterface
 public interface TriFunction<T, U, V, R> {

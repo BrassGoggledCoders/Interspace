@@ -59,13 +59,6 @@ public class InterspaceClient implements IInterspaceClient {
     }
 
     @Override
-    public CompletableFuture<Pair<ChunkPos, SpacialInstance>> setupChunk(IWorld world, IChunk chunk) {
-        return CompletableFuture.completedFuture(Pair.of(chunk.getPos(), world.getRandom().nextInt(10) != 0 ?
-                InterspaceSpacialTypes.EMPTY.get().createInstance(world, chunk) :
-                InterspaceSpacialTypes.BASIC_CACHE.get().createInstance(world, chunk)));
-    }
-
-    @Override
     public CompletableFuture<List<SpacialItem>> query(InterspaceQuery query) {
         return CompletableFuture.completedFuture(Lists.newArrayList());
     }

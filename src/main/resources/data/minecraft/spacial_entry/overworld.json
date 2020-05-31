@@ -1,0 +1,12 @@
+{
+  "replace": false,
+  "entries": [
+    {
+      "type": "interspace:basic_cache",
+      "weight": 1,
+      "nbt": {
+        "lootTable": "minecraft:chests/abandoned_mineshaft"
+      }
+    }
+  ]
+}

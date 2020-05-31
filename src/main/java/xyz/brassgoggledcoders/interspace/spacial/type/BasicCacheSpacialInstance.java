@@ -15,7 +15,7 @@ import xyz.brassgoggledcoders.interspace.content.InterspaceSpacialItemTypes;
 import xyz.brassgoggledcoders.interspace.loot.InterspaceLoot;
 
 public class BasicCacheSpacialInstance extends SpacialInstance {
-    private ResourceLocation lootTable = new ResourceLocation("chests/abandoned_mineshaft");
+    private ResourceLocation lootTable = null;
 
     public BasicCacheSpacialInstance(SpacialType spacialType, IWorld world, IChunk chunk) {
         super(spacialType, world, chunk);

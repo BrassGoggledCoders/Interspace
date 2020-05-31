@@ -6,7 +6,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.chunk.IChunk;
 import net.minecraftforge.registries.ForgeRegistryEntry;
-import xyz.brassgoggledcoders.interspace.api.function.TriFunction;
+import xyz.brassgoggledcoders.interspace.api.functional.TriFunction;
 
 public class SpacialType extends ForgeRegistryEntry<SpacialType> {
     private final TriFunction<SpacialType, IWorld, IChunk, SpacialInstance> creator;
