@@ -6,9 +6,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.IWorld;
-import net.minecraft.world.chunk.IChunk;
 import org.apache.commons.lang3.tuple.Pair;
 import xyz.brassgoggledcoders.interspace.InterspaceRegistries;
 import xyz.brassgoggledcoders.interspace.api.spacial.IInterspaceClient;
@@ -16,8 +14,6 @@ import xyz.brassgoggledcoders.interspace.api.spacial.item.SpacialItem;
 import xyz.brassgoggledcoders.interspace.api.spacial.item.SpacialItemType;
 import xyz.brassgoggledcoders.interspace.api.spacial.query.InterspaceInsert;
 import xyz.brassgoggledcoders.interspace.api.spacial.query.InterspaceQuery;
-import xyz.brassgoggledcoders.interspace.api.spacial.type.SpacialInstance;
-import xyz.brassgoggledcoders.interspace.content.InterspaceSpacialTypes;
 import xyz.brassgoggledcoders.interspace.sql.DatabaseTableNames;
 import xyz.brassgoggledcoders.interspace.sql.DatabaseWrapper;
 import xyz.brassgoggledcoders.interspace.sql.SQLStatements;
@@ -97,8 +93,8 @@ public class InterspaceClient implements IInterspaceClient {
                     String.format(QUERY_SPACIAL_ITEM_SQL, databaseTableNames.getItemTableName(),
                             databaseTableNames.getMarkerTableName()),
                     preparedStatement -> {
-                        preparedStatement.setInt(1, query.getChunk().getPos().x);
-                        preparedStatement.setInt(2, query.getChunk().getPos().z);
+                        preparedStatement.setInt(1, query.getChunkPos().getPos().x);
+                        preparedStatement.setInt(2, query.getChunkPos().getPos().z);
                     },
                     resultSet -> {
                         long id = resultSet.getLong(1);

@@ -10,7 +10,6 @@ import xyz.brassgoggledcoders.interspace.api.spacial.query.InterspaceQuery;
 import xyz.brassgoggledcoders.interspace.api.spacial.type.SpacialInstance;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -31,5 +30,5 @@ public interface IInterspace extends INBTSerializable<CompoundNBT> {
     void onChunkUnload(@Nonnull IChunk chunk);
 
     @Nonnull
-    SpacialInstance getSpacialInstance(IChunk chunk);
+    SpacialInstance getSpacialInstance(ChunkPos chunk);
 }

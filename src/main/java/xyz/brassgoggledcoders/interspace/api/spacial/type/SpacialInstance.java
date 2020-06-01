@@ -1,8 +1,8 @@
 package xyz.brassgoggledcoders.interspace.api.spacial.type;
 
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.IWorld;
-import net.minecraft.world.chunk.IChunk;
 import net.minecraftforge.common.util.INBTSerializable;
 import xyz.brassgoggledcoders.interspace.api.InterspaceAPI;
 import xyz.brassgoggledcoders.interspace.api.spacial.item.SpacialItem;
@@ -16,12 +16,12 @@ public class SpacialInstance implements INBTSerializable<CompoundNBT> {
     private final SpacialType spacialType;
 
     private final IWorld world;
-    private final IChunk chunk;
+    private final ChunkPos chunkPos;
 
-    public SpacialInstance(SpacialType spacialType, IWorld world, IChunk chunk) {
+    public SpacialInstance(SpacialType spacialType, IWorld world, ChunkPos chunkPos) {
         this.spacialType = spacialType;
         this.world = world;
-        this.chunk = chunk;
+        this.chunkPos = chunkPos;
     }
 
     public void onLoad() {
@@ -42,12 +42,12 @@ public class SpacialInstance implements INBTSerializable<CompoundNBT> {
 
     }
 
-    protected IWorld getWorld() {
+    public IWorld getWorld() {
         return world;
     }
 
-    protected IChunk getChunk() {
-        return chunk;
+    public ChunkPos getChunkPos() {
+        return chunkPos;
     }
 
     public SpacialType getType() {
@@ -55,6 +55,6 @@ public class SpacialInstance implements INBTSerializable<CompoundNBT> {
     }
 
     public CompletableFuture<List<SpacialItem>> remove(Map<String, String> queryMarkers) {
-        return InterspaceAPI.getInterspaceClient().remove(new InterspaceQuery(this.getWorld(), this.getChunk(), queryMarkers));
+        return InterspaceAPI.getInterspaceClient().remove(new InterspaceQuery(this.getWorld(), this.getChunkPos(), queryMarkers));
     }
 }

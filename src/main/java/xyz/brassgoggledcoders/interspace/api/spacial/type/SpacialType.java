@@ -1,19 +1,19 @@
 package xyz.brassgoggledcoders.interspace.api.spacial.type;
 
 import net.minecraft.util.Util;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IWorld;
-import net.minecraft.world.chunk.IChunk;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 import xyz.brassgoggledcoders.interspace.api.functional.TriFunction;
 
 public class SpacialType extends ForgeRegistryEntry<SpacialType> {
-    private final TriFunction<SpacialType, IWorld, IChunk, SpacialInstance> creator;
+    private final TriFunction<SpacialType, IWorld, ChunkPos, SpacialInstance> creator;
     private String translationKey;
     private ITextComponent displayName;
 
-    public SpacialType(TriFunction<SpacialType, IWorld, IChunk, SpacialInstance> creator) {
+    public SpacialType(TriFunction<SpacialType, IWorld, ChunkPos, SpacialInstance> creator) {
         this.creator = creator;
     }
 
@@ -31,7 +31,7 @@ public class SpacialType extends ForgeRegistryEntry<SpacialType> {
         return this.translationKey;
     }
 
-    public SpacialInstance createInstance(IWorld world, IChunk chunk) {
+    public SpacialInstance createInstance(IWorld world, ChunkPos chunk) {
         return this.creator.apply(this, world, chunk);
     }
 }

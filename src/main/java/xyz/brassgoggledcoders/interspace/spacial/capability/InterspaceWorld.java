@@ -4,13 +4,15 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SharedSeedRandom;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.IWorld;
-import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunk;
 import org.apache.commons.lang3.tuple.Pair;
 import xyz.brassgoggledcoders.interspace.Interspace;
+import xyz.brassgoggledcoders.interspace.InterspaceRegistries;
 import xyz.brassgoggledcoders.interspace.api.InterspaceAPI;
 import xyz.brassgoggledcoders.interspace.api.spacial.IInterspace;
 import xyz.brassgoggledcoders.interspace.api.spacial.entry.SpacialEntry;
@@ -18,15 +20,11 @@ import xyz.brassgoggledcoders.interspace.api.spacial.item.SpacialItem;
 import xyz.brassgoggledcoders.interspace.api.spacial.query.InterspaceInsert;
 import xyz.brassgoggledcoders.interspace.api.spacial.query.InterspaceQuery;
 import xyz.brassgoggledcoders.interspace.api.spacial.type.SpacialInstance;
-import xyz.brassgoggledcoders.interspace.content.InterspaceSpacialTypes;
-import xyz.brassgoggledcoders.interspace.json.SpacialEntryManager;
+import xyz.brassgoggledcoders.interspace.api.spacial.type.SpacialType;
+import xyz.brassgoggledcoders.interspace.util.NBTHelper;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class InterspaceWorld implements IInterspace {
@@ -90,13 +88,12 @@ public class InterspaceWorld implements IInterspace {
 
     @Override
     @Nonnull
-    public SpacialInstance getSpacialInstance(IChunk chunk) {
-        ChunkPos chunkPos = chunk.getPos();
+    public SpacialInstance getSpacialInstance(ChunkPos chunkPos) {
         SpacialInstance spacialInstance = chunks.get(chunkPos);
         if (!world.isRemote() && spacialInstance == null) {
             SpacialEntry spacialEntry = InterspaceAPI.getSpacialEntryManager().getRandomSpacialEntryFor(world,
                     SharedSeedRandom.seedSlimeChunk(chunkPos.x, chunkPos.z, world.getSeed(), 831129799101L));
-            spacialInstance = spacialEntry.getType().createInstance(world, chunk);
+            spacialInstance = spacialEntry.getType().createInstance(world, chunkPos);
             if (spacialEntry.getNBT() != null) {
                 spacialInstance.deserializeNBT(spacialEntry.getNBT());
             }
@@ -108,11 +105,37 @@ public class InterspaceWorld implements IInterspace {
 
     @Override
     public CompoundNBT serializeNBT() {
-        return null;
+        CompoundNBT compoundNBT = new CompoundNBT();
+        ListNBT spacialInstancesNBT = new ListNBT();
+        for (Map.Entry<ChunkPos, SpacialInstance> spacialInstanceEntry : chunks.entrySet()) {
+            CompoundNBT spacialInstanceNBT = new CompoundNBT();
+            SpacialInstance spacialInstance = spacialInstanceEntry.getValue();
+            spacialInstanceNBT.putString("type", Objects.requireNonNull(spacialInstance.getType().getRegistryName()).toString());
+            spacialInstanceNBT.put("nbt", spacialInstance.serializeNBT());
+            spacialInstanceNBT.putLong("chunkPos", spacialInstanceEntry.getKey().asLong());
+            spacialInstancesNBT.add(spacialInstanceNBT);
+        }
+        compoundNBT.put("spacialInstances", spacialInstancesNBT);
+        return compoundNBT;
     }
 
     @Override
     public void deserializeNBT(CompoundNBT nbt) {
+        Collection<SpacialInstance> spacialInstances = NBTHelper.fromListNBT(nbt,
+                "spacialInstances", this::parseSpacialInstances);
+        spacialInstances.forEach(value -> chunks.put(value.getChunkPos(), value));
 
+    }
+
+    private SpacialInstance parseSpacialInstances(CompoundNBT compoundNBT) {
+        SpacialType type = InterspaceRegistries.SPACIAL_TYPES.getValue(new ResourceLocation(compoundNBT.getString("type")));
+        ChunkPos chunkPos = new ChunkPos(compoundNBT.getLong("chunkPos"));
+        if (type != null) {
+            SpacialInstance spacialInstance = type.createInstance(world, chunkPos);
+            spacialInstance.deserializeNBT(compoundNBT.getCompound("nbt"));
+            return spacialInstance;
+        } else {
+            return null;
+        }
     }
 }

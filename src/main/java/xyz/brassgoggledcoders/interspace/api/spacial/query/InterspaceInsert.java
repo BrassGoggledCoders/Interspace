@@ -15,20 +15,20 @@ public class InterspaceInsert {
     private final ChunkPos chunkPos;
     private final Collection<SpacialItem> spacialItems;
 
-    public <T> InterspaceInsert(IWorld world, IChunk chunk, SpacialItemType<T> type, T item) {
-        this(world, chunk, Collections.singleton(type.toSpacialItem(item)));
+    public <T> InterspaceInsert(IWorld world, ChunkPos chunkPos, SpacialItemType<T> type, T item) {
+        this(world, chunkPos, Collections.singleton(type.toSpacialItem(item)));
     }
 
-    public <T> InterspaceInsert(IWorld world, IChunk chunk, SpacialItemType<T> type, Collection<T> items) {
-        this(world, chunk, items.parallelStream()
+    public <T> InterspaceInsert(IWorld world, ChunkPos chunkPos, SpacialItemType<T> type, Collection<T> items) {
+        this(world, chunkPos, items.parallelStream()
                 .map(type::toSpacialItem)
                 .collect(Collectors.toList()));
 
     }
 
-    public InterspaceInsert(IWorld world, IChunk chunk, Collection<SpacialItem> spacialItems) {
+    public InterspaceInsert(IWorld world, ChunkPos chunkPos, Collection<SpacialItem> spacialItems) {
         this.world = world;
-        this.chunkPos = chunk.getPos();
+        this.chunkPos = chunkPos;
         this.spacialItems = spacialItems;
     }
 

@@ -1,5 +1,6 @@
 package xyz.brassgoggledcoders.interspace.api.spacial.query;
 
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.chunk.IChunk;
 
@@ -7,12 +8,12 @@ import java.util.Map;
 
 public class InterspaceQuery {
     private final IWorld world;
-    private final IChunk chunk;
+    private final ChunkPos chunkPos;
     private final Map<String, String> markers;
 
-    public InterspaceQuery(IWorld world, IChunk chunk, Map<String, String> markers) {
+    public InterspaceQuery(IWorld world, ChunkPos chunkPos, Map<String, String> markers) {
         this.world = world;
-        this.chunk = chunk;
+        this.chunkPos = chunkPos;
         this.markers = markers;
     }
 
@@ -20,8 +21,8 @@ public class InterspaceQuery {
         return world;
     }
 
-    public IChunk getChunk() {
-        return chunk;
+    public ChunkPos getChunkPos() {
+        return chunkPos;
     }
 
     public Map<String, String> getMarkers() {
