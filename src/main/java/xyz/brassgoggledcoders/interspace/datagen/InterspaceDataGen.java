@@ -8,6 +8,7 @@ import xyz.brassgoggledcoders.interspace.datagen.lang.InterspaceUSLangProvider;
 import xyz.brassgoggledcoders.interspace.datagen.loot.InterspaceLootTableProvider;
 import xyz.brassgoggledcoders.interspace.datagen.model.InterspaceBlockStateProvider;
 import xyz.brassgoggledcoders.interspace.datagen.model.InterspaceItemModelProvider;
+import xyz.brassgoggledcoders.interspace.datagen.patchouli.InterspaceBookProvider;
 import xyz.brassgoggledcoders.interspace.datagen.tag.InterspaceBlockTagProvider;
 import xyz.brassgoggledcoders.interspace.datagen.tag.InterspaceItemTagProvider;
 
@@ -20,6 +21,7 @@ public class InterspaceDataGen {
             dataGenerator.addProvider(new InterspaceBlockTagProvider(dataGenerator));
             dataGenerator.addProvider(new InterspaceItemTagProvider(dataGenerator));
             dataGenerator.addProvider(new InterspaceLootTableProvider(dataGenerator));
+            dataGenerator.addProvider(new InterspaceBookProvider(dataGenerator));
         }
 
         if (event.includeClient()) {
