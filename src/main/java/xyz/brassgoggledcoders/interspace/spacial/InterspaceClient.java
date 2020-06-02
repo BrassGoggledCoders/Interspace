@@ -32,7 +32,6 @@ public class InterspaceClient implements IInterspaceClient {
             "VALUES(?, ?, ?, ?, ?, ?);";
 
     private static final String QUERY_SPACIAL_ITEM_SQL = "SELECT item.id, item.type, item.registry_name, item.count, item.nbt FROM %s item " +
-            "LEFT JOIN %s marker ON item.id = marker.item_id " +
             "WHERE item.chunkX = ? AND item.chunkZ = ? ";
 
     private final Map<ResourceLocation, DatabaseTableNames> databaseTableNamesMap;
@@ -91,10 +90,10 @@ public class InterspaceClient implements IInterspaceClient {
             DatabaseTableNames databaseTableNames = this.getDatabaseTableNames(query.getWorld());
             return databaseWrapper.query(
                     String.format(QUERY_SPACIAL_ITEM_SQL, databaseTableNames.getItemTableName(),
-                            databaseTableNames.getMarkerTableName()),
+                            databaseTableNames.getTransactionTableName()),
                     preparedStatement -> {
-                        preparedStatement.setInt(1, query.getChunkPos().getPos().x);
-                        preparedStatement.setInt(2, query.getChunkPos().getPos().z);
+                        preparedStatement.setInt(1, query.getChunkPos().x);
+                        preparedStatement.setInt(2, query.getChunkPos().z);
                     },
                     resultSet -> {
                         long id = resultSet.getLong(1);
@@ -133,9 +132,9 @@ public class InterspaceClient implements IInterspaceClient {
 
     private List<String> setupTableSql(DatabaseTableNames databaseTableNames) {
         return Lists.newArrayList(
-                String.format(SQLStatements.DATA_TABLE_SQL, databaseTableNames.getItemTableName()),
-                String.format(SQLStatements.MARKER_TABLE_SQL, databaseTableNames.getMarkerTableName(),
-                        databaseTableNames.getItemTableName()),
-                String.format(SQLStatements.CHUNK_TABLE_SQL, databaseTableNames.getChunkTableName()));
+                String.format(SQLStatements.ITEM_TABLE_SQL, databaseTableNames.getItemTableName()),
+                String.format(SQLStatements.TRANSACTION_TABLE_SQL, databaseTableNames.getTransactionTableName(), databaseTableNames.getItemTableName()),
+                String.format(SQLStatements.TRANSACTION_TRIGGER_SQL, databaseTableNames.getTransactionTableName(), databaseTableNames.getItemTableName())
+        );
     }
 }

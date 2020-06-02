@@ -124,7 +124,6 @@ public class InterspaceWorld implements IInterspace {
         Collection<SpacialInstance> spacialInstances = NBTHelper.fromListNBT(nbt,
                 "spacialInstances", this::parseSpacialInstances);
         spacialInstances.forEach(value -> chunks.put(value.getChunkPos(), value));
-
     }
 
     private SpacialInstance parseSpacialInstances(CompoundNBT compoundNBT) {

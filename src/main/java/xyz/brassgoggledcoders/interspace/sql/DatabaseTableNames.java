@@ -4,8 +4,7 @@ import net.minecraft.util.ResourceLocation;
 
 public class DatabaseTableNames {
     private final String itemTableName;
-    private final String markerTableName;
-    private final String chunkTableName;
+    private final String transactionTableName;
 
     public DatabaseTableNames(ResourceLocation dimensionTypeName) {
         String tableName = dimensionTypeName.toString()
@@ -13,19 +12,14 @@ public class DatabaseTableNames {
                 .replace("/", "_")
                 .replace(".", "_");
         this.itemTableName = tableName + "_items";
-        this.markerTableName = tableName + "_markers";
-        this.chunkTableName = tableName + "_chunks";
+        this.transactionTableName = tableName + "_transactions";
     }
 
     public String getItemTableName() {
         return itemTableName;
     }
 
-    public String getMarkerTableName() {
-        return markerTableName;
-    }
-
-    public String getChunkTableName() {
-        return chunkTableName;
+    public String getTransactionTableName() {
+        return transactionTableName;
     }
 }
