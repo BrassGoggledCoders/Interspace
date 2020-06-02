@@ -32,7 +32,7 @@ public class SpacialWorldEntryBuilder {
         if (entryArray.size() > 0) {
             for (JsonElement jsonElement : entryArray) {
                 if (jsonElement.isJsonObject()) {
-                    JsonObject entry = jsonObject.getAsJsonObject();
+                    JsonObject entry = jsonElement.getAsJsonObject();
                     if (CraftingHelper.processConditions(entry, "conditions")) {
                         this.spacialEntries.add(createSpacialEntry(entry));
                     }
