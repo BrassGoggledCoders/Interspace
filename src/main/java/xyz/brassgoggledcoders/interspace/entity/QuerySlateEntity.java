@@ -19,11 +19,9 @@ import xyz.brassgoggledcoders.interspace.api.spacial.type.SpacialInstance;
 import xyz.brassgoggledcoders.interspace.block.ObeliskCoreBlock;
 import xyz.brassgoggledcoders.interspace.content.InterspaceEntities;
 import xyz.brassgoggledcoders.interspace.content.InterspaceItems;
-import xyz.brassgoggledcoders.interspace.content.InterspaceSpacialItemTypes;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Collections;
 import java.util.concurrent.CompletableFuture;
 
 public class QuerySlateEntity extends ItemFrameEntity {
@@ -72,12 +70,11 @@ public class QuerySlateEntity extends ItemFrameEntity {
 
     private void handleInterspace(IInterspace interspace, BlockPos corePos) {
         SpacialInstance spacialInstance = interspace.getSpacialInstance(new ChunkPos(corePos));
-        if (spacialInstance != null) {
-            currentPull = spacialInstance.remove(Collections.emptyMap())
-                    .thenAccept(spacialItems -> spacialItems.stream()
-                            .filter(spacialItem -> spacialItem.getType() == InterspaceSpacialItemTypes.ITEM_STACK.get())
-                            .map(InterspaceSpacialItemTypes.ITEM_STACK.get()::fromSpacialItem)
-                            .forEach(this::entityDropItem));
-        }
+        /*currentPull = spacialInstance.remove(Collections.emptyMap())
+                .thenAccept(spacialItems -> spacialItems.stream()
+                        .filter(spacialItem -> spacialItem.getType() == InterspaceSpacialItemTypes.ITEM_STACK.get())
+                        .map(InterspaceSpacialItemTypes.ITEM_STACK.get()::fromSpacialItem)
+                        .forEach(this::entityDropItem));
+                        */
     }
 }

@@ -27,20 +27,23 @@ public class SQLStatements {
 
     public static final String TRANSACTION_TRIGGER_SQL = "CREATE TRIGGER IF NOT EXISTS %1$s_trigger" +
             "    AFTER INSERT" +
-            "    ON %1$s" +
+            "    ON %1$s " +
             "BEGIN" +
             "    INSERT INTO %2$s(type, registry_name, count, nbt, chunkX, chunkZ)" +
             "    VALUES (new.type, new.registry_name, new.change, new.nbt, new.chunkX, new.chunkZ)" +
             "    ON CONFLICT(type, registry_name, nbt, chunkX, chunkZ) DO UPDATE SET COUNT = COUNT + excluded.count;" +
             "END;";
 
-    public static final String ITEM_CHECK_INVENTORY_TRIGGER = "CREATE TRIGGER IF NOT EXISTS %s_trigger" +
+    public static final String ITEM_CHECK_INVENTORY_TRIGGER = "CREATE TRIGGER IF NOT EXISTS %1$s_trigger" +
             "    AFTER UPDATE" +
-            "    ON %s" +
+            "    ON %1$s " +
             "BEGIN" +
             "    SELECT CASE" +
             "               WHEN new.count < 0 THEN" +
             "                   raise(ABORT, 'item counts cannot go below 0')" +
             "               END;" +
             "END";
+
+    public static final String INSERT_TRANSACTION =
+            "insert into %s(type, registry_name, change, nbt, chunkX, chunkZ, transactionId) VALUES(?, ?,?, ?,?, ?,?)";
 }

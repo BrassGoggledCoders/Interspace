@@ -2,6 +2,7 @@ package xyz.brassgoggledcoders.interspace.spacial;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.IWorld;
@@ -13,7 +14,6 @@ import xyz.brassgoggledcoders.interspace.api.spacial.parameter.SpacialParameter;
 import xyz.brassgoggledcoders.interspace.sql.DatabaseTableNames;
 import xyz.brassgoggledcoders.interspace.sql.SQLStatements;
 import xyz.brassgoggledcoders.interspace.sql.ThrowingConsumer;
-import xyz.brassgoggledcoders.interspace.sql.ThrowingSupplier;
 
 import javax.annotation.Nullable;
 import java.sql.Connection;
@@ -44,19 +44,31 @@ public class InterspaceClient implements IInterspaceClient, AutoCloseable {
     public CompletableFuture<Collection<SpacialItem>> offer(UUID transactionId, IWorld world, ChunkPos chunkPos,
                                                             Collection<SpacialItem> offered) {
         return CompletableFuture.supplyAsync(() -> {
-            try {
-                DatabaseTableNames databaseTableNames = this.getDatabaseTableNames(world);
-                final Iterator<SpacialItem> itemIterator = offered.iterator();
-                return this.doInTransaction(() -> {
-                    while (itemIterator.hasNext()) {
-                        connection.prepareStatement(SQLStatements.INSERT_ITEM_SQL);
-                    }
-                    return offered;
-                });
-            } catch (SQLException sqlException) {
-                Interspace.LOGGER.error("Failed to Offer Items", sqlException);
-                return offered;
+            DatabaseTableNames databaseTableNames = this.getDatabaseTableNames(world);
+            Iterator<SpacialItem> itemIterator = offered.iterator();
+            final String transactionIdString = transactionId.toString();
+            Set<SpacialItem> notAccepted = Sets.newHashSet();
+            while (itemIterator.hasNext()) {
+                SpacialItem spacialItem = itemIterator.next();
+                int updated = this.insert(String.format(SQLStatements.INSERT_TRANSACTION, databaseTableNames.getTransactionTableName()),
+                        preparedStatement -> {
+                            preparedStatement.setString(1, spacialItem.getTypeString());
+                            preparedStatement.setString(2, spacialItem.getRegistryName());
+                            preparedStatement.setLong(3, spacialItem.getCount());
+                            if (spacialItem.getNBT() != null) {
+                                preparedStatement.setString(4, spacialItem.getNBT().toString());
+                            } else {
+                                preparedStatement.setString(4, "");
+                            }
+                            preparedStatement.setLong(5, chunkPos.x);
+                            preparedStatement.setLong(6, chunkPos.z);
+                            preparedStatement.setString(7, transactionIdString);
+                        });
+                if (updated == 0) {
+                    notAccepted.add(spacialItem);
+                }
             }
+            return notAccepted;
         });
     }
 
@@ -84,13 +96,26 @@ public class InterspaceClient implements IInterspaceClient, AutoCloseable {
                 String.format(SQLStatements.ITEM_TABLE_SQL, databaseTableNames.getItemTableName()),
                 String.format(SQLStatements.TRANSACTION_TABLE_SQL, databaseTableNames.getTransactionTableName()),
                 String.format(SQLStatements.TRANSACTION_TRIGGER_SQL, databaseTableNames.getTransactionTableName(), databaseTableNames.getItemTableName()),
-                String.format(SQLStatements.ITEM_TABLE_SQL, databaseTableNames.getItemTableName())
+                String.format(SQLStatements.ITEM_CHECK_INVENTORY_TRIGGER, databaseTableNames.getItemTableName())
         );
     }
 
     @Override
     public void close() throws Exception {
         this.connection.close();
+    }
+
+    public int insert(String sql, ThrowingConsumer<PreparedStatement, SQLException> preparer) {
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparer.accept(preparedStatement);
+            if (!preparedStatement.execute()) {
+                return preparedStatement.getUpdateCount();
+            }
+        } catch (SQLException sqlException) {
+            Interspace.LOGGER.error("Failed to Insert Record", sqlException);
+        }
+        return 0;
     }
 
     public CompletableFuture<Integer> multiInsert(List<Pair<String, ThrowingConsumer<PreparedStatement, SQLException>>> inserts) {
@@ -115,17 +140,5 @@ public class InterspaceClient implements IInterspaceClient, AutoCloseable {
     public ThrowingConsumer<PreparedStatement, SQLException> nothing() {
         return preparedStatement -> {
         };
-    }
-
-    public <T> T doInTransaction(ThrowingSupplier<T, SQLException> handling) throws SQLException {
-        try {
-            connection.setAutoCommit(false);
-            return handling.get();
-        } catch (SQLException sqlException) {
-            connection.rollback();
-            throw sqlException;
-        } finally {
-            connection.setAutoCommit(true);
-        }
     }
 }

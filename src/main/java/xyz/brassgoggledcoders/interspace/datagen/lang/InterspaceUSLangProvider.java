@@ -30,6 +30,7 @@ public class InterspaceUSLangProvider extends LanguageProvider {
 
         this.add("text.interspace.gaze", "You gaze into the Mirror and see: ");
         this.add("text.interspace.nothing", "Nothingness");
+        this.add("itemGroup.interspace", "Interspace");
     }
 
     protected void add(SpacialType spacialType, String message) {

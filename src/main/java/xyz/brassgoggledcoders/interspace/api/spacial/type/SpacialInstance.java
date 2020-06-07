@@ -4,13 +4,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.IWorld;
 import net.minecraftforge.common.util.INBTSerializable;
-import xyz.brassgoggledcoders.interspace.api.InterspaceAPI;
-import xyz.brassgoggledcoders.interspace.api.spacial.item.SpacialItem;
-import xyz.brassgoggledcoders.interspace.api.spacial.query.InterspaceQuery;
-
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 
 public class SpacialInstance implements INBTSerializable<CompoundNBT> {
     private final SpacialType spacialType;

@@ -8,6 +8,7 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
 import org.sqlite.javax.SQLiteConnectionPoolDataSource;
@@ -52,7 +53,7 @@ public class EventHandler {
     }
 
     @SubscribeEvent
-    public static void handleServerStart(FMLServerStartingEvent event) {
+    public static void handleServerStart(FMLServerAboutToStartEvent event) {
         Interspace.LOGGER.info("Creating Interspace Database for: " + event.getServer().getWorldName());
         if (Interspace.interspaceClient != null) {
             try {

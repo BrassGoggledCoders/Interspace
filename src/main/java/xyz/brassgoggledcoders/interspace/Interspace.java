@@ -59,6 +59,7 @@ public class Interspace {
         spacialEntryManager = new SpacialEntryManager();
 
         InterspaceAPI.setSpacialEntryManager(spacialEntryManager);
+        InterspaceAPI.setInterspaceClientSupplier(() -> interspaceClient);
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {

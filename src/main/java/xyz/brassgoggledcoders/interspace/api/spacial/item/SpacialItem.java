@@ -3,6 +3,7 @@ package xyz.brassgoggledcoders.interspace.api.spacial.item;
 import net.minecraft.nbt.CompoundNBT;
 
 import javax.annotation.Nullable;
+import java.util.Objects;
 
 public class SpacialItem {
     private final SpacialItemType<?> type;
@@ -32,5 +33,9 @@ public class SpacialItem {
 
     public SpacialItemType<?> getType() {
         return type;
+    }
+
+    public String getTypeString() {
+        return Objects.requireNonNull(this.getType().getRegistryName()).toString();
     }
 }

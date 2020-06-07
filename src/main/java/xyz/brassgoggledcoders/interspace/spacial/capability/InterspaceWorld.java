@@ -1,6 +1,5 @@
 package xyz.brassgoggledcoders.interspace.spacial.capability;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import net.minecraft.nbt.CompoundNBT;
@@ -9,22 +8,22 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SharedSeedRandom;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.IWorld;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunk;
-import org.apache.commons.lang3.tuple.Pair;
 import xyz.brassgoggledcoders.interspace.Interspace;
 import xyz.brassgoggledcoders.interspace.InterspaceRegistries;
 import xyz.brassgoggledcoders.interspace.api.InterspaceAPI;
 import xyz.brassgoggledcoders.interspace.api.spacial.IInterspace;
 import xyz.brassgoggledcoders.interspace.api.spacial.entry.SpacialEntry;
-import xyz.brassgoggledcoders.interspace.api.spacial.item.SpacialItem;
-import xyz.brassgoggledcoders.interspace.api.spacial.query.InterspaceInsert;
-import xyz.brassgoggledcoders.interspace.api.spacial.query.InterspaceQuery;
 import xyz.brassgoggledcoders.interspace.api.spacial.type.SpacialInstance;
 import xyz.brassgoggledcoders.interspace.api.spacial.type.SpacialType;
 import xyz.brassgoggledcoders.interspace.util.NBTHelper;
 
 import javax.annotation.Nonnull;
-import java.util.*;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 public class InterspaceWorld implements IInterspace {
@@ -33,6 +32,7 @@ public class InterspaceWorld implements IInterspace {
     private final IWorld world;
     private final Set<ChunkPos> activeChunks;
     private final Map<ChunkPos, SpacialInstance> chunks;
+    private final Set<ChunkPos> awaitingLoad;
 
     public InterspaceWorld(IWorld world) {
         this.world = world;
@@ -41,11 +41,20 @@ public class InterspaceWorld implements IInterspace {
                 .thenAccept(amount -> Interspace.LOGGER.debug("Added {} tables", amount));
         this.activeChunks = Sets.newHashSet();
         this.chunks = Maps.newHashMap();
+        this.awaitingLoad = Sets.newHashSet();
     }
 
     @Override
     public void tick() {
         if (worldSetup.isDone()) {
+            if (!awaitingLoad.isEmpty()) {
+                for (ChunkPos chunkPos: awaitingLoad) {
+                    SpacialInstance spacialInstance = chunks.get(chunkPos);
+                    if (spacialInstance != null) {
+                        spacialInstance.onLoad();
+                    }
+                }
+            }
             for (Map.Entry<ChunkPos, SpacialInstance> spacialInstanceEntry : chunks.entrySet()) {
                 if (activeChunks.contains(spacialInstanceEntry.getKey())) {
                     spacialInstanceEntry.getValue().tick();
@@ -55,35 +64,23 @@ public class InterspaceWorld implements IInterspace {
     }
 
     @Override
-    @Nonnull
-    public CompletableFuture<List<SpacialItem>> query(@Nonnull InterspaceQuery query) {
-        if (worldSetup.isDone()) {
-            return InterspaceAPI.getInterspaceClient().query(query);
-        } else {
-            return CompletableFuture.completedFuture(Lists.newArrayList());
+    public void onChunkLoad(@Nonnull IChunk chunk) {
+        ChunkPos chunkPos = chunk.getPos();
+        activeChunks.add(chunkPos);
+        if (chunks.containsKey(chunkPos)) {
+            if (worldSetup.isDone()) {
+                chunks.get(chunkPos).onLoad();
+            } else {
+                awaitingLoad.add(chunkPos);
+            }
         }
     }
 
     @Override
-    @Nonnull
-    public CompletableFuture<List<SpacialItem>> remove(@Nonnull InterspaceQuery query) {
-        return CompletableFuture.completedFuture(Lists.newArrayList());
-    }
-
-    @Override
-    @Nonnull
-    public CompletableFuture<Integer> insert(@Nonnull InterspaceInsert interspaceInsert) {
-        return InterspaceAPI.getInterspaceClient().insert(interspaceInsert);
-    }
-
-    @Override
-    public void onChunkLoad(@Nonnull IChunk chunk) {
-        activeChunks.add(chunk.getPos());
-    }
-
-    @Override
     public void onChunkUnload(@Nonnull IChunk chunk) {
-        activeChunks.remove(chunk.getPos());
+        ChunkPos chunkPos = chunk.getPos();
+        activeChunks.remove(chunkPos);
+        awaitingLoad.remove(chunkPos);
     }
 
     @Override
@@ -98,6 +95,11 @@ public class InterspaceWorld implements IInterspace {
                 spacialInstance.deserializeNBT(spacialEntry.getNBT());
             }
             chunks.put(chunkPos, spacialInstance);
+            if (worldSetup.isDone()) {
+                spacialInstance.onLoad();
+            } else {
+                awaitingLoad.add(chunkPos);
+            }
         }
         return spacialInstance;
     }
