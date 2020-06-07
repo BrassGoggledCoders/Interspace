@@ -2,22 +2,24 @@ package xyz.brassgoggledcoders.interspace.api.spacial;
 
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.IWorld;
-import net.minecraft.world.chunk.IChunk;
-import org.apache.commons.lang3.tuple.Pair;
 import xyz.brassgoggledcoders.interspace.api.spacial.item.SpacialItem;
-import xyz.brassgoggledcoders.interspace.api.spacial.query.InterspaceInsert;
-import xyz.brassgoggledcoders.interspace.api.spacial.query.InterspaceQuery;
-import xyz.brassgoggledcoders.interspace.api.spacial.type.SpacialInstance;
+import xyz.brassgoggledcoders.interspace.api.spacial.parameter.SpacialParameter;
 
-import java.util.List;
+import javax.annotation.Nullable;
+import java.util.Collection;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 public interface IInterspaceClient {
     CompletableFuture<Integer> setupWorld(IWorld world);
 
-    CompletableFuture<List<SpacialItem>> query(InterspaceQuery query);
+    CompletableFuture<Collection<SpacialItem>> offer(UUID transactionId, IWorld world, ChunkPos chunkPos,
+                                                     Collection<SpacialItem> offered);
 
-    CompletableFuture<Integer> insert(InterspaceInsert insert);
+    CompletableFuture<Collection<SpacialItem>> query(IWorld world, Collection<SpacialParameter<?>> parameters,
+                                                     @Nullable Integer limit);
 
-    CompletableFuture<List<SpacialItem>> remove(InterspaceQuery query);
+    CompletableFuture<Collection<SpacialItem>> retrieve(UUID transactionId, IWorld world,
+                                                        Collection<SpacialParameter<?>> parameters,
+                                                        @Nullable Integer limit);
 }

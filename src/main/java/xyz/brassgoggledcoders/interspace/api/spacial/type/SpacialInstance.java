@@ -53,8 +53,4 @@ public class SpacialInstance implements INBTSerializable<CompoundNBT> {
     public SpacialType getType() {
         return this.spacialType;
     }
-
-    public CompletableFuture<List<SpacialItem>> remove(Map<String, String> queryMarkers) {
-        return InterspaceAPI.getInterspaceClient().remove(new InterspaceQuery(this.getWorld(), this.getChunkPos(), queryMarkers));
-    }
 }

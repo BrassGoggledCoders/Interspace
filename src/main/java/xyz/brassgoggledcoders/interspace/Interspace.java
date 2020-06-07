@@ -29,7 +29,6 @@ import xyz.brassgoggledcoders.interspace.datagen.InterspaceDataGen;
 import xyz.brassgoggledcoders.interspace.json.SpacialEntryManager;
 import xyz.brassgoggledcoders.interspace.nbt.EmptyNBTStorage;
 import xyz.brassgoggledcoders.interspace.spacial.InterspaceClient;
-import xyz.brassgoggledcoders.interspace.sql.DatabaseWrapper;
 
 @Mod(Interspace.ID)
 public class Interspace {
@@ -38,6 +37,8 @@ public class Interspace {
     public static final ItemGroup ITEM_GROUP = new TitaniumTab(ID, InterspaceItems.MIRROR.lazyMap(ItemStack::new));
 
     public final SpacialEntryManager spacialEntryManager;
+
+    public static InterspaceClient interspaceClient;
 
     public Interspace() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -53,13 +54,10 @@ public class Interspace {
         modEventBus.addListener(this::newRegistry);
         modEventBus.addListener(this::clientSetup);
 
-        MinecraftForge.EVENT_BUS.addListener(DatabaseWrapper::handleServerStart);
-        MinecraftForge.EVENT_BUS.addListener(DatabaseWrapper::handleServerStop);
         MinecraftForge.EVENT_BUS.addListener(this::serverAboutToStart);
 
         spacialEntryManager = new SpacialEntryManager();
 
-        InterspaceAPI.setInterspaceClient(new InterspaceClient());
         InterspaceAPI.setSpacialEntryManager(spacialEntryManager);
     }
 
