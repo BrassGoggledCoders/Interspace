@@ -8,12 +8,11 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SharedSeedRandom;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.IWorld;
-import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunk;
 import xyz.brassgoggledcoders.interspace.Interspace;
 import xyz.brassgoggledcoders.interspace.InterspaceRegistries;
 import xyz.brassgoggledcoders.interspace.api.InterspaceAPI;
-import xyz.brassgoggledcoders.interspace.api.spacial.IInterspace;
+import xyz.brassgoggledcoders.interspace.api.spacial.capability.IInterspaceWorld;
 import xyz.brassgoggledcoders.interspace.api.spacial.entry.SpacialEntry;
 import xyz.brassgoggledcoders.interspace.api.spacial.type.SpacialInstance;
 import xyz.brassgoggledcoders.interspace.api.spacial.type.SpacialType;
@@ -26,7 +25,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
-public class InterspaceWorld implements IInterspace {
+public class InterspaceWorld implements IInterspaceWorld {
     private final CompletableFuture<Void> worldSetup;
 
     private final IWorld world;

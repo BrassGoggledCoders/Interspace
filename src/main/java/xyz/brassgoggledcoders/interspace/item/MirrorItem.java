@@ -15,7 +15,10 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.IChunk;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.Constants;
 import xyz.brassgoggledcoders.interspace.Interspace;
 import xyz.brassgoggledcoders.interspace.api.InterspaceAPI;
@@ -44,23 +47,21 @@ public class MirrorItem extends Item {
     @ParametersAreNonnullByDefault
     public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
         ItemStack itemStack = player.getHeldItem(hand);
-
-        return world.getCapability(InterspaceAPI.INTERSPACE)
-                .map(interspace -> {
-                    SpacialInstance spacialInstance = interspace.getSpacialInstance(new ChunkPos(player.getPosition()));
-                    ITextComponent instanceText;
-                    if (spacialInstance == null) {
-                        instanceText = new TranslationTextComponent("text.interspace.nothing");
-                    } else {
-                        instanceText = spacialInstance.getType().getDisplayName();
-                    }
-                    if (!world.isRemote()) {
-                        player.sendStatusMessage(new TranslationTextComponent("text.interspace.gaze", instanceText),
-                                false);
-                    }
-                    return ActionResult.resultSuccess(itemStack);
-                })
-                .orElseGet(() -> ActionResult.resultPass(itemStack));
+        IChunk chunk = world.getChunk(player.getPosition());
+        if (chunk instanceof ICapabilityProvider) {
+            return ((ICapabilityProvider) chunk).getCapability(InterspaceAPI.INTERSPACE_CHUNK)
+                    .map(interspace -> {
+                        SpacialInstance spacialInstance = interspace.getSpacialInstance();
+                        if (!world.isRemote()) {
+                            player.sendStatusMessage(new TranslationTextComponent("text.interspace.gaze",
+                                            spacialInstance.getDisplayName()), false);
+                        }
+                        return ActionResult.resultSuccess(itemStack);
+                    })
+                    .orElseGet(() -> ActionResult.resultPass(itemStack));
+        } else {
+            return ActionResult.resultPass(itemStack);
+        }
     }
 
     @Override

@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.interspace.api.spacial;
+package xyz.brassgoggledcoders.interspace.api.spacial.capability;
 
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.ChunkPos;
@@ -8,7 +8,7 @@ import xyz.brassgoggledcoders.interspace.api.spacial.type.SpacialInstance;
 
 import javax.annotation.Nonnull;
 
-public interface IInterspace extends INBTSerializable<CompoundNBT> {
+public interface IInterspaceWorld extends INBTSerializable<CompoundNBT> {
     void tick();
 
     void onChunkLoad(@Nonnull IChunk chunk);

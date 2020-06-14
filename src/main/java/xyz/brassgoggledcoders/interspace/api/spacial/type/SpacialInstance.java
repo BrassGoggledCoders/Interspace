@@ -2,6 +2,7 @@ package xyz.brassgoggledcoders.interspace.api.spacial.type;
 
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.IWorld;
 import net.minecraftforge.common.util.INBTSerializable;
 
@@ -45,5 +46,9 @@ public class SpacialInstance implements INBTSerializable<CompoundNBT> {
 
     public SpacialType getType() {
         return this.spacialType;
+    }
+
+    public ITextComponent getDisplayName() {
+        return this.getType().getDisplayName();
     }
 }

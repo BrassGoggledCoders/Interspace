@@ -2,7 +2,8 @@ package xyz.brassgoggledcoders.interspace.api;
 
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
-import xyz.brassgoggledcoders.interspace.api.spacial.IInterspace;
+import xyz.brassgoggledcoders.interspace.api.spacial.capability.IInterspaceChunk;
+import xyz.brassgoggledcoders.interspace.api.spacial.capability.IInterspaceWorld;
 import xyz.brassgoggledcoders.interspace.api.spacial.IInterspaceClient;
 import xyz.brassgoggledcoders.interspace.api.spacial.entry.ISpacialEntryManager;
 
@@ -11,8 +12,10 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 public class InterspaceAPI {
-    @CapabilityInject(IInterspace.class)
-    public static Capability<IInterspace> INTERSPACE;
+    @CapabilityInject(IInterspaceWorld.class)
+    public static Capability<IInterspaceWorld> INTERSPACE_WORLD;
+    @CapabilityInject(IInterspaceChunk.class)
+    public static Capability<IInterspaceChunk> INTERSPACE_CHUNK;
 
     private static Supplier<IInterspaceClient> interspaceClient = () -> null;
     private static ISpacialEntryManager spacialEntryManager = null;

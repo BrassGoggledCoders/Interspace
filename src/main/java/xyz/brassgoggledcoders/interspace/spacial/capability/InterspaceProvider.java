@@ -7,21 +7,23 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.common.util.NonNullLazy;
 import xyz.brassgoggledcoders.interspace.api.InterspaceAPI;
-import xyz.brassgoggledcoders.interspace.api.spacial.IInterspace;
+import xyz.brassgoggledcoders.interspace.api.spacial.capability.IInterspaceWorld;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class InterspaceWorldProvider implements ICapabilityProvider {
-    private final LazyOptional<IInterspace> lazyInterspace;
+public class InterspaceProvider<CAP> implements ICapabilityProvider {
+    private final Capability<CAP> capability;
+    private final LazyOptional<CAP> lazyInterspace;
 
-    public InterspaceWorldProvider(IWorld world) {
-        this.lazyInterspace = LazyOptional.of(NonNullLazy.of(() -> new InterspaceWorld(world)));
+    public InterspaceProvider(Capability<CAP> capability, LazyOptional<CAP> lazyInterspace) {
+        this.capability = capability;
+        this.lazyInterspace = lazyInterspace;
     }
 
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        return InterspaceAPI.INTERSPACE.orEmpty(cap, lazyInterspace);
+        return capability.orEmpty(cap, lazyInterspace);
     }
 }

@@ -2,21 +2,24 @@ package xyz.brassgoggledcoders.interspace.event;
 
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
-import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
 import org.sqlite.javax.SQLiteConnectionPoolDataSource;
 import xyz.brassgoggledcoders.interspace.Interspace;
 import xyz.brassgoggledcoders.interspace.api.InterspaceAPI;
-import xyz.brassgoggledcoders.interspace.api.spacial.IInterspace;
+import xyz.brassgoggledcoders.interspace.api.spacial.capability.IInterspaceWorld;
 import xyz.brassgoggledcoders.interspace.spacial.InterspaceClient;
-import xyz.brassgoggledcoders.interspace.spacial.capability.InterspaceWorldProvider;
+import xyz.brassgoggledcoders.interspace.spacial.capability.InterspaceChunk;
+import xyz.brassgoggledcoders.interspace.spacial.capability.InterspaceProvider;
+import xyz.brassgoggledcoders.interspace.spacial.capability.InterspaceWorld;
 
 import java.sql.SQLException;
 
@@ -25,20 +28,29 @@ public class EventHandler {
     @SubscribeEvent
     public static void worldCapability(AttachCapabilitiesEvent<World> worldAttachCapabilitiesEvent) {
         worldAttachCapabilitiesEvent.addCapability(Interspace.rl("interspace"),
-                new InterspaceWorldProvider(worldAttachCapabilitiesEvent.getObject()));
+                new InterspaceProvider<>(InterspaceAPI.INTERSPACE_WORLD, LazyOptional.of(() ->
+                        new InterspaceWorld(worldAttachCapabilitiesEvent.getObject()))));
+    }
+
+    @SubscribeEvent
+    public static void chunkCapability(AttachCapabilitiesEvent<Chunk> chunkAttachCapabilitiesEvent) {
+        chunkAttachCapabilitiesEvent.addCapability(Interspace.rl("interspace"),
+                new InterspaceProvider<>(InterspaceAPI.INTERSPACE_CHUNK, LazyOptional.of(() ->
+                        new InterspaceChunk(chunkAttachCapabilitiesEvent.getObject().getWorldForge(),
+                                chunkAttachCapabilitiesEvent.getObject().getPos()))));
     }
 
     @SubscribeEvent
     public static void worldTick(TickEvent.WorldTickEvent worldTickEvent) {
-        worldTickEvent.world.getCapability(InterspaceAPI.INTERSPACE)
-                .ifPresent(IInterspace::tick);
+        worldTickEvent.world.getCapability(InterspaceAPI.INTERSPACE_WORLD)
+                .ifPresent(IInterspaceWorld::tick);
     }
 
     @SubscribeEvent
     public static void chunkUnload(ChunkEvent.Unload chunkEvent) {
         IWorld world = chunkEvent.getChunk().getWorldForge();
         if (world instanceof ICapabilityProvider) {
-            ((ICapabilityProvider) world).getCapability(InterspaceAPI.INTERSPACE)
+            ((ICapabilityProvider) world).getCapability(InterspaceAPI.INTERSPACE_WORLD)
                     .ifPresent(interspace -> interspace.onChunkUnload(chunkEvent.getChunk()));
         }
     }
@@ -47,7 +59,7 @@ public class EventHandler {
     public static void chunkLoad(ChunkEvent.Load chunkEvent) {
         IWorld world = chunkEvent.getChunk().getWorldForge();
         if (world instanceof ICapabilityProvider) {
-            ((ICapabilityProvider) world).getCapability(InterspaceAPI.INTERSPACE)
+            ((ICapabilityProvider) world).getCapability(InterspaceAPI.INTERSPACE_WORLD)
                     .ifPresent(interspace -> interspace.onChunkLoad(chunkEvent.getChunk()));
         }
     }

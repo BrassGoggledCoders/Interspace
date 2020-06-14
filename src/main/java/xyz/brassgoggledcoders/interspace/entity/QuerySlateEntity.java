@@ -14,7 +14,8 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 import xyz.brassgoggledcoders.interspace.api.InterspaceAPI;
-import xyz.brassgoggledcoders.interspace.api.spacial.IInterspace;
+import xyz.brassgoggledcoders.interspace.api.spacial.capability.IInterspaceChunk;
+import xyz.brassgoggledcoders.interspace.api.spacial.capability.IInterspaceWorld;
 import xyz.brassgoggledcoders.interspace.api.spacial.type.SpacialInstance;
 import xyz.brassgoggledcoders.interspace.block.ObeliskCoreBlock;
 import xyz.brassgoggledcoders.interspace.content.InterspaceEntities;
@@ -55,8 +56,8 @@ public class QuerySlateEntity extends ItemFrameEntity {
             BlockState coreBlockState = this.getEntityWorld().getBlockState(corePos);
             if (coreBlockState.getBlock() instanceof ObeliskCoreBlock) {
                 if (coreBlockState.get(BlockStateProperties.ATTACHED)) {
-                    this.getEntityWorld().getCapability(InterspaceAPI.INTERSPACE)
-                            .ifPresent(interspace -> this.handleInterspace(interspace, corePos));
+                    this.getEntityWorld().getCapability(InterspaceAPI.INTERSPACE_CHUNK)
+                            .ifPresent(this::handleInterspace);
                 }
             }
         }
@@ -68,8 +69,8 @@ public class QuerySlateEntity extends ItemFrameEntity {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 
-    private void handleInterspace(IInterspace interspace, BlockPos corePos) {
-        SpacialInstance spacialInstance = interspace.getSpacialInstance(new ChunkPos(corePos));
+    private void handleInterspace(IInterspaceChunk interspace) {
+        SpacialInstance spacialInstance = interspace.getSpacialInstance();
         /*currentPull = spacialInstance.remove(Collections.emptyMap())
                 .thenAccept(spacialItems -> spacialItems.stream()
                         .filter(spacialItem -> spacialItem.getType() == InterspaceSpacialItemTypes.ITEM_STACK.get())

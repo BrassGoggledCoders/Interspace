@@ -8,6 +8,7 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -21,7 +22,8 @@ import net.minecraftforge.registries.RegistryBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xyz.brassgoggledcoders.interspace.api.InterspaceAPI;
-import xyz.brassgoggledcoders.interspace.api.spacial.IInterspace;
+import xyz.brassgoggledcoders.interspace.api.spacial.capability.IInterspaceChunk;
+import xyz.brassgoggledcoders.interspace.api.spacial.capability.IInterspaceWorld;
 import xyz.brassgoggledcoders.interspace.api.spacial.item.SpacialItemType;
 import xyz.brassgoggledcoders.interspace.api.spacial.type.SpacialType;
 import xyz.brassgoggledcoders.interspace.content.*;
@@ -59,11 +61,16 @@ public class Interspace {
         spacialEntryManager = new SpacialEntryManager();
 
         InterspaceAPI.setSpacialEntryManager(spacialEntryManager);
-        InterspaceAPI.setInterspaceClientSupplier(() -> interspaceClient);
+        InterspaceAPI.setInterspaceClientSupplier(this::getInterspaceClient);
+    }
+
+    private InterspaceClient getInterspaceClient() {
+        return interspaceClient;
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
-        CapabilityManager.INSTANCE.register(IInterspace.class, new EmptyNBTStorage<>(), () -> null);
+        CapabilityManager.INSTANCE.register(IInterspaceWorld.class, new EmptyNBTStorage<>(), () -> null);
+        CapabilityManager.INSTANCE.register(IInterspaceChunk.class, new EmptyNBTStorage<>(), () -> null);
     }
 
     private void clientSetup(FMLClientSetupEvent event) {
