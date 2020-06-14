@@ -10,12 +10,12 @@ import org.apache.commons.lang3.tuple.Pair;
 import xyz.brassgoggledcoders.interspace.Interspace;
 import xyz.brassgoggledcoders.interspace.api.spacial.IInterspaceClient;
 import xyz.brassgoggledcoders.interspace.api.spacial.item.SpacialItem;
-import xyz.brassgoggledcoders.interspace.api.spacial.parameter.SpacialParameter;
+import xyz.brassgoggledcoders.interspace.api.spacial.query.filter.SpacialFilter;
+import xyz.brassgoggledcoders.interspace.api.spacial.query.Transaction;
 import xyz.brassgoggledcoders.interspace.sql.DatabaseTableNames;
 import xyz.brassgoggledcoders.interspace.sql.SQLStatements;
 import xyz.brassgoggledcoders.interspace.sql.ThrowingConsumer;
 
-import javax.annotation.Nullable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -41,9 +41,9 @@ public class InterspaceClient implements IInterspaceClient, AutoCloseable {
     }
 
     @Override
-    public CompletableFuture<Collection<SpacialItem>> offer(UUID transactionId, IWorld world, ChunkPos chunkPos,
-                                                            Collection<SpacialItem> offered) {
-        return CompletableFuture.supplyAsync(() -> {
+    public Transaction<Collection<SpacialItem>> offer(IWorld world, ChunkPos chunkPos,
+                                                      Collection<SpacialItem> offered) {
+        return Transaction.of(transactionId -> CompletableFuture.supplyAsync(() -> {
             DatabaseTableNames databaseTableNames = this.getDatabaseTableNames(world);
             Iterator<SpacialItem> itemIterator = offered.iterator();
             final String transactionIdString = transactionId.toString();
@@ -69,21 +69,19 @@ public class InterspaceClient implements IInterspaceClient, AutoCloseable {
                 }
             }
             return notAccepted;
-        });
+        }));
     }
 
     @Override
-    public CompletableFuture<Collection<SpacialItem>> query(IWorld world, Collection<SpacialParameter<?>> parameters,
-                                                            @Nullable Integer limit) {
-        return CompletableFuture.completedFuture(Lists.newArrayList());
+    public Transaction<Collection<SpacialItem>> query(IWorld world, Collection<SpacialFilter<?>> parameters, int limit) {
+        return Transaction.of(transactionId -> CompletableFuture.completedFuture(Lists.newArrayList()));
 
     }
 
     @Override
-    public CompletableFuture<Collection<SpacialItem>> retrieve(UUID transactionId, IWorld world,
-                                                               Collection<SpacialParameter<?>> parameters,
-                                                               @Nullable Integer limit) {
-        return CompletableFuture.completedFuture(Lists.newArrayList());
+    public Transaction<Collection<SpacialItem>> retrieve(IWorld world, Collection<SpacialFilter<?>> parameters,
+                                                         int maxSize, int limit) {
+        return Transaction.of(transactionId -> CompletableFuture.completedFuture(Lists.newArrayList()));
     }
 
     private DatabaseTableNames getDatabaseTableNames(IWorld world) {

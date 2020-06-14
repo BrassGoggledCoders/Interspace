@@ -14,8 +14,12 @@ import xyz.brassgoggledcoders.interspace.InterspaceRegistries;
 import xyz.brassgoggledcoders.interspace.api.InterspaceAPI;
 import xyz.brassgoggledcoders.interspace.api.spacial.capability.IInterspaceWorld;
 import xyz.brassgoggledcoders.interspace.api.spacial.entry.SpacialEntry;
+import xyz.brassgoggledcoders.interspace.api.spacial.item.SpacialItem;
+import xyz.brassgoggledcoders.interspace.api.spacial.query.SpacialQuery;
+import xyz.brassgoggledcoders.interspace.api.spacial.query.Transaction;
 import xyz.brassgoggledcoders.interspace.api.spacial.type.SpacialInstance;
 import xyz.brassgoggledcoders.interspace.api.spacial.type.SpacialType;
+import xyz.brassgoggledcoders.interspace.content.InterspaceSpacialTypes;
 import xyz.brassgoggledcoders.interspace.util.NBTHelper;
 
 import javax.annotation.Nonnull;
@@ -26,6 +30,7 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 public class InterspaceWorld implements IInterspaceWorld {
+    private final ChunkPos ORIGIN = new ChunkPos(0, 0);
     private final CompletableFuture<Void> worldSetup;
 
     private final IWorld world;
@@ -40,6 +45,7 @@ public class InterspaceWorld implements IInterspaceWorld {
                 .thenAccept(amount -> Interspace.LOGGER.debug("Added {} tables", amount));
         this.activeChunks = Sets.newHashSet();
         this.chunks = Maps.newHashMap();
+        this.chunks.put(ORIGIN, InterspaceSpacialTypes.EMPTY.get().createInstance(world, ORIGIN));
         this.awaitingLoad = Sets.newHashSet();
     }
 
@@ -137,5 +143,26 @@ public class InterspaceWorld implements IInterspaceWorld {
         } else {
             return null;
         }
+    }
+
+    @Override
+    public Transaction<Collection<SpacialItem>> offer(ChunkPos chunkPos, Collection<SpacialItem> offered) {
+        return InterspaceAPI.getInterspaceClient().offer(world, chunkPos, offered);
+    }
+
+    @Override
+    public Transaction<Collection<SpacialItem>> offer(Collection<SpacialItem> offered) {
+        return this.offer(ORIGIN, offered);
+    }
+
+    @Override
+    public Transaction<Collection<SpacialItem>> query(SpacialQuery spacialQuery) {
+        return InterspaceAPI.getInterspaceClient().query(world, spacialQuery);
+    }
+
+    @Override
+    public Transaction<Collection<SpacialItem>> retrieve(SpacialQuery spacialQuery) {
+        return InterspaceAPI.getInterspaceClient().retrieve(world, spacialQuery);
+
     }
 }

@@ -10,16 +10,15 @@ import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.Direction;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 import xyz.brassgoggledcoders.interspace.api.InterspaceAPI;
 import xyz.brassgoggledcoders.interspace.api.spacial.capability.IInterspaceChunk;
-import xyz.brassgoggledcoders.interspace.api.spacial.capability.IInterspaceWorld;
-import xyz.brassgoggledcoders.interspace.api.spacial.type.SpacialInstance;
+import xyz.brassgoggledcoders.interspace.api.spacial.query.SpacialQueryBuilder;
 import xyz.brassgoggledcoders.interspace.block.ObeliskCoreBlock;
 import xyz.brassgoggledcoders.interspace.content.InterspaceEntities;
 import xyz.brassgoggledcoders.interspace.content.InterspaceItems;
+import xyz.brassgoggledcoders.interspace.content.InterspaceSpacialItemTypes;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -70,12 +69,13 @@ public class QuerySlateEntity extends ItemFrameEntity {
     }
 
     private void handleInterspace(IInterspaceChunk interspace) {
-        SpacialInstance spacialInstance = interspace.getSpacialInstance();
-        /*currentPull = spacialInstance.remove(Collections.emptyMap())
+        interspace.retrieve(SpacialQueryBuilder.create()
+                .build())
+                .getResult()
                 .thenAccept(spacialItems -> spacialItems.stream()
                         .filter(spacialItem -> spacialItem.getType() == InterspaceSpacialItemTypes.ITEM_STACK.get())
                         .map(InterspaceSpacialItemTypes.ITEM_STACK.get()::fromSpacialItem)
                         .forEach(this::entityDropItem));
-                        */
+
     }
 }

@@ -3,23 +3,18 @@ package xyz.brassgoggledcoders.interspace.api.spacial;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.IWorld;
 import xyz.brassgoggledcoders.interspace.api.spacial.item.SpacialItem;
-import xyz.brassgoggledcoders.interspace.api.spacial.parameter.SpacialParameter;
+import xyz.brassgoggledcoders.interspace.api.spacial.query.SpacialQuery;
+import xyz.brassgoggledcoders.interspace.api.spacial.query.Transaction;
 
-import javax.annotation.Nullable;
 import java.util.Collection;
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 public interface IInterspaceClient {
     CompletableFuture<Integer> setupWorld(IWorld world);
 
-    CompletableFuture<Collection<SpacialItem>> offer(UUID transactionId, IWorld world, ChunkPos chunkPos,
-                                                     Collection<SpacialItem> offered);
+    Transaction<Collection<SpacialItem>> offer(IWorld world, ChunkPos chunkPos, Collection<SpacialItem> offered);
 
-    CompletableFuture<Collection<SpacialItem>> query(IWorld world, Collection<SpacialParameter<?>> parameters,
-                                                     @Nullable Integer limit);
+    Transaction<Collection<SpacialItem>> query(IWorld world, SpacialQuery spacialQuery);
 
-    CompletableFuture<Collection<SpacialItem>> retrieve(UUID transactionId, IWorld world,
-                                                        Collection<SpacialParameter<?>> parameters,
-                                                        @Nullable Integer limit);
+    Transaction<Collection<SpacialItem>> retrieve(IWorld world, SpacialQuery spacialQuery);
 }

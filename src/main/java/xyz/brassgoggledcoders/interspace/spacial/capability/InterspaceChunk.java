@@ -7,10 +7,15 @@ import net.minecraftforge.common.util.NonNullLazy;
 import xyz.brassgoggledcoders.interspace.api.InterspaceAPI;
 import xyz.brassgoggledcoders.interspace.api.spacial.capability.IInterspaceChunk;
 import xyz.brassgoggledcoders.interspace.api.spacial.capability.IInterspaceWorld;
+import xyz.brassgoggledcoders.interspace.api.spacial.item.SpacialItem;
+import xyz.brassgoggledcoders.interspace.api.spacial.query.SpacialQuery;
+import xyz.brassgoggledcoders.interspace.api.spacial.query.SpacialQueryBuilder;
+import xyz.brassgoggledcoders.interspace.api.spacial.query.Transaction;
 import xyz.brassgoggledcoders.interspace.api.spacial.type.SpacialInstance;
 import xyz.brassgoggledcoders.interspace.content.InterspaceSpacialTypes;
 
 import javax.annotation.Nonnull;
+import java.util.Collection;
 
 public class InterspaceChunk implements IInterspaceChunk {
     private final NonNullLazy<LazyOptional<IInterspaceWorld>> worldProvider;
@@ -27,5 +32,20 @@ public class InterspaceChunk implements IInterspaceChunk {
     @Nonnull
     public SpacialInstance getSpacialInstance() {
         return spacialProvider.get();
+    }
+
+    @Override
+    public Transaction<Collection<SpacialItem>> offer(Collection<SpacialItem> offered) {
+        return this.getSpacialInstance().offer(offered);
+    }
+
+    @Override
+    public Transaction<Collection<SpacialItem>> query(SpacialQueryBuilder spacialQueryBuilder) {
+        return this.getSpacialInstance().query(spacialQueryBuilder);
+    }
+
+    @Override
+    public Transaction<Collection<SpacialItem>> retrieve(SpacialQueryBuilder spacialQueryBuilder) {
+        return this.getSpacialInstance().retrieve(spacialQueryBuilder);
     }
 }

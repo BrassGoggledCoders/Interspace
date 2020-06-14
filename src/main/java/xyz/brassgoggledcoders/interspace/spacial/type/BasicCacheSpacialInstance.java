@@ -7,13 +7,10 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.loot.LootContext;
 import net.minecraft.world.storage.loot.LootParameters;
-import xyz.brassgoggledcoders.interspace.api.InterspaceAPI;
 import xyz.brassgoggledcoders.interspace.api.spacial.type.SpacialInstance;
 import xyz.brassgoggledcoders.interspace.api.spacial.type.SpacialType;
 import xyz.brassgoggledcoders.interspace.content.InterspaceSpacialItemTypes;
 import xyz.brassgoggledcoders.interspace.loot.InterspaceLoot;
-
-import java.util.UUID;
 
 public class BasicCacheSpacialInstance extends SpacialInstance {
     private ResourceLocation lootTable = null;
@@ -31,11 +28,8 @@ public class BasicCacheSpacialInstance extends SpacialInstance {
                 LootContext lootContext = new LootContext.Builder(serverWorld)
                         .withParameter(LootParameters.POSITION, this.getChunkPos().asBlockPos())
                         .build(InterspaceLoot.BASIC_CACHE);
-                InterspaceAPI.getInterspaceClient().offer(
-                        UUID.randomUUID(),
-                        this.getWorld(),
-                        this.getChunkPos(),
-                        InterspaceSpacialItemTypes.ITEM_STACK.get().convertCollection(serverWorld.getServer()
+                this.offer(InterspaceSpacialItemTypes.ITEM_STACK.get()
+                        .convertCollection(serverWorld.getServer()
                                 .getLootTableManager()
                                 .getLootTableFromLocation(lootTable)
                                 .generate(lootContext))

@@ -1,10 +1,7 @@
 package xyz.brassgoggledcoders.interspace.api.spacial.entry;
 
-import com.google.gson.JsonObject;
 import net.minecraft.nbt.CompoundNBT;
-import xyz.brassgoggledcoders.interspace.InterspaceRegistries;
 import xyz.brassgoggledcoders.interspace.api.spacial.type.SpacialType;
-import xyz.brassgoggledcoders.interspace.util.JsonHelper;
 
 import javax.annotation.Nullable;
 
