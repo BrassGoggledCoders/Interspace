@@ -6,8 +6,8 @@ import net.minecraftforge.registries.DeferredRegister;
 import xyz.brassgoggledcoders.interspace.Interspace;
 import xyz.brassgoggledcoders.interspace.InterspaceRegistries;
 import xyz.brassgoggledcoders.interspace.api.spatial.item.SpatialItemType;
-import xyz.brassgoggledcoders.interspace.spatial.item.FluidStackSpatialItemType;
-import xyz.brassgoggledcoders.interspace.spatial.item.ItemStackSpatialItemType;
+import xyz.brassgoggledcoders.interspace.spatial.itemtype.FluidStackSpatialItemType;
+import xyz.brassgoggledcoders.interspace.spatial.itemtype.ItemStackSpatialItemType;
 
 public class InterspaceSpatialItemTypes {
 

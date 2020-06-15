@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.interspace.spatial.item;
+package xyz.brassgoggledcoders.interspace.spatial.itemtype;
 
 import com.google.common.collect.Lists;
 import net.minecraft.item.Item;

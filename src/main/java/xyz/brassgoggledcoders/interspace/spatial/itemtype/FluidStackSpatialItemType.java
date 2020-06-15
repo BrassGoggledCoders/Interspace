@@ -1,18 +1,23 @@
-package xyz.brassgoggledcoders.interspace.spatial.item;
+package xyz.brassgoggledcoders.interspace.spatial.itemtype;
 
 import com.google.common.collect.Lists;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.registries.ForgeRegistries;
 import xyz.brassgoggledcoders.interspace.api.spatial.item.SpatialItem;
 import xyz.brassgoggledcoders.interspace.api.spatial.item.SpatialItemType;
+import xyz.brassgoggledcoders.interspace.fluid.ExpandingFluidHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+
+import static net.minecraftforge.fluids.capability.IFluidHandler.*;
 
 public class FluidStackSpatialItemType extends SpatialItemType<FluidStack> {
     @Override
@@ -47,9 +52,13 @@ public class FluidStackSpatialItemType extends SpatialItemType<FluidStack> {
 
     @Override
     public Collection<SpatialItem> convert(Collection<FluidStack> collection) {
-        List<SpatialItem> spatialItems = Lists.newArrayList();
+        ExpandingFluidHandler fluidHandler = new ExpandingFluidHandler();
         for (FluidStack fluidStack: collection) {
-            SpatialItem spatialItem = this.toSpacialItem(fluidStack);
+            fluidHandler.fill(fluidStack, FluidAction.EXECUTE);
+        }
+        List<SpatialItem> spatialItems = Lists.newArrayList();
+        for (FluidTank fluidTank: fluidHandler) {
+            SpatialItem spatialItem = this.toSpacialItem(fluidTank.getFluid());
             if (spatialItem != null) {
                 spatialItems.add(spatialItem);
             }
