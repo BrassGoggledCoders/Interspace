@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.interspace.spatial.type;
+package xyz.brassgoggledcoders.interspace.spatial.instance;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;

@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.interspace.datagen.spacial;
+package xyz.brassgoggledcoders.interspace.datagen.spatial;
 
 import net.minecraft.data.DataGenerator;
 import net.minecraft.world.dimension.DimensionType;
@@ -17,6 +17,16 @@ public class InterspaceSpatialProvider extends SpatialProvider {
                 .withEntry(builder -> builder.withType(InterspaceSpatialTypes.BASIC_CACHE)
                         .withNBT(CompoundNBTBuilder.create()
                                 .withString("lootTable", "minecraft:chests/abandoned_mineshaft")
+                        )
+                )
+                .withEntry(build -> build.withType(InterspaceSpatialTypes.SHALLOW_SPRING)
+                        .withNBT(CompoundNBTBuilder.create()
+                                .withString("lootTable", "interspace:spatial/lava_spring")
+                        )
+                )
+                .withEntry(build -> build.withType(InterspaceSpatialTypes.SHALLOW_SPRING)
+                        .withNBT(CompoundNBTBuilder.create()
+                                .withString("lootTable", "interspace:spatial/water_spring")
                         )
                 );
 

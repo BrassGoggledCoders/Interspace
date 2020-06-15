@@ -12,6 +12,7 @@ import xyz.brassgoggledcoders.interspace.api.spatial.item.SpatialItem;
 import xyz.brassgoggledcoders.interspace.api.spatial.item.SpatialItemType;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -32,6 +33,7 @@ public class ItemStackSpatialItemType extends SpatialItemType<ItemStack> {
     }
 
     @Override
+    @Nullable
     public SpatialItem toSpacialItem(@Nonnull ItemStack object) {
         return new SpatialItem(this, Objects.requireNonNull(object.getItem().getRegistryName()).toString(),
                 object.getCount(), object.getTag());
@@ -47,13 +49,16 @@ public class ItemStackSpatialItemType extends SpatialItemType<ItemStack> {
         for (int slotNum = 0; slotNum < handler.getSlots(); slotNum++) {
             ItemStack itemStack = handler.extractItem(slotNum, 64, false);
             if (!itemStack.isEmpty()) {
-                spatialItems.add(this.toSpacialItem(itemStack));
+                SpatialItem spatialItem = this.toSpacialItem(itemStack);
+                if (spatialItem != null) {
+                    spatialItems.add(spatialItem);
+                }
             }
         }
         return spatialItems;
     }
 
-    public Collection<SpatialItem> convertCollection(Collection<ItemStack> generate) {
+    public Collection<SpatialItem> convert(Collection<ItemStack> generate) {
         ItemStackHandler handler = new ItemStackHandler(generate.size());
         generate.forEach(itemStack -> ItemHandlerHelper.insertItemStacked(handler, itemStack, false));
         return convertInventory(handler);

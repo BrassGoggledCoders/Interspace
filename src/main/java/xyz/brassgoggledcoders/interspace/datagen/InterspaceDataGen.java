@@ -9,7 +9,7 @@ import xyz.brassgoggledcoders.interspace.datagen.loot.InterspaceLootTableProvide
 import xyz.brassgoggledcoders.interspace.datagen.model.InterspaceBlockStateProvider;
 import xyz.brassgoggledcoders.interspace.datagen.model.InterspaceItemModelProvider;
 import xyz.brassgoggledcoders.interspace.datagen.patchouli.InterspaceBookProvider;
-import xyz.brassgoggledcoders.interspace.datagen.spacial.InterspaceSpatialProvider;
+import xyz.brassgoggledcoders.interspace.datagen.spatial.InterspaceSpatialProvider;
 import xyz.brassgoggledcoders.interspace.datagen.tag.InterspaceBlockTagProvider;
 import xyz.brassgoggledcoders.interspace.datagen.tag.InterspaceItemTagProvider;
 

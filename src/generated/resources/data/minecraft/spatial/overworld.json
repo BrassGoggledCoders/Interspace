@@ -7,6 +7,20 @@
       "nbt": {
         "lootTable": "minecraft:chests/abandoned_mineshaft"
       }
+    },
+    {
+      "type": "interspace:shallow_spring",
+      "weight": 1.0,
+      "nbt": {
+        "lootTable": "interspace:spatial/lava_spring"
+      }
+    },
+    {
+      "type": "interspace:shallow_spring",
+      "weight": 1.0,
+      "nbt": {
+        "lootTable": "interspace:spatial/water_spring"
+      }
     }
   ]
 }

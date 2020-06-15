@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.interspace.spatial.type;
+package xyz.brassgoggledcoders.interspace.spatial.instance;
 
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.IWorld;

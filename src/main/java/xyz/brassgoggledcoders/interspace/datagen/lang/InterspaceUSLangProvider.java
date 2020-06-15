@@ -4,10 +4,7 @@ import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.LanguageProvider;
 import xyz.brassgoggledcoders.interspace.Interspace;
 import xyz.brassgoggledcoders.interspace.api.spatial.type.SpatialType;
-import xyz.brassgoggledcoders.interspace.content.InterspaceBlocks;
-import xyz.brassgoggledcoders.interspace.content.InterspaceEntities;
-import xyz.brassgoggledcoders.interspace.content.InterspaceItems;
-import xyz.brassgoggledcoders.interspace.content.InterspaceSpatialTypes;
+import xyz.brassgoggledcoders.interspace.content.*;
 
 public class InterspaceUSLangProvider extends LanguageProvider {
 
@@ -27,6 +24,8 @@ public class InterspaceUSLangProvider extends LanguageProvider {
 
         this.add(InterspaceSpatialTypes.BASIC_CACHE.get(), "Basic Cache");
         this.add(InterspaceSpatialTypes.EMPTY.get(), "Nothingness");
+        this.add(InterspaceSpatialTypes.STORAGE.get(), "Storage");
+        this.add(InterspaceSpatialTypes.SHALLOW_SPRING.get(), "Shallow Spring");
 
         this.add("text.interspace.gaze", "You gaze into the Mirror and see: %s");
         this.add("text.interspace.nothing", "Nothingness");

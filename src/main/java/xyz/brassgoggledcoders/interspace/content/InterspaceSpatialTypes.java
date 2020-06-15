@@ -6,9 +6,10 @@ import net.minecraftforge.registries.DeferredRegister;
 import xyz.brassgoggledcoders.interspace.Interspace;
 import xyz.brassgoggledcoders.interspace.api.spatial.type.SpatialType;
 import xyz.brassgoggledcoders.interspace.registration.LazyForgeRegistry;
-import xyz.brassgoggledcoders.interspace.spatial.type.BasicCacheSpatialInstance;
-import xyz.brassgoggledcoders.interspace.spatial.type.EmptySpatialInstance;
-import xyz.brassgoggledcoders.interspace.spatial.type.StorageSpatialInstance;
+import xyz.brassgoggledcoders.interspace.spatial.instance.BasicCacheSpatialInstance;
+import xyz.brassgoggledcoders.interspace.spatial.instance.EmptySpatialInstance;
+import xyz.brassgoggledcoders.interspace.spatial.instance.ShallowSpringSpatialInstance;
+import xyz.brassgoggledcoders.interspace.spatial.instance.StorageSpatialInstance;
 
 @SuppressWarnings("unused")
 public class InterspaceSpatialTypes {
@@ -21,6 +22,8 @@ public class InterspaceSpatialTypes {
             new SpatialType(BasicCacheSpatialInstance::new));
     public static final RegistryObject<SpatialType> STORAGE = SPACIAL_TYPE.register("storage", () ->
             new SpatialType(StorageSpatialInstance::new));
+    public static final RegistryObject<SpatialType> SHALLOW_SPRING = SPACIAL_TYPE.register("shallow_spring", () ->
+            new SpatialType(ShallowSpringSpatialInstance::new));
 
     public static void register(IEventBus modBus) {
         SPACIAL_TYPE.register(modBus);

@@ -6,6 +6,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import xyz.brassgoggledcoders.interspace.Interspace;
 import xyz.brassgoggledcoders.interspace.InterspaceRegistries;
 import xyz.brassgoggledcoders.interspace.api.spatial.item.SpatialItemType;
+import xyz.brassgoggledcoders.interspace.spatial.item.FluidStackSpatialItemType;
 import xyz.brassgoggledcoders.interspace.spatial.item.ItemStackSpatialItemType;
 
 public class InterspaceSpatialItemTypes {
@@ -15,6 +16,8 @@ public class InterspaceSpatialItemTypes {
 
     public static final RegistryObject<ItemStackSpatialItemType> ITEM_STACK = SPACIAL_ITEM_TYPES.register(
             "item_stack", ItemStackSpatialItemType::new);
+    public static final RegistryObject<FluidStackSpatialItemType> FLUID_STACK = SPACIAL_ITEM_TYPES.register(
+            "fluid_stack", FluidStackSpatialItemType::new);
 
     public static void register(IEventBus modBus) {
         SPACIAL_ITEM_TYPES.register(modBus);

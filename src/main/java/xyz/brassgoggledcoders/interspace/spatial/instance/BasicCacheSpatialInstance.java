@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.interspace.spatial.type;
+package xyz.brassgoggledcoders.interspace.spatial.instance;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.ChunkPos;
@@ -8,6 +8,7 @@ import xyz.brassgoggledcoders.interspace.api.spatial.type.SpatialType;
 import xyz.brassgoggledcoders.interspace.content.InterspaceSpatialItemTypes;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class BasicCacheSpatialInstance extends LootTableSpatialInstance {
@@ -17,7 +18,8 @@ public class BasicCacheSpatialInstance extends LootTableSpatialInstance {
 
     @Override
     protected Collection<SpatialItem> convertEntries(List<ItemStack> lootList) {
-        return InterspaceSpatialItemTypes.ITEM_STACK.get()
-                .convertCollection(lootList);
+        return InterspaceSpatialItemTypes.ITEM_STACK
+                .map(type -> type.convert(lootList))
+                .orElseGet(Collections::emptyList);
     }
 }

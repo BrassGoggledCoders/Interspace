@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.interspace.datagen.spacial;
+package xyz.brassgoggledcoders.interspace.datagen.spatial;
 
 import com.google.common.collect.Lists;
 import com.google.gson.JsonArray;
