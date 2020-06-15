@@ -20,7 +20,10 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
@@ -66,7 +69,7 @@ public class SpacialEntryManager implements IFutureReloadListener, ISpacialEntry
                             Interspace.LOGGER.error("Couldn't load {} tag list {} from {} in data pack {} as it's empty or null",
                                     prefix, resourceLocation, prefixedResourceLocation, resource.getPackName());
                         } else if (CraftingHelper.processConditions(jsonObject, "conditions")) {
-                            entries.computeIfAbsent(resourceLocation, SpacialWorldEntryBuilder::create).fromJson(jsonObject);
+                            entries.computeIfAbsent(resourceLocation, rl -> new SpacialWorldEntryBuilder()).fromJson(jsonObject);
                         }
                     } catch (RuntimeException | IOException exception) {
                         Interspace.LOGGER.error("Couldn't read {} tag list {} from {} in data pack {}",
@@ -85,7 +88,7 @@ public class SpacialEntryManager implements IFutureReloadListener, ISpacialEntry
 
     private void handleBuilders(Map<ResourceLocation, SpacialWorldEntryBuilder> builders) {
         this.spacialWorldEntries.clear();
-        builders.forEach((name, value) -> spacialWorldEntries.put(name, value.build()));
+        builders.forEach((name, value) -> spacialWorldEntries.put(name, value.build(name)));
     }
 
     @Override

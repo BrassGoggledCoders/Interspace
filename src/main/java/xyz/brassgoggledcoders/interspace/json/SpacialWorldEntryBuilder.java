@@ -15,12 +15,14 @@ import xyz.brassgoggledcoders.interspace.util.JsonHelper;
 import java.util.List;
 
 public class SpacialWorldEntryBuilder {
-    private final ResourceLocation name;
     private final List<SpacialEntry> spacialEntries;
 
-    public SpacialWorldEntryBuilder(ResourceLocation name) {
-        this.name = name;
+    public SpacialWorldEntryBuilder() {
         this.spacialEntries = Lists.newArrayList();
+    }
+
+    public void addEntry(SpacialEntry spacialEntry) {
+        this.spacialEntries.add(spacialEntry);
     }
 
     public void fromJson(JsonObject jsonObject) {
@@ -34,7 +36,7 @@ public class SpacialWorldEntryBuilder {
                 if (jsonElement.isJsonObject()) {
                     JsonObject entry = jsonElement.getAsJsonObject();
                     if (CraftingHelper.processConditions(entry, "conditions")) {
-                        this.spacialEntries.add(createSpacialEntry(entry));
+                        this.addEntry(createSpacialEntry(entry));
                     }
                 } else {
                     throw new JsonParseException("All entries must be JsonObjects");
@@ -45,12 +47,8 @@ public class SpacialWorldEntryBuilder {
         }
     }
 
-    public SpacialWorldEntry build() {
+    public SpacialWorldEntry build(ResourceLocation name) {
         return new SpacialWorldEntry(name, spacialEntries);
-    }
-
-    public static SpacialWorldEntryBuilder create(ResourceLocation name) {
-        return new SpacialWorldEntryBuilder(name);
     }
 
     public SpacialEntry createSpacialEntry(JsonObject entry) {

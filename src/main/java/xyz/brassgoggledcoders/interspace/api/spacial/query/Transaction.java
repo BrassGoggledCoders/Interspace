@@ -25,4 +25,9 @@ public class Transaction<T> {
         UUID uuid = UUID.randomUUID();
         return new Transaction<>(uuid, result.apply(uuid));
     }
+
+    public static <U> Transaction<U> of(U result) {
+        UUID uuid = UUID.randomUUID();
+        return new Transaction<>(uuid, CompletableFuture.completedFuture(result));
+    }
 }

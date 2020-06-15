@@ -7,6 +7,6 @@
   "itemGroup.interspace": "Interspace",
   "spacial_type.interspace.basic_cache": "Basic Cache",
   "spacial_type.interspace.empty": "Nothingness",
-  "text.interspace.gaze": "You gaze into the Mirror and see: ",
+  "text.interspace.gaze": "You gaze into the Mirror and see: %s",
   "text.interspace.nothing": "Nothingness"
 }
