@@ -33,7 +33,7 @@ public abstract class SpatialProvider implements IDataProvider {
     }
 
     @Override
-    public void act(@Nonnull DirectoryCache cache) throws IOException {
+    public void act(@Nonnull DirectoryCache cache) {
         this.spacialWorldEntryBuilders.clear();
         this.registerSpacialWorldEntries();
         spacialWorldEntryBuilders.forEach(this.saveToFile(cache));
@@ -45,7 +45,7 @@ public abstract class SpatialProvider implements IDataProvider {
             try {
                 IDataProvider.save(GSON, cache, spatialWorldEntryJsonBuilder.build(), entryPath);
             } catch (IOException ioexception) {
-                LOGGER.error("Couldn't save loot table {}", entryPath, ioexception);
+                LOGGER.error("Couldn't save spatial entry {}", entryPath, ioexception);
             }
         };
     }
@@ -61,12 +61,12 @@ public abstract class SpatialProvider implements IDataProvider {
     }
 
     protected static Path getPath(Path pathIn, ResourceLocation id) {
-        return pathIn.resolve("data/" + id.getNamespace() + "/spacial/" + id.getPath() + ".json");
+        return pathIn.resolve("data/" + id.getNamespace() + "/spatial/" + id.getPath() + ".json");
     }
 
     @Override
     @Nonnull
     public String getName() {
-        return "Spacial World Entries";
+        return "Spatial World Entries";
     }
 }

@@ -55,7 +55,7 @@ public class SpatialEntryJsonBuilder {
     public JsonObject build() {
         JsonObject jsonObject = new JsonObject();
         if (spatialType == null) {
-            throw new IllegalStateException("Failed to Build Spacial Entry, Missing 'type'");
+            throw new IllegalStateException("Failed to Build Spatial Entry, Missing 'type'");
         } else {
             jsonObject.addProperty("type", Objects.requireNonNull(spatialType.getRegistryName()).toString());
         }

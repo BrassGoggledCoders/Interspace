@@ -6,9 +6,9 @@ import java.util.Collection;
 import java.util.Random;
 
 public interface ISpatialEntryManager {
-    Collection<SpatialEntry> getSpacialEntriesFor(IWorld world);
+    Collection<SpatialEntry> getSpatialEntriesFor(IWorld world);
 
     Collection<SpatialEntry> getDefaultEntries();
 
-    SpatialEntry getRandomSpacialEntryFor(IWorld world, Random random);
+    SpatialEntry getRandomSpatialEntryFor(IWorld world, Random random);
 }

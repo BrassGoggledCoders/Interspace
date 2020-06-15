@@ -93,7 +93,7 @@ public class SpatialWorld implements ISpatialWorld {
     public SpatialInstance getSpacialInstance(ChunkPos chunkPos) {
         SpatialInstance spatialInstance = chunks.get(chunkPos);
         if (!world.isRemote() && spatialInstance == null) {
-            SpatialEntry spatialEntry = InterspaceAPI.getSpacialEntryManager().getRandomSpacialEntryFor(world,
+            SpatialEntry spatialEntry = InterspaceAPI.getSpacialEntryManager().getRandomSpatialEntryFor(world,
                     SharedSeedRandom.seedSlimeChunk(chunkPos.x, chunkPos.z, world.getSeed(), 831129799101L));
             spatialInstance = spatialEntry.getType().createInstance(world, chunkPos);
             if (spatialEntry.getNBT() != null) {

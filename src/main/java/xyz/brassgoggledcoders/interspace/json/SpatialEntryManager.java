@@ -32,10 +32,10 @@ public class SpatialEntryManager implements IFutureReloadListener, ISpatialEntry
     private static final Gson GSON = new Gson();
     private static final ResourceLocation DEFAULT_LOCATION = Interspace.rl("default");
 
-    private final Map<ResourceLocation, SpatialWorldEntry> spacialWorldEntries;
+    private final Map<ResourceLocation, SpatialWorldEntry> spatialWorldEntries;
 
     public SpatialEntryManager() {
-        spacialWorldEntries = Maps.newHashMap();
+        spatialWorldEntries = Maps.newHashMap();
     }
 
     @Override
@@ -51,7 +51,7 @@ public class SpatialEntryManager implements IFutureReloadListener, ISpatialEntry
     private Map<ResourceLocation, SpatialWorldEntryBuilder> handleJson(IResourceManager resourceManager) {
         Map<ResourceLocation, SpatialWorldEntryBuilder> entries = Maps.newHashMap();
 
-        String prefix = "spacial_entry";
+        String prefix = "spatial";
         for (ResourceLocation prefixedResourceLocation : resourceManager.getAllResourceLocations(prefix, string ->
                 string.endsWith(".json"))) {
             String path = prefixedResourceLocation.getPath();
@@ -66,20 +66,20 @@ public class SpatialEntryManager implements IFutureReloadListener, ISpatialEntry
                     ) {
                         JsonObject jsonObject = JSONUtils.fromJson(GSON, reader, JsonObject.class);
                         if (jsonObject == null) {
-                            Interspace.LOGGER.error("Couldn't load {} tag list {} from {} in data pack {} as it's empty or null",
+                            Interspace.LOGGER.error("Couldn't load {} spatial entry {} from {} in data pack {} as it's empty or null",
                                     prefix, resourceLocation, prefixedResourceLocation, resource.getPackName());
                         } else if (CraftingHelper.processConditions(jsonObject, "conditions")) {
                             entries.computeIfAbsent(resourceLocation, rl -> new SpatialWorldEntryBuilder()).fromJson(jsonObject);
                         }
                     } catch (RuntimeException | IOException exception) {
-                        Interspace.LOGGER.error("Couldn't read {} tag list {} from {} in data pack {}",
+                        Interspace.LOGGER.error("Couldn't read {} spatial entry {} from {} in data pack {}",
                                 prefix, resourceLocation, prefixedResourceLocation, resource.getPackName(), exception);
                     } finally {
                         IOUtils.closeQuietly(resource);
                     }
                 }
             } catch (IOException exception) {
-                Interspace.LOGGER.error("Couldn't read {} tag list {} from {}", prefix, resourceLocation,
+                Interspace.LOGGER.error("Couldn't read {} spatial entry {} from {}", prefix, resourceLocation,
                         prefixedResourceLocation, exception);
             }
         }
@@ -87,28 +87,28 @@ public class SpatialEntryManager implements IFutureReloadListener, ISpatialEntry
     }
 
     private void handleBuilders(Map<ResourceLocation, SpatialWorldEntryBuilder> builders) {
-        this.spacialWorldEntries.clear();
-        builders.forEach((name, value) -> spacialWorldEntries.put(name, value.build(name)));
+        this.spatialWorldEntries.clear();
+        builders.forEach((name, value) -> spatialWorldEntries.put(name, value.build(name)));
     }
 
     @Override
-    public Collection<SpatialEntry> getSpacialEntriesFor(IWorld world) {
-        if (spacialWorldEntries.containsKey(world.getDimension().getType().getRegistryName())) {
-            return this.spacialWorldEntries.get(world.getDimension().getType().getRegistryName()).getSpacialEntries();
+    public Collection<SpatialEntry> getSpatialEntriesFor(IWorld world) {
+        if (spatialWorldEntries.containsKey(world.getDimension().getType().getRegistryName())) {
+            return this.spatialWorldEntries.get(world.getDimension().getType().getRegistryName()).getSpacialEntries();
         }
         return Collections.emptyList();
     }
 
     @Override
     public Collection<SpatialEntry> getDefaultEntries() {
-        return spacialWorldEntries.get(DEFAULT_LOCATION).getSpacialEntries();
+        return spatialWorldEntries.get(DEFAULT_LOCATION).getSpacialEntries();
     }
 
     @Override
-    public SpatialEntry getRandomSpacialEntryFor(IWorld world, Random random) {
-        SpatialWorldEntry worldEntry = this.spacialWorldEntries.get(world.getDimension().getType().getRegistryName());
+    public SpatialEntry getRandomSpatialEntryFor(IWorld world, Random random) {
+        SpatialWorldEntry worldEntry = this.spatialWorldEntries.get(world.getDimension().getType().getRegistryName());
         if (worldEntry == null) {
-            worldEntry = this.spacialWorldEntries.get(DEFAULT_LOCATION);
+            worldEntry = this.spatialWorldEntries.get(DEFAULT_LOCATION);
         }
         return worldEntry.getSpacialEntry(random);
     }
