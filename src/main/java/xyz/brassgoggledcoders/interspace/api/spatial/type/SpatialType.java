@@ -26,7 +26,7 @@ public class SpatialType extends ForgeRegistryEntry<SpatialType> {
 
     public String getTranslationKey() {
         if (this.translationKey == null) {
-            this.translationKey = Util.makeTranslationKey("spacial_type", this.getRegistryName());
+            this.translationKey = Util.makeTranslationKey("spatial_type", this.getRegistryName());
         }
         return this.translationKey;
     }

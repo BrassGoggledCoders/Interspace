@@ -5,8 +5,10 @@
   "item.interspace.mirror": "Interspace Mirror",
   "item.interspace.query_slate": "Interspace Query Slate",
   "itemGroup.interspace": "Interspace",
-  "spacial_type.interspace.basic_cache": "Basic Cache",
-  "spacial_type.interspace.empty": "Nothingness",
+  "spatial_type.interspace.basic_cache": "Basic Cache",
+  "spatial_type.interspace.empty": "Nothingness",
+  "spatial_type.interspace.shallow_spring": "Shallow Spring",
+  "spatial_type.interspace.storage": "Storage",
   "text.interspace.gaze": "You gaze into the Mirror and see: %s",
   "text.interspace.nothing": "Nothingness"
 }
