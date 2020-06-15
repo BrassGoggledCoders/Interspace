@@ -25,7 +25,7 @@ public abstract class SpatialLootTables implements Consumer<BiConsumer<ResourceL
     }
 
     private ResourceLocation rl(String name) {
-        return new ResourceLocation(modid, "spacial/" + name);
+        return new ResourceLocation(modid, "spatial/" + name);
     }
 
     protected void addTable(String name, LootTable.Builder builder) {
