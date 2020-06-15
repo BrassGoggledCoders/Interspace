@@ -15,7 +15,7 @@ public class InterspaceBookProvider extends PatchouliBookProvider implements IDa
 
     @Override
     protected void addBooks(Consumer<BookBuilder> consumer) {
-        this.createBookBuilder("inside_interspace", "Inside Interspace", "")
+        this.createBookBuilder("index_interspace", "Index Interspace", "")
                 .build(consumer);
     }
 }

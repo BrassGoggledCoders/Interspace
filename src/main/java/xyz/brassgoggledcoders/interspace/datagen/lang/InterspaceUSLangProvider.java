@@ -28,7 +28,7 @@ public class InterspaceUSLangProvider extends LanguageProvider {
         this.add(InterspaceSpacialTypes.BASIC_CACHE.get(), "Basic Cache");
         this.add(InterspaceSpacialTypes.EMPTY.get(), "Nothingness");
 
-        this.add("text.interspace.gaze", "You gaze into the Mirror and see: ");
+        this.add("text.interspace.gaze", "You gaze into the Mirror and see: %s");
         this.add("text.interspace.nothing", "Nothingness");
         this.add("itemGroup.interspace", "Interspace");
     }
