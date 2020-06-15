@@ -1,10 +1,12 @@
 package xyz.brassgoggledcoders.interspace.loot;
 
 import net.minecraft.world.storage.loot.LootParameterSet;
+import net.minecraft.world.storage.loot.LootParameterSets;
 import net.minecraft.world.storage.loot.LootParameters;
+import xyz.brassgoggledcoders.interspace.Interspace;
 
 public class InterspaceLoot {
-    public static final LootParameterSet BASIC_CACHE = new LootParameterSet.Builder()
-            .required(LootParameters.POSITION)
-            .build();
+    public static final LootParameterSet SPACIAL = LootParameterSets.register(Interspace.rl("spacial").toString(),
+            builder -> builder.required(LootParameters.POSITION)
+                    .build());
 }

@@ -27,7 +27,7 @@ public class BasicCacheSpacialInstance extends SpacialInstance {
                 ServerWorld serverWorld = (ServerWorld) this.getWorld();
                 LootContext lootContext = new LootContext.Builder(serverWorld)
                         .withParameter(LootParameters.POSITION, this.getChunkPos().asBlockPos())
-                        .build(InterspaceLoot.BASIC_CACHE);
+                        .build(InterspaceLoot.SPACIAL);
                 this.offer(InterspaceSpacialItemTypes.ITEM_STACK.get()
                         .convertCollection(serverWorld.getServer()
                                 .getLootTableManager()
