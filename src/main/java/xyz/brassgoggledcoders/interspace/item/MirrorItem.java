@@ -5,24 +5,18 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
-import net.minecraft.particles.BlockParticleData;
-import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunk;
-import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.Constants;
 import xyz.brassgoggledcoders.interspace.Interspace;
 import xyz.brassgoggledcoders.interspace.api.InterspaceAPI;
-import xyz.brassgoggledcoders.interspace.api.spacial.type.SpacialInstance;
+import xyz.brassgoggledcoders.interspace.api.spatial.type.SpatialInstance;
 import xyz.brassgoggledcoders.interspace.block.ObeliskCoreBlock;
 import xyz.brassgoggledcoders.interspace.content.InterspaceBlocks;
 import xyz.brassgoggledcoders.interspace.content.tag.InterspaceBlockTags;
@@ -51,10 +45,10 @@ public class MirrorItem extends Item {
         if (chunk instanceof ICapabilityProvider) {
             return ((ICapabilityProvider) chunk).getCapability(InterspaceAPI.INTERSPACE_CHUNK)
                     .map(interspace -> {
-                        SpacialInstance spacialInstance = interspace.getSpacialInstance();
+                        SpatialInstance spatialInstance = interspace.getSpacialInstance();
                         if (!world.isRemote()) {
                             player.sendStatusMessage(new TranslationTextComponent("text.interspace.gaze",
-                                            spacialInstance.getDisplayName()), false);
+                                            spatialInstance.getDisplayName()), false);
                         }
                         return ActionResult.resultSuccess(itemStack);
                     })

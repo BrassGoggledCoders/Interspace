@@ -8,7 +8,6 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -22,15 +21,15 @@ import net.minecraftforge.registries.RegistryBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xyz.brassgoggledcoders.interspace.api.InterspaceAPI;
-import xyz.brassgoggledcoders.interspace.api.spacial.capability.IInterspaceChunk;
-import xyz.brassgoggledcoders.interspace.api.spacial.capability.IInterspaceWorld;
-import xyz.brassgoggledcoders.interspace.api.spacial.item.SpacialItemType;
-import xyz.brassgoggledcoders.interspace.api.spacial.type.SpacialType;
+import xyz.brassgoggledcoders.interspace.api.spatial.capability.ISpatialChunk;
+import xyz.brassgoggledcoders.interspace.api.spatial.capability.ISpatialWorld;
+import xyz.brassgoggledcoders.interspace.api.spatial.item.SpatialItemType;
+import xyz.brassgoggledcoders.interspace.api.spatial.type.SpatialType;
 import xyz.brassgoggledcoders.interspace.content.*;
 import xyz.brassgoggledcoders.interspace.datagen.InterspaceDataGen;
-import xyz.brassgoggledcoders.interspace.json.SpacialEntryManager;
+import xyz.brassgoggledcoders.interspace.json.SpatialEntryManager;
 import xyz.brassgoggledcoders.interspace.nbt.EmptyNBTStorage;
-import xyz.brassgoggledcoders.interspace.spacial.InterspaceClient;
+import xyz.brassgoggledcoders.interspace.spatial.SpatialClient;
 
 @Mod(Interspace.ID)
 public class Interspace {
@@ -38,17 +37,17 @@ public class Interspace {
     public static final Logger LOGGER = LogManager.getLogger(ID);
     public static final ItemGroup ITEM_GROUP = new TitaniumTab(ID, InterspaceItems.MIRROR.lazyMap(ItemStack::new));
 
-    public final SpacialEntryManager spacialEntryManager;
+    public final SpatialEntryManager spacialEntryManager;
 
-    public static InterspaceClient interspaceClient;
+    public static SpatialClient interspaceClient;
 
     public Interspace() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
         InterspaceBlocks.REGISTER.register(modEventBus);
         InterspaceItems.register(modEventBus);
-        InterspaceSpacialItemTypes.register(modEventBus);
-        InterspaceSpacialTypes.register(modEventBus);
+        InterspaceSpatialItemTypes.register(modEventBus);
+        InterspaceSpatialTypes.register(modEventBus);
         InterspaceEntities.register(modEventBus);
 
         modEventBus.addListener(InterspaceDataGen::gatherData);
@@ -58,19 +57,19 @@ public class Interspace {
 
         MinecraftForge.EVENT_BUS.addListener(this::serverAboutToStart);
 
-        spacialEntryManager = new SpacialEntryManager();
+        spacialEntryManager = new SpatialEntryManager();
 
         InterspaceAPI.setSpacialEntryManager(spacialEntryManager);
         InterspaceAPI.setInterspaceClientSupplier(this::getInterspaceClient);
     }
 
-    private InterspaceClient getInterspaceClient() {
+    private SpatialClient getInterspaceClient() {
         return interspaceClient;
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
-        CapabilityManager.INSTANCE.register(IInterspaceWorld.class, new EmptyNBTStorage<>(), () -> null);
-        CapabilityManager.INSTANCE.register(IInterspaceChunk.class, new EmptyNBTStorage<>(), () -> null);
+        CapabilityManager.INSTANCE.register(ISpatialWorld.class, new EmptyNBTStorage<>(), () -> null);
+        CapabilityManager.INSTANCE.register(ISpatialChunk.class, new EmptyNBTStorage<>(), () -> null);
     }
 
     private void clientSetup(FMLClientSetupEvent event) {
@@ -90,8 +89,8 @@ public class Interspace {
 
     @SuppressWarnings("unchecked")
     private void newRegistry(RegistryEvent.NewRegistry newRegistry) {
-        makeRegistry("spacial_type", SpacialType.class);
-        makeRegistry("spacial_item_type", SpacialItemType.class);
+        makeRegistry("spacial_type", SpatialType.class);
+        makeRegistry("spacial_item_type", SpatialItemType.class);
     }
 
     private static <T extends IForgeRegistryEntry<T>> void makeRegistry(String name, Class<T> type) {

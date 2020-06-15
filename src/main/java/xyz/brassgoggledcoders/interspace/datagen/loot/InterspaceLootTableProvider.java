@@ -29,7 +29,7 @@ public class InterspaceLootTableProvider extends LootTableProvider {
     protected List<Pair<Supplier<Consumer<BiConsumer<ResourceLocation, LootTable.Builder>>>, LootParameterSet>> getTables() {
         return Lists.newArrayList(
                 Pair.of(InterspaceBlockLootTables::new, LootParameterSets.BLOCK),
-                Pair.of(InterspaceSpacialLootTables::new, InterspaceLoot.SPACIAL)
+                Pair.of(InterspaceSpatialLootTables::new, InterspaceLoot.SPATIAL)
         );
     }
 

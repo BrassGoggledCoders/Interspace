@@ -13,12 +13,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 import xyz.brassgoggledcoders.interspace.api.InterspaceAPI;
-import xyz.brassgoggledcoders.interspace.api.spacial.capability.IInterspaceChunk;
-import xyz.brassgoggledcoders.interspace.api.spacial.query.SpacialQueryBuilder;
+import xyz.brassgoggledcoders.interspace.api.spatial.capability.ISpatialChunk;
+import xyz.brassgoggledcoders.interspace.api.spatial.query.SpatialQueryBuilder;
 import xyz.brassgoggledcoders.interspace.block.ObeliskCoreBlock;
 import xyz.brassgoggledcoders.interspace.content.InterspaceEntities;
 import xyz.brassgoggledcoders.interspace.content.InterspaceItems;
-import xyz.brassgoggledcoders.interspace.content.InterspaceSpacialItemTypes;
+import xyz.brassgoggledcoders.interspace.content.InterspaceSpatialItemTypes;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -68,12 +68,12 @@ public class QuerySlateEntity extends ItemFrameEntity {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 
-    private void handleInterspace(IInterspaceChunk interspace) {
-        interspace.retrieve(SpacialQueryBuilder.create())
+    private void handleInterspace(ISpatialChunk interspace) {
+        interspace.retrieve(SpatialQueryBuilder.create())
                 .getResult()
                 .thenAccept(spacialItems -> spacialItems.stream()
-                        .filter(spacialItem -> spacialItem.getType() == InterspaceSpacialItemTypes.ITEM_STACK.get())
-                        .map(InterspaceSpacialItemTypes.ITEM_STACK.get()::fromSpacialItem)
+                        .filter(spacialItem -> spacialItem.getType() == InterspaceSpatialItemTypes.ITEM_STACK.get())
+                        .map(InterspaceSpatialItemTypes.ITEM_STACK.get()::fromSpacialItem)
                         .forEach(this::entityDropItem));
 
     }

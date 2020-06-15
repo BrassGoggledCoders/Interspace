@@ -15,11 +15,11 @@ import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
 import org.sqlite.javax.SQLiteConnectionPoolDataSource;
 import xyz.brassgoggledcoders.interspace.Interspace;
 import xyz.brassgoggledcoders.interspace.api.InterspaceAPI;
-import xyz.brassgoggledcoders.interspace.api.spacial.capability.IInterspaceWorld;
-import xyz.brassgoggledcoders.interspace.spacial.InterspaceClient;
-import xyz.brassgoggledcoders.interspace.spacial.capability.InterspaceChunk;
-import xyz.brassgoggledcoders.interspace.spacial.capability.InterspaceProvider;
-import xyz.brassgoggledcoders.interspace.spacial.capability.InterspaceWorld;
+import xyz.brassgoggledcoders.interspace.api.spatial.capability.ISpatialWorld;
+import xyz.brassgoggledcoders.interspace.spatial.SpatialClient;
+import xyz.brassgoggledcoders.interspace.spatial.capability.SpatialChunk;
+import xyz.brassgoggledcoders.interspace.spatial.capability.SpatialProvider;
+import xyz.brassgoggledcoders.interspace.spatial.capability.SpatialWorld;
 
 import java.sql.SQLException;
 
@@ -28,22 +28,22 @@ public class EventHandler {
     @SubscribeEvent
     public static void worldCapability(AttachCapabilitiesEvent<World> worldAttachCapabilitiesEvent) {
         worldAttachCapabilitiesEvent.addCapability(Interspace.rl("interspace"),
-                new InterspaceProvider<>(InterspaceAPI.INTERSPACE_WORLD, LazyOptional.of(() ->
-                        new InterspaceWorld(worldAttachCapabilitiesEvent.getObject()))));
+                new SpatialProvider<>(InterspaceAPI.INTERSPACE_WORLD, LazyOptional.of(() ->
+                        new SpatialWorld(worldAttachCapabilitiesEvent.getObject()))));
     }
 
     @SubscribeEvent
     public static void chunkCapability(AttachCapabilitiesEvent<Chunk> chunkAttachCapabilitiesEvent) {
         chunkAttachCapabilitiesEvent.addCapability(Interspace.rl("interspace"),
-                new InterspaceProvider<>(InterspaceAPI.INTERSPACE_CHUNK, LazyOptional.of(() ->
-                        new InterspaceChunk(chunkAttachCapabilitiesEvent.getObject().getWorldForge(),
+                new SpatialProvider<>(InterspaceAPI.INTERSPACE_CHUNK, LazyOptional.of(() ->
+                        new SpatialChunk(chunkAttachCapabilitiesEvent.getObject().getWorldForge(),
                                 chunkAttachCapabilitiesEvent.getObject().getPos()))));
     }
 
     @SubscribeEvent
     public static void worldTick(TickEvent.WorldTickEvent worldTickEvent) {
         worldTickEvent.world.getCapability(InterspaceAPI.INTERSPACE_WORLD)
-                .ifPresent(IInterspaceWorld::tick);
+                .ifPresent(ISpatialWorld::tick);
     }
 
     @SubscribeEvent
@@ -87,7 +87,7 @@ public class EventHandler {
                 .resolve(event.getServer().getFolderName()).resolve("interspace.db").toString());
 
         try {
-            Interspace.interspaceClient = new InterspaceClient(dataSource.getConnection());
+            Interspace.interspaceClient = new SpatialClient(dataSource.getConnection());
         } catch (SQLException sqlException) {
             Interspace.LOGGER.error("Failed to Create Database Connection", sqlException);
             throw new IllegalStateException("Failed to Create Database Connection", sqlException);

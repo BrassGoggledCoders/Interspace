@@ -2,38 +2,38 @@ package xyz.brassgoggledcoders.interspace.api;
 
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
-import xyz.brassgoggledcoders.interspace.api.spacial.capability.IInterspaceChunk;
-import xyz.brassgoggledcoders.interspace.api.spacial.capability.IInterspaceWorld;
-import xyz.brassgoggledcoders.interspace.api.spacial.IInterspaceClient;
-import xyz.brassgoggledcoders.interspace.api.spacial.entry.ISpacialEntryManager;
+import xyz.brassgoggledcoders.interspace.api.spatial.capability.ISpatialChunk;
+import xyz.brassgoggledcoders.interspace.api.spatial.capability.ISpatialWorld;
+import xyz.brassgoggledcoders.interspace.api.spatial.ISpatialClient;
+import xyz.brassgoggledcoders.interspace.api.spatial.entry.ISpatialEntryManager;
 
 import javax.annotation.Nonnull;
 import java.util.Objects;
 import java.util.function.Supplier;
 
 public class InterspaceAPI {
-    @CapabilityInject(IInterspaceWorld.class)
-    public static Capability<IInterspaceWorld> INTERSPACE_WORLD;
-    @CapabilityInject(IInterspaceChunk.class)
-    public static Capability<IInterspaceChunk> INTERSPACE_CHUNK;
+    @CapabilityInject(ISpatialWorld.class)
+    public static Capability<ISpatialWorld> INTERSPACE_WORLD;
+    @CapabilityInject(ISpatialChunk.class)
+    public static Capability<ISpatialChunk> INTERSPACE_CHUNK;
 
-    private static Supplier<IInterspaceClient> interspaceClient = () -> null;
-    private static ISpacialEntryManager spacialEntryManager = null;
+    private static Supplier<ISpatialClient> interspaceClient = () -> null;
+    private static ISpatialEntryManager spacialEntryManager = null;
 
     @Nonnull
-    public static IInterspaceClient getInterspaceClient() {
+    public static ISpatialClient getInterspaceClient() {
         return Objects.requireNonNull(interspaceClient.get(), "Called for Client before it exists");
     }
 
-    public static void setInterspaceClientSupplier(Supplier<IInterspaceClient> clientSupplier) {
+    public static void setInterspaceClientSupplier(Supplier<ISpatialClient> clientSupplier) {
         InterspaceAPI.interspaceClient = clientSupplier;
     }
 
-    public static ISpacialEntryManager getSpacialEntryManager() {
+    public static ISpatialEntryManager getSpacialEntryManager() {
         return Objects.requireNonNull(spacialEntryManager, "Called for Spacial Entry Manager before it exists");
     }
 
-    public static void setSpacialEntryManager(ISpacialEntryManager spacialEntryManager) {
+    public static void setSpacialEntryManager(ISpatialEntryManager spacialEntryManager) {
         InterspaceAPI.spacialEntryManager = spacialEntryManager;
     }
 }

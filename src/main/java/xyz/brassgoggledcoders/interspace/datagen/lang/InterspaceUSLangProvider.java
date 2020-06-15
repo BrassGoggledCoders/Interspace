@@ -3,11 +3,11 @@ package xyz.brassgoggledcoders.interspace.datagen.lang;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.LanguageProvider;
 import xyz.brassgoggledcoders.interspace.Interspace;
-import xyz.brassgoggledcoders.interspace.api.spacial.type.SpacialType;
+import xyz.brassgoggledcoders.interspace.api.spatial.type.SpatialType;
 import xyz.brassgoggledcoders.interspace.content.InterspaceBlocks;
 import xyz.brassgoggledcoders.interspace.content.InterspaceEntities;
 import xyz.brassgoggledcoders.interspace.content.InterspaceItems;
-import xyz.brassgoggledcoders.interspace.content.InterspaceSpacialTypes;
+import xyz.brassgoggledcoders.interspace.content.InterspaceSpatialTypes;
 
 public class InterspaceUSLangProvider extends LanguageProvider {
 
@@ -25,16 +25,16 @@ public class InterspaceUSLangProvider extends LanguageProvider {
 
         this.add(InterspaceEntities.QUERY_SLATE.get(), "Interspace Query Slate");
 
-        this.add(InterspaceSpacialTypes.BASIC_CACHE.get(), "Basic Cache");
-        this.add(InterspaceSpacialTypes.EMPTY.get(), "Nothingness");
+        this.add(InterspaceSpatialTypes.BASIC_CACHE.get(), "Basic Cache");
+        this.add(InterspaceSpatialTypes.EMPTY.get(), "Nothingness");
 
         this.add("text.interspace.gaze", "You gaze into the Mirror and see: %s");
         this.add("text.interspace.nothing", "Nothingness");
         this.add("itemGroup.interspace", "Interspace");
     }
 
-    protected void add(SpacialType spacialType, String message) {
-        this.add(spacialType.getTranslationKey(), message);
+    protected void add(SpatialType spatialType, String message) {
+        this.add(spatialType.getTranslationKey(), message);
     }
 
 }
