@@ -10,6 +10,8 @@ import org.apache.commons.lang3.tuple.Pair;
 import xyz.brassgoggledcoders.interspace.Interspace;
 import xyz.brassgoggledcoders.interspace.api.spacial.IInterspaceClient;
 import xyz.brassgoggledcoders.interspace.api.spacial.item.SpacialItem;
+import xyz.brassgoggledcoders.interspace.api.spacial.query.SpacialQuery;
+import xyz.brassgoggledcoders.interspace.api.spacial.query.SpacialQueryBuilder;
 import xyz.brassgoggledcoders.interspace.api.spacial.query.filter.SpacialFilter;
 import xyz.brassgoggledcoders.interspace.api.spacial.query.Transaction;
 import xyz.brassgoggledcoders.interspace.sql.DatabaseTableNames;
@@ -73,14 +75,13 @@ public class InterspaceClient implements IInterspaceClient, AutoCloseable {
     }
 
     @Override
-    public Transaction<Collection<SpacialItem>> query(IWorld world, Collection<SpacialFilter<?>> parameters, int limit) {
+    public Transaction<Collection<SpacialItem>> query(IWorld world, SpacialQueryBuilder spacialQueryBuilder) {
         return Transaction.of(transactionId -> CompletableFuture.completedFuture(Lists.newArrayList()));
 
     }
 
     @Override
-    public Transaction<Collection<SpacialItem>> retrieve(IWorld world, Collection<SpacialFilter<?>> parameters,
-                                                         int maxSize, int limit) {
+    public Transaction<Collection<SpacialItem>> retrieve(IWorld world, SpacialQueryBuilder spacialQueryBuilder) {
         return Transaction.of(transactionId -> CompletableFuture.completedFuture(Lists.newArrayList()));
     }
 

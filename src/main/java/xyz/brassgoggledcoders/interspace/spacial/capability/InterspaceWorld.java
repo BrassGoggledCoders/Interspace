@@ -16,6 +16,7 @@ import xyz.brassgoggledcoders.interspace.api.spacial.capability.IInterspaceWorld
 import xyz.brassgoggledcoders.interspace.api.spacial.entry.SpacialEntry;
 import xyz.brassgoggledcoders.interspace.api.spacial.item.SpacialItem;
 import xyz.brassgoggledcoders.interspace.api.spacial.query.SpacialQuery;
+import xyz.brassgoggledcoders.interspace.api.spacial.query.SpacialQueryBuilder;
 import xyz.brassgoggledcoders.interspace.api.spacial.query.Transaction;
 import xyz.brassgoggledcoders.interspace.api.spacial.type.SpacialInstance;
 import xyz.brassgoggledcoders.interspace.api.spacial.type.SpacialType;
@@ -156,13 +157,13 @@ public class InterspaceWorld implements IInterspaceWorld {
     }
 
     @Override
-    public Transaction<Collection<SpacialItem>> query(SpacialQuery spacialQuery) {
-        return InterspaceAPI.getInterspaceClient().query(world, spacialQuery);
+    public Transaction<Collection<SpacialItem>> query(SpacialQueryBuilder spacialQueryBuilder) {
+        return InterspaceAPI.getInterspaceClient().query(world, spacialQueryBuilder);
     }
 
     @Override
-    public Transaction<Collection<SpacialItem>> retrieve(SpacialQuery spacialQuery) {
-        return InterspaceAPI.getInterspaceClient().retrieve(world, spacialQuery);
+    public Transaction<Collection<SpacialItem>> retrieve(SpacialQueryBuilder spacialQueryBuilder) {
+        return InterspaceAPI.getInterspaceClient().retrieve(world, spacialQueryBuilder);
 
     }
 }

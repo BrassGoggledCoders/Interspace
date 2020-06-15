@@ -69,8 +69,7 @@ public class QuerySlateEntity extends ItemFrameEntity {
     }
 
     private void handleInterspace(IInterspaceChunk interspace) {
-        interspace.retrieve(SpacialQueryBuilder.create()
-                .build())
+        interspace.retrieve(SpacialQueryBuilder.create())
                 .getResult()
                 .thenAccept(spacialItems -> spacialItems.stream()
                         .filter(spacialItem -> spacialItem.getType() == InterspaceSpacialItemTypes.ITEM_STACK.get())
