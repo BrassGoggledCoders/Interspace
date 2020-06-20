@@ -45,10 +45,10 @@ public class MirrorItem extends Item {
         if (chunk instanceof ICapabilityProvider) {
             return ((ICapabilityProvider) chunk).getCapability(InterspaceAPI.INTERSPACE_CHUNK)
                     .map(interspace -> {
-                        SpatialInstance spatialInstance = interspace.getSpacialInstance();
                         if (!world.isRemote()) {
+                            SpatialInstance spatialInstance = interspace.getSpacialInstance();
                             player.sendStatusMessage(new TranslationTextComponent("text.interspace.gaze",
-                                            spatialInstance.getDisplayName()), false);
+                                    spatialInstance.getDisplayName()), false);
                         }
                         return ActionResult.resultSuccess(itemStack);
                     })
@@ -64,15 +64,20 @@ public class MirrorItem extends Item {
         World world = context.getWorld();
         BlockPos hitPos = context.getPos();
         BlockState hitBlockState = world.getBlockState(hitPos);
-        if (!world.isRemote() && hitBlockState.getBlock().isIn(InterspaceBlockTags.NAFASI)) {
-            BlockPos corePos = hitPos.offset(context.getFace().getOpposite());
-            BlockState coreBlockState = world.getBlockState(corePos);
-            if (coreBlockState.getBlock() == InterspaceBlocks.NAFASI.getPrimary()) {
-                ObeliskCoreBlock obeliskCoreBlock = InterspaceBlocks.OBELISK_CORE.getPrimary();
-                if (ObeliskCoreBlock.isValid(world, corePos)) {
-                    world.setBlockState(corePos, obeliskCoreBlock.getDefaultState(), Constants.BlockFlags.DEFAULT);
-                    return ActionResultType.SUCCESS;
+        if (hitBlockState.getBlock().isIn(InterspaceBlockTags.NAFASI)) {
+            if (!world.isRemote()) {
+                BlockPos corePos = hitPos.offset(context.getFace().getOpposite());
+                BlockState coreBlockState = world.getBlockState(corePos);
+                if (coreBlockState.getBlock() == InterspaceBlocks.NAFASI.getPrimary()) {
+                    ObeliskCoreBlock obeliskCoreBlock = InterspaceBlocks.OBELISK_CORE.getPrimary();
+                    if (ObeliskCoreBlock.isValid(world, corePos)) {
+                        world.setBlockState(corePos, obeliskCoreBlock.getDefaultState(), Constants.BlockFlags.DEFAULT);
+                        return ActionResultType.SUCCESS;
+                    }
                 }
+                return ActionResultType.FAIL;
+            } else {
+                return ActionResultType.CONSUME;
             }
         }
         return super.onItemUse(context);
