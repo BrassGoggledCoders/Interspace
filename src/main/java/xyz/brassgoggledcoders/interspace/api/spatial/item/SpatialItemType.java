@@ -13,6 +13,8 @@ public abstract class SpatialItemType<T> extends ForgeRegistryEntry<SpatialItemT
     @Nullable
     public abstract SpatialItem toSpacialItem(@Nonnull T object);
 
+    public abstract int getRetrievalSize();
+
     public abstract boolean matchesType(Object object);
 
     public abstract Collection<SpatialItem> convert(Collection<T> collection);

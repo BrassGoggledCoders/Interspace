@@ -40,6 +40,11 @@ public class ItemStackSpatialItemType extends SpatialItemType<ItemStack> {
     }
 
     @Override
+    public int getRetrievalSize() {
+        return 64;
+    }
+
+    @Override
     public boolean matchesType(Object object) {
         return object instanceof ItemStack;
     }

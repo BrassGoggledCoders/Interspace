@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.registries.ForgeRegistries;
 import xyz.brassgoggledcoders.interspace.api.spatial.item.SpatialItem;
@@ -17,7 +16,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
-import static net.minecraftforge.fluids.capability.IFluidHandler.*;
+import static net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
 public class FluidStackSpatialItemType extends SpatialItemType<FluidStack> {
     @Override
@@ -43,6 +42,11 @@ public class FluidStackSpatialItemType extends SpatialItemType<FluidStack> {
         } else {
             return null;
         }
+    }
+
+    @Override
+    public int getRetrievalSize() {
+        return 1000;
     }
 
     @Override
