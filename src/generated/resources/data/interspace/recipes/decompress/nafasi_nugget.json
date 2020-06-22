@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "tag": "forge:ingots/nafasi"
+    }
+  ],
+  "result": {
+    "item": "interspace:nafasi_nugget",
+    "count": 9
+  }
+}

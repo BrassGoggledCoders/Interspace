@@ -1,8 +1,7 @@
 {
   "replace": false,
   "values": [
-    "interspace:nafasi",
-    "interspace:nafasi"
+    "#forge:storage_blocks/nafasi"
   ],
   "optional": []
 }

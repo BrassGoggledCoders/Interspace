@@ -5,7 +5,6 @@ import net.minecraftforge.client.model.generators.BlockStateProvider;
 import net.minecraftforge.client.model.generators.ExistingFileHelper;
 import xyz.brassgoggledcoders.interspace.Interspace;
 import xyz.brassgoggledcoders.interspace.content.InterspaceBlocks;
-import xyz.brassgoggledcoders.interspace.content.tag.InterspaceBlockTags;
 
 import javax.annotation.Nonnull;
 
@@ -16,7 +15,7 @@ public class InterspaceBlockStateProvider extends BlockStateProvider {
 
     @Override
     protected void registerStatesAndModels() {
-        this.simpleBlock(InterspaceBlocks.NAFASI.getPrimary());
+        this.simpleBlock(InterspaceBlocks.NAFASI_BLOCK.getPrimary());
         this.simpleBlock(InterspaceBlocks.OBELISK_CORE.getPrimary());
     }
 

@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 public class InterspaceBlockLootTables extends BlockLootTables {
     @Override
     protected void addTables() {
-        this.registerDropSelfLootTable(InterspaceBlocks.NAFASI.getPrimary());
+        this.registerDropSelfLootTable(InterspaceBlocks.NAFASI_BLOCK.getPrimary());
     }
 
     @Override

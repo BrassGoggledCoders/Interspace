@@ -15,14 +15,14 @@ public class InterspaceBlocks {
     public static final BlockBiDeferredRegister REGISTER = new BlockBiDeferredRegister(Interspace.ID,
             () -> new Item.Properties().group(Interspace.ITEM_GROUP));
 
-    public static final BiRegistryObject<Block, BlockItem> NAFASI = REGISTER.register(
-            "nafasi", () -> new Block(nafasiProperties())
+    public static final BiRegistryObject<Block, BlockItem> NAFASI_BLOCK = REGISTER.register(
+            "nafasi_block", () -> new Block(nafasiProperties())
     );
 
     public static final BiRegistryObject<ObeliskCoreBlock, BlockItem> OBELISK_CORE = REGISTER.register(
             "obelisk_core", () -> new ObeliskCoreBlock(nafasiProperties()
                     .tickRandomly()
-                    .lootFrom(NAFASI.getPrimary())
+                    .lootFrom(NAFASI_BLOCK.getPrimary())
             )
     );
 

@@ -19,7 +19,16 @@ public class InterspaceItems {
             () -> new QuerySlateItem<>(QuerySlateEntity::new, new Item.Properties()
                     .group(Interspace.ITEM_GROUP)));
 
+    public static final RegistryObject<Item> NAFASI_INGOT = ITEMS.register("nafasi_ingot", InterspaceItems::genericItem);
+    public static final RegistryObject<Item> NAFASI_NUGGET = ITEMS.register("nafasi_nugget", InterspaceItems::genericItem);
+
     public static void register(IEventBus modBus) {
         ITEMS.register(modBus);
+    }
+
+    public static Item genericItem() {
+        return new Item(new Item.Properties()
+                .group(Interspace.ITEM_GROUP)
+        );
     }
 }

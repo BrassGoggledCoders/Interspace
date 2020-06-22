@@ -36,7 +36,7 @@ public class ObeliskCoreBlock extends Block {
     @SuppressWarnings("deprecation")
     @ParametersAreNonnullByDefault
     public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random rand) {
-        boolean valid = this.isValid(world, pos);
+        boolean valid = isValid(world, pos);
         if (state.get(BlockStateProperties.ATTACHED) != valid) {
             world.setBlockState(pos, state.with(BlockStateProperties.ATTACHED, valid));
         }
@@ -49,12 +49,12 @@ public class ObeliskCoreBlock extends Block {
     public BlockState updatePostPlacement(BlockState state, Direction facing, BlockState facingState, IWorld world,
                                           BlockPos currentPos, BlockPos facingPos) {
         return state.with(BlockStateProperties.ATTACHED, (facing.getAxis() == Direction.Axis.Y ||
-                facingState.getBlock().isIn(InterspaceBlockTags.NAFASI)) && isValid(world, currentPos));
+                facingState.getBlock().isIn(InterspaceBlockTags.STORAGE_BLOCKS_NAFASI)) && isValid(world, currentPos));
     }
 
     public static boolean isValid(IWorld world, BlockPos pos) {
         boolean valid = BlockPos.getAllInBox(pos.add(1, 0, 1), pos.add(-1, 0, -1))
-                .allMatch(blockPos -> world.getBlockState(blockPos).getBlock().isIn(InterspaceBlockTags.NAFASI));
+                .allMatch(blockPos -> world.getBlockState(blockPos).getBlock().isIn(InterspaceBlockTags.STORAGE_BLOCKS_NAFASI));
         BlockPos up = pos.up();
         if (valid && world.getBlockState(up).getBlock() instanceof ObeliskCoreBlock) {
             return isValid(world, up);

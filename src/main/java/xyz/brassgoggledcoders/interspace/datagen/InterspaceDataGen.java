@@ -24,6 +24,7 @@ public class InterspaceDataGen {
             dataGenerator.addProvider(new InterspaceLootTableProvider(dataGenerator));
             dataGenerator.addProvider(new InterspaceBookProvider(dataGenerator));
             dataGenerator.addProvider(new InterspaceSpatialProvider(dataGenerator));
+            dataGenerator.addProvider(new InterspaceRecipeProvider(dataGenerator));
         }
 
         if (event.includeClient()) {

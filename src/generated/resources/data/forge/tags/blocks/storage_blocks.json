@@ -1,8 +1,7 @@
 {
   "replace": false,
   "values": [
-    "interspace:nafasi",
-    "interspace:obelisk_core"
+    "#forge:storage_blocks/nafasi"
   ],
   "optional": []
 }

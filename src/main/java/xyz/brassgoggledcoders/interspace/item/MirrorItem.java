@@ -64,11 +64,11 @@ public class MirrorItem extends Item {
         World world = context.getWorld();
         BlockPos hitPos = context.getPos();
         BlockState hitBlockState = world.getBlockState(hitPos);
-        if (hitBlockState.getBlock().isIn(InterspaceBlockTags.NAFASI)) {
+        if (hitBlockState.getBlock().isIn(InterspaceBlockTags.STORAGE_BLOCKS_NAFASI)) {
             if (!world.isRemote()) {
                 BlockPos corePos = hitPos.offset(context.getFace().getOpposite());
                 BlockState coreBlockState = world.getBlockState(corePos);
-                if (coreBlockState.getBlock() == InterspaceBlocks.NAFASI.getPrimary()) {
+                if (coreBlockState.getBlock() == InterspaceBlocks.NAFASI_BLOCK.getPrimary()) {
                     ObeliskCoreBlock obeliskCoreBlock = InterspaceBlocks.OBELISK_CORE.getPrimary();
                     if (ObeliskCoreBlock.isValid(world, corePos)) {
                         world.setBlockState(corePos, obeliskCoreBlock.getDefaultState(), Constants.BlockFlags.DEFAULT);

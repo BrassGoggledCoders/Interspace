@@ -4,8 +4,9 @@ import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import javax.annotation.Nonnull;
+import java.util.function.Supplier;
 
-public class BiRegistryObject<PRIMARY extends IForgeRegistryEntry<? super PRIMARY>, SECONDARY extends IForgeRegistryEntry<? super SECONDARY>> {
+public class BiRegistryObject<PRIMARY extends IForgeRegistryEntry<? super PRIMARY>, SECONDARY extends IForgeRegistryEntry<? super SECONDARY>> implements Supplier<PRIMARY> {
 
     private final RegistryObject<PRIMARY> primaryRO;
     private final RegistryObject<SECONDARY> secondaryRO;
@@ -23,5 +24,10 @@ public class BiRegistryObject<PRIMARY extends IForgeRegistryEntry<? super PRIMAR
     @Nonnull
     public SECONDARY getSecondary() {
         return secondaryRO.get();
+    }
+
+    @Override
+    public PRIMARY get() {
+        return this.getPrimary();
     }
 }

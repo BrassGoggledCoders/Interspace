@@ -1,6 +1,6 @@
 {
   "parent": "block/cube_all",
   "textures": {
-    "all": "interspace:block/nafasi"
+    "all": "interspace:block/nafasi_block"
   }
 }
