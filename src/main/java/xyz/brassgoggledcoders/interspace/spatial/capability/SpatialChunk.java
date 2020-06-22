@@ -22,9 +22,11 @@ public class SpatialChunk implements ISpatialChunk {
 
     public SpatialChunk(World world, ChunkPos chunkPos) {
         worldProvider = NonNullLazy.of(() -> world.getCapability(InterspaceAPI.INTERSPACE_WORLD));
-        spacialProvider = NonNullLazy.of(() -> worldProvider.get()
-                .map(interspaceWorld -> interspaceWorld.getSpacialInstance(chunkPos))
-                .orElseGet(() -> InterspaceSpatialTypes.EMPTY.get().createInstance(world, chunkPos)));
+        spacialProvider = world.isRemote() ?
+                NonNullLazy.of(() -> InterspaceSpatialTypes.EMPTY.get().createInstance(world, chunkPos)) :
+                NonNullLazy.of(() -> worldProvider.get()
+                        .map(interspaceWorld -> interspaceWorld.getSpacialInstance(chunkPos))
+                        .orElseGet(() -> InterspaceSpatialTypes.EMPTY.get().createInstance(world, chunkPos)));
     }
 
     @Override

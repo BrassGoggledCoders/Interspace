@@ -36,7 +36,7 @@ public class EventHandler {
     public static void chunkCapability(AttachCapabilitiesEvent<Chunk> chunkAttachCapabilitiesEvent) {
         chunkAttachCapabilitiesEvent.addCapability(Interspace.rl("interspace"),
                 new SpatialProvider<>(InterspaceAPI.INTERSPACE_CHUNK, LazyOptional.of(() ->
-                        new SpatialChunk(chunkAttachCapabilitiesEvent.getObject().getWorldForge(),
+                        new SpatialChunk(chunkAttachCapabilitiesEvent.getObject().getWorld(),
                                 chunkAttachCapabilitiesEvent.getObject().getPos()))));
     }
 
