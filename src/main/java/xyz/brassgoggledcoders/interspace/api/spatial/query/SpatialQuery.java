@@ -12,13 +12,15 @@ import java.util.stream.Collectors;
 public class SpatialQuery {
     private final List<SpatialFilter> spatialFilters;
     private final SpatialSorting sorting;
-    private final Integer limit;
+    private final int limit;
+    private final int maxSize;
 
     public SpatialQuery(@Nonnull List<SpatialFilter> spatialFilters, @Nonnull SpatialSorting sorting,
-                        @Nullable Integer limit) {
+                        int limit, int maxSize) {
         this.spatialFilters = spatialFilters;
         this.sorting = sorting;
         this.limit = limit;
+        this.maxSize = maxSize;
     }
 
     public String asSQL() {
@@ -28,8 +30,12 @@ public class SpatialQuery {
         return filterString + " " + sortString + " " + limitString;
     }
 
+    public int getMaxSize() {
+        return maxSize;
+    }
+
     private String buildLimitString() {
-        return this.getLimit() != null ? "LIMIT " + this.getLimit() : "";
+        return this.getLimit() > 0 ? "LIMIT " + this.getLimit() : "";
     }
 
     private String buildSortString() {
@@ -41,7 +47,8 @@ public class SpatialQuery {
     }
 
     private String buildFilterString() {
-        return spatialFilters.stream()
+        return this.getSpatialFilters().isEmpty() ? "" : "WHERE " + this.getSpatialFilters()
+                .stream()
                 .map(SpatialFilter::toQuery)
                 .collect(Collectors.joining(" AND "));
     }
@@ -54,8 +61,7 @@ public class SpatialQuery {
         return sorting;
     }
 
-    @Nullable
-    public Integer getLimit() {
+    public int getLimit() {
         return limit;
     }
 }

@@ -12,6 +12,7 @@ import net.minecraft.util.IItemProvider;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
+import xyz.brassgoggledcoders.interspace.Interspace;
 import xyz.brassgoggledcoders.interspace.api.InterspaceAPI;
 import xyz.brassgoggledcoders.interspace.api.spatial.capability.ISpatialChunk;
 import xyz.brassgoggledcoders.interspace.api.spatial.query.SpatialQueryBuilder;
@@ -55,7 +56,9 @@ public class QuerySlateEntity extends ItemFrameEntity {
             BlockState coreBlockState = this.getEntityWorld().getBlockState(corePos);
             if (coreBlockState.getBlock() instanceof ObeliskCoreBlock) {
                 if (coreBlockState.get(BlockStateProperties.ATTACHED)) {
-                    this.getEntityWorld().getCapability(InterspaceAPI.INTERSPACE_CHUNK)
+                    this.getEntityWorld()
+                            .getChunkAt(this.getPosition())
+                            .getCapability(InterspaceAPI.INTERSPACE_CHUNK)
                             .ifPresent(this::handleInterspace);
                 }
             }
@@ -69,12 +72,12 @@ public class QuerySlateEntity extends ItemFrameEntity {
     }
 
     private void handleInterspace(ISpatialChunk interspace) {
-        interspace.retrieve(SpatialQueryBuilder.create())
+        currentPull = interspace.query(SpatialQueryBuilder.create())
                 .getResult()
-                .thenAccept(spacialItems -> spacialItems.stream()
-                        .filter(spacialItem -> spacialItem.getType() == InterspaceSpatialItemTypes.ITEM_STACK.get())
-                        .map(InterspaceSpatialItemTypes.ITEM_STACK.get()::fromSpacialItem)
-                        .forEach(this::entityDropItem));
+                .thenAccept(spatialItems -> spatialItems
+                        .forEach(spatialItem -> {
+                            Interspace.LOGGER.info(spatialItem.toString());
+                        }));
 
     }
 }

@@ -1,6 +1,7 @@
 package xyz.brassgoggledcoders.interspace.api.spatial.item;
 
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraftforge.common.util.Lazy;
 
 import javax.annotation.Nullable;
 import java.util.Objects;
@@ -9,9 +10,13 @@ public class SpatialItem {
     private final SpatialItemType<?> type;
     private final String registryName;
     private final int amount;
-    private final CompoundNBT data;
+    private final Lazy<CompoundNBT> data;
 
     public SpatialItem(SpatialItemType<?> type, String registryName, int amount, @Nullable CompoundNBT data) {
+        this(type, registryName, amount, Lazy.of(() -> data));
+    }
+
+    public SpatialItem(SpatialItemType<?> type, String registryName, int amount, Lazy<CompoundNBT> data) {
         this.type = type;
         this.registryName = registryName;
         this.amount = amount;
@@ -28,7 +33,7 @@ public class SpatialItem {
 
     @Nullable
     public CompoundNBT getNBT() {
-        return data;
+        return data.get();
     }
 
     public SpatialItemType<?> getType() {
@@ -37,5 +42,15 @@ public class SpatialItem {
 
     public String getTypeString() {
         return Objects.requireNonNull(this.getType().getRegistryName()).toString();
+    }
+
+    @Override
+    public String toString() {
+        return "SpatialItem{" +
+                "type=" + type +
+                ", registryName='" + registryName + '\'' +
+                ", amount=" + amount +
+                ", data=" + data +
+                '}';
     }
 }

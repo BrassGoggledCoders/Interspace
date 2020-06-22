@@ -10,6 +10,7 @@ public class SpatialQueryBuilder {
     private final List<SpatialFilter> spatialFilters;
     private SpatialSorting sorting;
     private int limit;
+    private int maxSize;
 
     private SpatialQueryBuilder() {
         this.spatialFilters = Lists.newArrayList();
@@ -31,8 +32,13 @@ public class SpatialQueryBuilder {
         return this;
     }
 
+    public SpatialQueryBuilder withMaxSize(int maxSize) {
+        this.maxSize = maxSize;
+        return this;
+    }
+
     public SpatialQuery build() {
-        return new SpatialQuery(spatialFilters, sorting, limit);
+        return new SpatialQuery(spatialFilters, sorting, limit, maxSize);
     }
 
     public static SpatialQueryBuilder create() {
