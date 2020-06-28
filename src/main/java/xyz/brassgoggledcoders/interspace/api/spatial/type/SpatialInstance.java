@@ -35,7 +35,7 @@ public class SpatialInstance implements ISpatial, INBTSerializable<CompoundNBT> 
         this.world = world;
         this.chunkPos = chunkPos;
         if (world instanceof ICapabilityProvider) {
-            this.interspaceWorld = ((ICapabilityProvider) world).getCapability(InterspaceAPI.INTERSPACE_WORLD);
+            this.interspaceWorld = ((ICapabilityProvider) world).getCapability(InterspaceAPI.SPATIAL_WORLD);
         } else {
             this.interspaceWorld = LazyOptional.empty();
         }

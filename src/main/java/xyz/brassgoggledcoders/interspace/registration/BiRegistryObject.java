@@ -30,4 +30,8 @@ public class BiRegistryObject<PRIMARY extends IForgeRegistryEntry<? super PRIMAR
     public PRIMARY get() {
         return this.getPrimary();
     }
+
+    public boolean matches(Object primary) {
+        return this.primaryRO.isPresent() && this.primaryRO.get() == primary;
+    }
 }

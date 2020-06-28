@@ -21,6 +21,7 @@ import net.minecraftforge.registries.RegistryBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xyz.brassgoggledcoders.interspace.api.InterspaceAPI;
+import xyz.brassgoggledcoders.interspace.api.spatial.capability.ISpatial;
 import xyz.brassgoggledcoders.interspace.api.spatial.capability.ISpatialChunk;
 import xyz.brassgoggledcoders.interspace.api.spatial.capability.ISpatialWorld;
 import xyz.brassgoggledcoders.interspace.api.spatial.item.SpatialItemType;
@@ -70,6 +71,7 @@ public class Interspace {
     private void commonSetup(FMLCommonSetupEvent event) {
         CapabilityManager.INSTANCE.register(ISpatialWorld.class, new EmptyNBTStorage<>(), () -> null);
         CapabilityManager.INSTANCE.register(ISpatialChunk.class, new EmptyNBTStorage<>(), () -> null);
+        CapabilityManager.INSTANCE.register(ISpatial.class, new EmptyNBTStorage<>(), () -> null);
     }
 
     private void clientSetup(FMLClientSetupEvent event) {

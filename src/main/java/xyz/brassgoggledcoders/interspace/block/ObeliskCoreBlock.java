@@ -2,63 +2,45 @@ package xyz.brassgoggledcoders.interspace.block;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.state.EnumProperty;
 import net.minecraft.state.StateContainer;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.server.ServerWorld;
-import xyz.brassgoggledcoders.interspace.content.tag.InterspaceBlockTags;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.IBlockReader;
+import xyz.brassgoggledcoders.interspace.tileentity.ObeliskConnectedTileEntity;
+import xyz.brassgoggledcoders.interspace.tileentity.ObeliskControllerTileEntity;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Random;
 
 public class ObeliskCoreBlock extends Block {
+    public static EnumProperty<ObeliskCoreState> CORE_STATE = EnumProperty.create("core_state", ObeliskCoreState.class);
+
     public ObeliskCoreBlock(Properties properties) {
         super(properties);
+        this.setDefaultState(this.getStateContainer().getBaseState().with(CORE_STATE, ObeliskCoreState.INACTIVE));
     }
 
     @Override
     protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-        builder.add(BlockStateProperties.ATTACHED);
+        builder.add(CORE_STATE);
     }
 
+    @Override
+    public boolean hasTileEntity(BlockState state) {
+        return state.get(CORE_STATE) != ObeliskCoreState.INACTIVE;
+    }
+
+    @Override
     @Nullable
-    @Override
-    public BlockState getStateForPlacement(@Nonnull BlockItemUseContext context) {
-        return this.getDefaultState().with(BlockStateProperties.ATTACHED, this.isValid(context.getWorld(), context.getPos()));
-    }
-
-    @Override
-    @SuppressWarnings("deprecation")
-    @ParametersAreNonnullByDefault
-    public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random rand) {
-        boolean valid = isValid(world, pos);
-        if (state.get(BlockStateProperties.ATTACHED) != valid) {
-            world.setBlockState(pos, state.with(BlockStateProperties.ATTACHED, valid));
+    public TileEntity createTileEntity(BlockState state, IBlockReader world)
+    {
+        ObeliskCoreState coreState = state.get(CORE_STATE);
+        switch (coreState) {
+            case CONTROLLER:
+                return new ObeliskControllerTileEntity();
+            case CONNECTED:
+                return new ObeliskConnectedTileEntity();
+            default:
+                return null;
         }
-    }
-
-    @Override
-    @Nonnull
-    @SuppressWarnings("deprecation")
-    @ParametersAreNonnullByDefault
-    public BlockState updatePostPlacement(BlockState state, Direction facing, BlockState facingState, IWorld world,
-                                          BlockPos currentPos, BlockPos facingPos) {
-        return state.with(BlockStateProperties.ATTACHED, (facing.getAxis() == Direction.Axis.Y ||
-                facingState.getBlock().isIn(InterspaceBlockTags.STORAGE_BLOCKS_NAFASI)) && isValid(world, currentPos));
-    }
-
-    public static boolean isValid(IWorld world, BlockPos pos) {
-        boolean valid = BlockPos.getAllInBox(pos.add(1, 0, 1), pos.add(-1, 0, -1))
-                .allMatch(blockPos -> world.getBlockState(blockPos).getBlock().isIn(InterspaceBlockTags.STORAGE_BLOCKS_NAFASI));
-        BlockPos up = pos.up();
-        if (valid && world.getBlockState(up).getBlock() instanceof ObeliskCoreBlock) {
-            return isValid(world, up);
-        }
-        return valid;
     }
 }

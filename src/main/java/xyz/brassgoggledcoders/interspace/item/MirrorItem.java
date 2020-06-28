@@ -13,13 +13,12 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunk;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.util.Constants;
 import xyz.brassgoggledcoders.interspace.Interspace;
 import xyz.brassgoggledcoders.interspace.api.InterspaceAPI;
 import xyz.brassgoggledcoders.interspace.api.spatial.type.SpatialInstance;
 import xyz.brassgoggledcoders.interspace.block.ObeliskCoreBlock;
+import xyz.brassgoggledcoders.interspace.block.ObeliskCoreState;
 import xyz.brassgoggledcoders.interspace.content.InterspaceBlocks;
-import xyz.brassgoggledcoders.interspace.content.tag.InterspaceBlockTags;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -43,7 +42,7 @@ public class MirrorItem extends Item {
         ItemStack itemStack = player.getHeldItem(hand);
         IChunk chunk = world.getChunk(player.getPosition());
         if (chunk instanceof ICapabilityProvider) {
-            return ((ICapabilityProvider) chunk).getCapability(InterspaceAPI.INTERSPACE_CHUNK)
+            return ((ICapabilityProvider) chunk).getCapability(InterspaceAPI.SPATIAL_CHUNK)
                     .map(interspace -> {
                         if (!world.isRemote()) {
                             SpatialInstance spatialInstance = interspace.getSpacialInstance();
@@ -64,20 +63,15 @@ public class MirrorItem extends Item {
         World world = context.getWorld();
         BlockPos hitPos = context.getPos();
         BlockState hitBlockState = world.getBlockState(hitPos);
-        if (hitBlockState.getBlock().isIn(InterspaceBlockTags.STORAGE_BLOCKS_NAFASI)) {
-            if (!world.isRemote()) {
-                BlockPos corePos = hitPos.offset(context.getFace().getOpposite());
-                BlockState coreBlockState = world.getBlockState(corePos);
-                if (coreBlockState.getBlock() == InterspaceBlocks.NAFASI_BLOCK.getPrimary()) {
-                    ObeliskCoreBlock obeliskCoreBlock = InterspaceBlocks.OBELISK_CORE.getPrimary();
-                    if (ObeliskCoreBlock.isValid(world, corePos)) {
-                        world.setBlockState(corePos, obeliskCoreBlock.getDefaultState(), Constants.BlockFlags.DEFAULT);
-                        return ActionResultType.SUCCESS;
-                    }
+        if (InterspaceBlocks.OBELISK_CORE.matches(hitBlockState.getBlock())) {
+            BlockPos centerPillarPos = hitPos.offset(context.getFace().getOpposite());
+            BlockState centerPillar = world.getBlockState(centerPillarPos);
+            if (InterspaceBlocks.OBELISK_CORE.matches(centerPillar.getBlock())) {
+                if (centerPillar.get(ObeliskCoreBlock.CORE_STATE) == ObeliskCoreState.INACTIVE) {
+                    world.setBlockState(centerPillarPos, centerPillar.with(ObeliskCoreBlock.CORE_STATE,
+                            ObeliskCoreState.CONTROLLER));
+                    return ActionResultType.SUCCESS;
                 }
-                return ActionResultType.FAIL;
-            } else {
-                return ActionResultType.CONSUME;
             }
         }
         return super.onItemUse(context);

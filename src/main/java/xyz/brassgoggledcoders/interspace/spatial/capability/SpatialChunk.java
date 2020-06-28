@@ -21,7 +21,7 @@ public class SpatialChunk implements ISpatialChunk {
     private final NonNullLazy<SpatialInstance> spacialProvider;
 
     public SpatialChunk(World world, ChunkPos chunkPos) {
-        worldProvider = NonNullLazy.of(() -> world.getCapability(InterspaceAPI.INTERSPACE_WORLD));
+        worldProvider = NonNullLazy.of(() -> world.getCapability(InterspaceAPI.SPATIAL_WORLD));
         spacialProvider = world.isRemote() ?
                 NonNullLazy.of(() -> InterspaceSpatialTypes.EMPTY.get().createInstance(world, chunkPos)) :
                 NonNullLazy.of(() -> worldProvider.get()

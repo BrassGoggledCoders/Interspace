@@ -28,21 +28,21 @@ public class EventHandler {
     @SubscribeEvent
     public static void worldCapability(AttachCapabilitiesEvent<World> worldAttachCapabilitiesEvent) {
         worldAttachCapabilitiesEvent.addCapability(Interspace.rl("interspace"),
-                new SpatialProvider<>(InterspaceAPI.INTERSPACE_WORLD, LazyOptional.of(() ->
+                new SpatialProvider<>(InterspaceAPI.SPATIAL_WORLD, LazyOptional.of(() ->
                         new SpatialWorld(worldAttachCapabilitiesEvent.getObject()))));
     }
 
     @SubscribeEvent
     public static void chunkCapability(AttachCapabilitiesEvent<Chunk> chunkAttachCapabilitiesEvent) {
         chunkAttachCapabilitiesEvent.addCapability(Interspace.rl("interspace"),
-                new SpatialProvider<>(InterspaceAPI.INTERSPACE_CHUNK, LazyOptional.of(() ->
+                new SpatialProvider<>(InterspaceAPI.SPATIAL_CHUNK, LazyOptional.of(() ->
                         new SpatialChunk(chunkAttachCapabilitiesEvent.getObject().getWorld(),
                                 chunkAttachCapabilitiesEvent.getObject().getPos()))));
     }
 
     @SubscribeEvent
     public static void worldTick(TickEvent.WorldTickEvent worldTickEvent) {
-        worldTickEvent.world.getCapability(InterspaceAPI.INTERSPACE_WORLD)
+        worldTickEvent.world.getCapability(InterspaceAPI.SPATIAL_WORLD)
                 .ifPresent(ISpatialWorld::tick);
     }
 
@@ -50,7 +50,7 @@ public class EventHandler {
     public static void chunkUnload(ChunkEvent.Unload chunkEvent) {
         IWorld world = chunkEvent.getChunk().getWorldForge();
         if (world instanceof ICapabilityProvider) {
-            ((ICapabilityProvider) world).getCapability(InterspaceAPI.INTERSPACE_WORLD)
+            ((ICapabilityProvider) world).getCapability(InterspaceAPI.SPATIAL_WORLD)
                     .ifPresent(interspace -> interspace.onChunkUnload(chunkEvent.getChunk()));
         }
     }
@@ -59,7 +59,7 @@ public class EventHandler {
     public static void chunkLoad(ChunkEvent.Load chunkEvent) {
         IWorld world = chunkEvent.getChunk().getWorldForge();
         if (world instanceof ICapabilityProvider) {
-            ((ICapabilityProvider) world).getCapability(InterspaceAPI.INTERSPACE_WORLD)
+            ((ICapabilityProvider) world).getCapability(InterspaceAPI.SPATIAL_WORLD)
                     .ifPresent(interspace -> interspace.onChunkLoad(chunkEvent.getChunk()));
         }
     }

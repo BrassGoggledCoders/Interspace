@@ -11,21 +11,23 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.network.NetworkHooks;
 import xyz.brassgoggledcoders.interspace.Interspace;
 import xyz.brassgoggledcoders.interspace.api.InterspaceAPI;
+import xyz.brassgoggledcoders.interspace.api.spatial.capability.ISpatial;
 import xyz.brassgoggledcoders.interspace.api.spatial.capability.ISpatialChunk;
 import xyz.brassgoggledcoders.interspace.api.spatial.query.SpatialQueryBuilder;
 import xyz.brassgoggledcoders.interspace.block.ObeliskCoreBlock;
 import xyz.brassgoggledcoders.interspace.content.InterspaceEntities;
 import xyz.brassgoggledcoders.interspace.content.InterspaceItems;
-import xyz.brassgoggledcoders.interspace.content.InterspaceSpatialItemTypes;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.concurrent.CompletableFuture;
 
 public class QuerySlateEntity extends ItemFrameEntity {
+    private LazyOptional<ISpatial> hangCap;
     private CompletableFuture<Void> currentPull;
 
     public QuerySlateEntity(EntityType<? extends QuerySlateEntity> type, World world) {
@@ -58,7 +60,7 @@ public class QuerySlateEntity extends ItemFrameEntity {
                 if (coreBlockState.get(BlockStateProperties.ATTACHED)) {
                     this.getEntityWorld()
                             .getChunkAt(this.getPosition())
-                            .getCapability(InterspaceAPI.INTERSPACE_CHUNK)
+                            .getCapability(InterspaceAPI.SPATIAL_CHUNK)
                             .ifPresent(this::handleInterspace);
                 }
             }

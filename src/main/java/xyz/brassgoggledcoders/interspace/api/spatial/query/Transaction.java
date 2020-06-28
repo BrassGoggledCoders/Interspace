@@ -1,5 +1,9 @@
 package xyz.brassgoggledcoders.interspace.api.spatial.query;
 
+import xyz.brassgoggledcoders.interspace.api.spatial.item.SpatialItem;
+
+import java.util.Collection;
+import java.util.Collections;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
@@ -29,5 +33,9 @@ public class Transaction<T> {
     public static <U> Transaction<U> of(U result) {
         UUID uuid = UUID.randomUUID();
         return new Transaction<>(uuid, CompletableFuture.completedFuture(result));
+    }
+
+    public static <U> Transaction<Collection<U>> ofEmpty() {
+        return Transaction.of(Collections.emptyList());
     }
 }
