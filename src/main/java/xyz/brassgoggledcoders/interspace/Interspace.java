@@ -50,6 +50,7 @@ public class Interspace {
         InterspaceSpatialItemTypes.register(modEventBus);
         InterspaceSpatialTypes.register(modEventBus);
         InterspaceEntities.register(modEventBus);
+        InterspaceTileEntities.register(modEventBus);
 
         modEventBus.addListener(InterspaceDataGen::gatherData);
         modEventBus.addListener(this::commonSetup);

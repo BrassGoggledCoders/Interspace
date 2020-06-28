@@ -7,10 +7,12 @@ import net.minecraft.entity.item.ItemFrameEntity;
 import net.minecraft.item.Items;
 import net.minecraft.network.IPacket;
 import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.network.NetworkHooks;
 import xyz.brassgoggledcoders.interspace.Interspace;
@@ -54,16 +56,20 @@ public class QuerySlateEntity extends ItemFrameEntity {
     public void tick() {
         super.tick();
         if (currentPull == null || currentPull.isDone()) {
-            BlockPos corePos = this.hangingPosition.offset(this.facingDirection.getOpposite(), 2);
-            BlockState coreBlockState = this.getEntityWorld().getBlockState(corePos);
-            if (coreBlockState.getBlock() instanceof ObeliskCoreBlock) {
-                if (coreBlockState.get(BlockStateProperties.ATTACHED)) {
-                    this.getEntityWorld()
-                            .getChunkAt(this.getPosition())
-                            .getCapability(InterspaceAPI.SPATIAL_CHUNK)
-                            .ifPresent(this::handleInterspace);
-                }
+            if (hangCap == null) {
+                hangCap = this.getHangingCap();
             }
+            hangCap.ifPresent(this::handleInterspace);
+        }
+    }
+
+    private LazyOptional<ISpatial> getHangingCap() {
+        TileEntity tileEntity = this.getEntityWorld()
+                .getTileEntity(this.hangingPosition.offset(this.facingDirection.getOpposite()));
+        if (tileEntity != null) {
+            return tileEntity.getCapability(InterspaceAPI.SPATIAL, this.facingDirection);
+        } else {
+            return LazyOptional.empty();
         }
     }
 
@@ -73,7 +79,7 @@ public class QuerySlateEntity extends ItemFrameEntity {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 
-    private void handleInterspace(ISpatialChunk interspace) {
+    private void handleInterspace(ISpatial interspace) {
         currentPull = interspace.query(SpatialQueryBuilder.create())
                 .getResult()
                 .thenAccept(spatialItems -> spatialItems

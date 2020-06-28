@@ -1,6 +1,5 @@
 package xyz.brassgoggledcoders.interspace.tileentity;
 
-import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.util.LazyOptional;
