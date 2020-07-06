@@ -8,14 +8,20 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
+import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import net.minecraftforge.registries.RegistryBuilder;
 import org.apache.logging.log4j.LogManager;
@@ -56,6 +62,8 @@ public class Interspace {
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::newRegistry);
         modEventBus.addListener(this::clientSetup);
+        modEventBus.addListener(this::queueIMC);
+        modEventBus.addListener(this::handleIMC);
 
         MinecraftForge.EVENT_BUS.addListener(this::serverAboutToStart);
 
@@ -101,6 +109,17 @@ public class Interspace {
                 .setName(Interspace.rl(name))
                 .setType(type)
                 .create();
+    }
+
+    public void handleIMC(InterModProcessEvent event) {
+        event.getIMCStream("obelisk"::equalsIgnoreCase)
+                .forEach(message ->
+                        InterspaceAPI.registerObeliskHandler(message.<Capability<?>>getMessageSupplier().get())
+                );
+    }
+
+    public void queueIMC(InterModEnqueueEvent event) {
+        InterModComms.sendTo(Interspace.ID, "obelisk", () -> CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
     }
 
     public static ResourceLocation rl(String path) {

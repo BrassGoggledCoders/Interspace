@@ -25,6 +25,10 @@ public class Transaction<T> {
         return result;
     }
 
+    public boolean isDone() {
+        return this.getResult().isDone();
+    }
+
     public static <U> Transaction<U> of(Function<UUID, CompletableFuture<U>> result) {
         UUID uuid = UUID.randomUUID();
         return new Transaction<>(uuid, result.apply(uuid));

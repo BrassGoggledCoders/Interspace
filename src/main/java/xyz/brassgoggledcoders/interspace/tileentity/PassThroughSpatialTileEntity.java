@@ -57,4 +57,8 @@ public abstract class PassThroughSpatialTileEntity<T extends ISpatial> extends T
         super.invalidateCaps();
         this.spatialLazy.invalidate();
     }
+
+    protected LazyOptional<ISpatial> getSpatial() {
+        return this.spatialLazy;
+    }
 }
