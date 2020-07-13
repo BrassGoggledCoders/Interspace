@@ -5,6 +5,7 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.IWorld;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import xyz.brassgoggledcoders.interspace.api.InterspaceAPI;
@@ -30,6 +31,8 @@ public class SpatialInstance implements ISpatial, INBTSerializable<CompoundNBT> 
     private final SpatialFilter chunkXFilter;
     private final SpatialFilter chunkZFilter;
 
+    private ITextComponent customName = null;
+
     public SpatialInstance(SpatialType spatialType, IWorld world, ChunkPos chunkPos) {
         this.spatialType = spatialType;
         this.world = world;
@@ -53,12 +56,20 @@ public class SpatialInstance implements ISpatial, INBTSerializable<CompoundNBT> 
 
     @Override
     public CompoundNBT serializeNBT() {
-        return new CompoundNBT();
+        CompoundNBT compoundNBT = new CompoundNBT();
+        if (customName != null) {
+            compoundNBT.putString("customName", ITextComponent.Serializer.toJson(customName));
+        }
+        return compoundNBT;
     }
 
     @Override
-    public void deserializeNBT(CompoundNBT nbt) {
-
+    public void deserializeNBT(CompoundNBT compoundNBT) {
+        if (compoundNBT.contains("customName", Constants.NBT.TAG_STRING)) {
+            this.customName = ITextComponent.Serializer.fromJson(compoundNBT.getString("customName"));
+        } else if (compoundNBT.contains("customName", Constants.NBT.TAG_COMPOUND)) {
+            this.customName = ITextComponent.Serializer.fromJson(compoundNBT.getCompound("customName").toString());
+        }
     }
 
     public IWorld getWorld() {
@@ -74,7 +85,7 @@ public class SpatialInstance implements ISpatial, INBTSerializable<CompoundNBT> 
     }
 
     public ITextComponent getDisplayName() {
-        return this.getType().getDisplayName();
+        return this.customName != null ? this.customName : this.getType().getDisplayName();
     }
 
     @Override
