@@ -60,10 +60,7 @@ public class Interspace {
 
         modEventBus.addListener(InterspaceDataGen::gatherData);
         modEventBus.addListener(this::commonSetup);
-        modEventBus.addListener(this::newRegistry);
         modEventBus.addListener(this::clientSetup);
-        modEventBus.addListener(this::queueIMC);
-        modEventBus.addListener(this::handleIMC);
 
         MinecraftForge.EVENT_BUS.addListener(this::serverAboutToStart);
 
@@ -96,30 +93,6 @@ public class Interspace {
 
     private void serverAboutToStart(FMLServerAboutToStartEvent event) {
         event.getServer().getResourceManager().addReloadListener(spacialEntryManager);
-    }
-
-    @SuppressWarnings("unchecked")
-    private void newRegistry(RegistryEvent.NewRegistry newRegistry) {
-        makeRegistry("spacial_type", SpatialType.class);
-        makeRegistry("spacial_item_type", SpatialItemType.class);
-    }
-
-    private static <T extends IForgeRegistryEntry<T>> void makeRegistry(String name, Class<T> type) {
-        new RegistryBuilder<T>()
-                .setName(Interspace.rl(name))
-                .setType(type)
-                .create();
-    }
-
-    public void handleIMC(InterModProcessEvent event) {
-        event.getIMCStream("obelisk"::equalsIgnoreCase)
-                .forEach(message ->
-                        InterspaceAPI.registerObeliskHandler(message.<Capability<?>>getMessageSupplier().get())
-                );
-    }
-
-    public void queueIMC(InterModEnqueueEvent event) {
-        InterModComms.sendTo(Interspace.ID, "obelisk", () -> CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
     }
 
     public static ResourceLocation rl(String path) {

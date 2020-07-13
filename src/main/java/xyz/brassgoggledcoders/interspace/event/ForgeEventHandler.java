@@ -31,7 +31,7 @@ import xyz.brassgoggledcoders.interspace.spatial.capability.SpatialWorld;
 import java.sql.SQLException;
 
 @EventBusSubscriber(modid = Interspace.ID)
-public class EventHandler {
+public class ForgeEventHandler {
     @SubscribeEvent
     public static void worldCapability(AttachCapabilitiesEvent<World> worldAttachCapabilitiesEvent) {
         worldAttachCapabilitiesEvent.addCapability(Interspace.rl("interspace"),
