@@ -7,14 +7,13 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import xyz.brassgoggledcoders.interspace.api.InterspaceAPI;
 import xyz.brassgoggledcoders.interspace.api.spatial.capability.ISpatial;
-import xyz.brassgoggledcoders.interspace.spatial.capability.EmptySpatial;
 import xyz.brassgoggledcoders.interspace.spatial.capability.PassThroughSpatial;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public abstract class PassThroughSpatialTileEntity<T extends ISpatial> extends TileEntity {
-    private LazyOptional<ISpatial> spatialLazy = LazyOptional.of(this::supplyLazy);
+    private LazyOptional<ISpatial> spatialLazy = null;
 
     public PassThroughSpatialTileEntity(TileEntityType<? extends PassThroughSpatialTileEntity> tileEntityType) {
         super(tileEntityType);
@@ -24,29 +23,25 @@ public abstract class PassThroughSpatialTileEntity<T extends ISpatial> extends T
     @Override
     public <U> LazyOptional<U> getCapability(@Nonnull Capability<U> cap, @Nullable Direction side) {
         if (cap == InterspaceAPI.SPATIAL) {
-            return spatialLazy.cast();
+            return this.getSpatial().cast();
         }
         return super.getCapability(cap, side);
     }
 
     @Nonnull
-    private ISpatial supplyLazy() {
-        LazyOptional<T> controllerSpatial = this.getCapabilityForPassThrough();
-        if (controllerSpatial.isPresent()) {
-            controllerSpatial.addListener(this::handleInvalidation);
-            return controllerSpatial.<ISpatial>map(PassThroughSpatial::new)
-                    .orElseGet(EmptySpatial::new);
-        } else {
-            return new EmptySpatial();
-        }
+    private LazyOptional<ISpatial> supplyLazy() {
+        return this.getCapabilityForPassThrough()
+                .map(PassThroughSpatial::new);
     }
 
     protected void invalidate() {
-        this.spatialLazy.invalidate();
-        this.spatialLazy = LazyOptional.of(this::supplyLazy);
+        if (this.spatialLazy != null && this.spatialLazy.isPresent()) {
+            this.spatialLazy.invalidate();
+        }
+        this.spatialLazy = null;
     }
 
-    protected void handleInvalidation(LazyOptional<T> passedThroughLazy) {
+    protected void handleInvalidation(LazyOptional<ISpatial> passedThroughLazy) {
         this.invalidate();
     }
 
@@ -59,6 +54,12 @@ public abstract class PassThroughSpatialTileEntity<T extends ISpatial> extends T
     }
 
     protected LazyOptional<ISpatial> getSpatial() {
+        if (this.spatialLazy == null) {
+            this.spatialLazy = this.supplyLazy();
+            if (this.spatialLazy.isPresent()) {
+                this.spatialLazy.addListener(this::handleInvalidation);
+            }
+        }
         return this.spatialLazy;
     }
 }

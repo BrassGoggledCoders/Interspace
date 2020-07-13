@@ -1,6 +1,7 @@
 package xyz.brassgoggledcoders.interspace.tileentity;
 
 import com.google.common.collect.Maps;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -15,7 +16,6 @@ import xyz.brassgoggledcoders.interspace.content.InterspaceTileEntities;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Iterator;
 import java.util.Map;
 
 public class ObeliskConnectedTileEntity extends PassThroughSpatialTileEntity<ISpatial> implements ITickableTileEntity {
@@ -59,7 +59,9 @@ public class ObeliskConnectedTileEntity extends PassThroughSpatialTileEntity<ISp
 
     @Override
     public void tick() {
-        this.getSpatial().ifPresent(this::tickWithSpatial);
+        if (controllerPosition != null) {
+            this.getSpatial().ifPresent(this::tickWithSpatial);
+        }
     }
 
     private void tickWithSpatial(@Nonnull ISpatial spatial) {
@@ -88,5 +90,23 @@ public class ObeliskConnectedTileEntity extends PassThroughSpatialTileEntity<ISp
             );
         }
         return obeliskCapabilities;
+    }
+
+    @Override
+    @Nonnull
+    public CompoundNBT write(@Nonnull CompoundNBT compound) {
+        CompoundNBT superCompound = super.write(compound);
+        if (controllerPosition != null) {
+            superCompound.putLong("controllerPos", controllerPosition.toLong());
+        }
+        return superCompound;
+    }
+
+    @Override
+    public void read(@Nonnull CompoundNBT compound) {
+        super.read(compound);
+        if (compound.contains("controllerPos")) {
+            this.setControllerPosition(BlockPos.fromLong(compound.getLong("controllerPos")));
+        }
     }
 }
