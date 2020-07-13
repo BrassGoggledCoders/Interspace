@@ -11,7 +11,7 @@ import xyz.brassgoggledcoders.interspace.spatial.itemtype.ItemStackSpatialItemTy
 import javax.annotation.Nonnull;
 import java.util.Collection;
 
-public class SpatialItemHandler<T extends ISpatial> extends ItemStackHandler implements ObeliskFunction {
+public class SpatialItemHandler extends ItemStackHandler implements ObeliskFunction {
     boolean changed = false;
 
     public SpatialItemHandler(int size) {

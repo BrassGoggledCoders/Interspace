@@ -4,17 +4,13 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
-import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -27,6 +23,8 @@ import xyz.brassgoggledcoders.interspace.spatial.SpatialClient;
 import xyz.brassgoggledcoders.interspace.spatial.capability.SpatialChunk;
 import xyz.brassgoggledcoders.interspace.spatial.capability.SpatialProvider;
 import xyz.brassgoggledcoders.interspace.spatial.capability.SpatialWorld;
+import xyz.brassgoggledcoders.interspace.tileentity.ObeliskControllerTileEntity;
+import xyz.brassgoggledcoders.interspace.tileentity.PassThroughSpatialTileEntity;
 
 import java.sql.SQLException;
 
@@ -49,9 +47,11 @@ public class ForgeEventHandler {
 
     @SubscribeEvent
     public static void tileCapability(AttachCapabilitiesEvent<TileEntity> tileEntityAttachCapabilitiesEvent) {
-        tileEntityAttachCapabilitiesEvent.addCapability(Interspace.rl("obelisk_item"),
-                new SpatialProvider<>(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY,
-                        LazyOptional.of(() -> new SpatialItemHandler<>(5))));
+        if (tileEntityAttachCapabilitiesEvent.getObject() instanceof PassThroughSpatialTileEntity) {
+            tileEntityAttachCapabilitiesEvent.addCapability(Interspace.rl("obelisk_item"),
+                    new SpatialProvider<>(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY,
+                            LazyOptional.of(() -> new SpatialItemHandler(5))));
+        }
     }
 
     @SubscribeEvent
