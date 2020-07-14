@@ -10,9 +10,12 @@ import xyz.brassgoggledcoders.interspace.spatial.itemtype.ItemStackSpatialItemTy
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
+import java.util.Collections;
 
 public class SpatialItemHandler extends ItemStackHandler implements ObeliskFunction {
-    boolean changed = false;
+    private boolean changed = false;
+    private Transaction<Collection<SpatialItem>> existing = null;
+    private int retries = 0;
 
     public SpatialItemHandler() {
         this(10);
@@ -31,13 +34,27 @@ public class SpatialItemHandler extends ItemStackHandler implements ObeliskFunct
     @Override
     @Nonnull
     public Transaction<?> apply(@Nonnull ISpatial spatial) {
+        if (existing != null) {
+            if (existing.isDone()) {
+                Collection<SpatialItem> remaining = existing.getResult().getNow(Collections.emptyList());
+                if (!remaining.isEmpty() && retries < 3) {
+                    this.existing = spatial.offer(remaining);
+                    retries++;
+                    return this.existing;
+                } else if (retries >= 3) {
+                    retries = 0;
+                    //TODO put back in inventory
+                }
+            }
+        }
+
         if (changed) {
-            Transaction<?> transaction = InterspaceSpatialItemTypes.ITEM_STACK
+            this.existing = InterspaceSpatialItemTypes.ITEM_STACK
                     .map(this::convert)
                     .map(spatial::offer)
                     .orElseGet(Transaction::ofEmpty);
-            changed = false;
-            return transaction;
+            this.changed = false;
+            return existing;
         } else {
             return Transaction.ofEmpty();
         }
