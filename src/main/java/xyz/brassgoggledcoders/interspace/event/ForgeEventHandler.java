@@ -1,6 +1,7 @@
 package xyz.brassgoggledcoders.interspace.event;
 
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
@@ -14,17 +15,18 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
 import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 import org.sqlite.javax.SQLiteConnectionPoolDataSource;
 import xyz.brassgoggledcoders.interspace.Interspace;
 import xyz.brassgoggledcoders.interspace.api.InterspaceAPI;
 import xyz.brassgoggledcoders.interspace.api.spatial.capability.ISpatialWorld;
+import xyz.brassgoggledcoders.interspace.api.spatial.item.SpatialItem;
 import xyz.brassgoggledcoders.interspace.capability.SpatialItemHandler;
+import xyz.brassgoggledcoders.interspace.content.InterspaceTileEntities;
 import xyz.brassgoggledcoders.interspace.spatial.SpatialClient;
 import xyz.brassgoggledcoders.interspace.spatial.capability.SpatialChunk;
 import xyz.brassgoggledcoders.interspace.spatial.capability.SpatialProvider;
 import xyz.brassgoggledcoders.interspace.spatial.capability.SpatialWorld;
-import xyz.brassgoggledcoders.interspace.tileentity.ObeliskControllerTileEntity;
-import xyz.brassgoggledcoders.interspace.tileentity.PassThroughSpatialTileEntity;
 
 import java.sql.SQLException;
 
@@ -47,11 +49,17 @@ public class ForgeEventHandler {
 
     @SubscribeEvent
     public static void tileCapability(AttachCapabilitiesEvent<TileEntity> tileEntityAttachCapabilitiesEvent) {
-        if (tileEntityAttachCapabilitiesEvent.getObject() instanceof PassThroughSpatialTileEntity) {
+        if (matchesObelisk(tileEntityAttachCapabilitiesEvent.getObject().getType())) {
             tileEntityAttachCapabilitiesEvent.addCapability(Interspace.rl("obelisk_item"),
                     new SpatialProvider<>(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY,
-                            LazyOptional.of(() -> new SpatialItemHandler(5))));
+                            LazyOptional.of(SpatialItemHandler::new)
+                    )
+            );
         }
+    }
+
+    public static boolean matchesObelisk(TileEntityType<?> tileEntityType) {
+        return InterspaceTileEntities.OBELISK_CONTROLLER.get() == tileEntityType;
     }
 
     @SubscribeEvent

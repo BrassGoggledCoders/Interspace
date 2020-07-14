@@ -14,6 +14,10 @@ import java.util.Collection;
 public class SpatialItemHandler extends ItemStackHandler implements ObeliskFunction {
     boolean changed = false;
 
+    public SpatialItemHandler() {
+        this(10);
+    }
+
     public SpatialItemHandler(int size) {
         super(size);
     }
@@ -25,6 +29,7 @@ public class SpatialItemHandler extends ItemStackHandler implements ObeliskFunct
     }
 
     @Override
+    @Nonnull
     public Transaction<?> apply(@Nonnull ISpatial spatial) {
         if (changed) {
             Transaction<?> transaction = InterspaceSpatialItemTypes.ITEM_STACK

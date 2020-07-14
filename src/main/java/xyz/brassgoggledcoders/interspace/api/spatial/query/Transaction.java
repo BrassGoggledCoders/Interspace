@@ -1,7 +1,5 @@
 package xyz.brassgoggledcoders.interspace.api.spatial.query;
 
-import xyz.brassgoggledcoders.interspace.api.spatial.item.SpatialItem;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.UUID;
@@ -41,5 +39,9 @@ public class Transaction<T> {
 
     public static <U> Transaction<Collection<U>> ofEmpty() {
         return Transaction.of(Collections.emptyList());
+    }
+
+    public static <U> Transaction<U> ofEmptyCast() {
+        return Transaction.of(null);
     }
 }
