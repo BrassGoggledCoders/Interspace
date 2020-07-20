@@ -14,6 +14,7 @@ import xyz.brassgoggledcoders.interspace.api.spatial.item.SpatialItemType;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -49,10 +50,9 @@ public class ItemStackSpatialItemType extends SpatialItemType<ItemStack> {
         return object instanceof ItemStack;
     }
 
-    public Collection<SpatialItem> convertInventory(IItemHandler handler) {
-        List<SpatialItem> spatialItems = Lists.newArrayList();
-        for (int slotNum = 0; slotNum < handler.getSlots(); slotNum++) {
-            ItemStack itemStack = handler.extractItem(slotNum, 64, false);
+    public Collection<SpatialItem> convert(Collection<ItemStack> generate) {
+        Collection<SpatialItem> spatialItems = Lists.newArrayList();
+        for (ItemStack itemStack: generate) {
             if (!itemStack.isEmpty()) {
                 SpatialItem spatialItem = this.toSpacialItem(itemStack);
                 if (spatialItem != null) {
@@ -60,12 +60,7 @@ public class ItemStackSpatialItemType extends SpatialItemType<ItemStack> {
                 }
             }
         }
-        return spatialItems;
-    }
 
-    public Collection<SpatialItem> convert(Collection<ItemStack> generate) {
-        ItemStackHandler handler = new ItemStackHandler(generate.size());
-        generate.forEach(itemStack -> ItemHandlerHelper.insertItemStacked(handler, itemStack, false));
-        return convertInventory(handler);
+        return spatialItems;
     }
 }

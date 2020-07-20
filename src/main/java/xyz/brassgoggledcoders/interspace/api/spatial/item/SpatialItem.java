@@ -47,10 +47,10 @@ public class SpatialItem {
     @Override
     public String toString() {
         return "SpatialItem{" +
-                "type=" + type +
+                "type=" + type.getRegistryName() +
                 ", registryName='" + registryName + '\'' +
                 ", amount=" + amount +
-                ", data=" + data +
+                ", data=" + data.get() +
                 '}';
     }
 }

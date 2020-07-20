@@ -12,6 +12,8 @@ public class InterspaceBlockLootTables extends BlockLootTables {
     @Override
     protected void addTables() {
         this.registerDropSelfLootTable(InterspaceBlocks.NAFASI_BLOCK.getPrimary());
+        this.registerDropSelfLootTable(InterspaceBlocks.OBELISK_CORE.getPrimary());
+        this.registerDropSelfLootTable(InterspaceBlocks.QUERY_SLATE.getPrimary());
     }
 
     @Override

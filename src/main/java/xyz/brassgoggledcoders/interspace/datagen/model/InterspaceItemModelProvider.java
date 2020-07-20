@@ -24,8 +24,8 @@ public class InterspaceItemModelProvider extends ItemModelProvider {
     protected void registerModels() {
         this.blockItem(InterspaceBlocks.NAFASI_BLOCK);
         this.blockItem(InterspaceBlocks.OBELISK_CORE);
+        this.blockItem(InterspaceBlocks.QUERY_SLATE);
 
-        this.singleTexture("query_slate", mcLoc("item/generated"), "layer0", mcLoc("item/item_frame"));
         this.singleTexture("mirror", mcLoc("item/handheld"), "layer0", modLoc("item/mirror"));
 
         this.genericItem(InterspaceItems.NAFASI_INGOT);

@@ -7,6 +7,7 @@ import xyz.brassgoggledcoders.interspace.Interspace;
 
 public class InterspaceBlockTags {
     public static final BlockTags.Wrapper STORAGE_BLOCKS_NAFASI = forgeTag("storage_blocks/nafasi");
+    public static final BlockTags.Wrapper OBELISK = new BlockTags.Wrapper(Interspace.rl("obelisk"));
 
     public static BlockTags.Wrapper forgeTag(String path) {
         return new BlockTags.Wrapper(new ResourceLocation("forge", path));

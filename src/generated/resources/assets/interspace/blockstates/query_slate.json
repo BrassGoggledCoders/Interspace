@@ -1,0 +1,30 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "interspace:block/query_slate",
+      "x": 180
+    },
+    "facing=up": {
+      "model": "interspace:block/query_slate"
+    },
+    "facing=north": {
+      "model": "interspace:block/query_slate",
+      "x": 90
+    },
+    "facing=south": {
+      "model": "interspace:block/query_slate",
+      "x": 90,
+      "y": 180
+    },
+    "facing=west": {
+      "model": "interspace:block/query_slate",
+      "x": 90,
+      "y": 270
+    },
+    "facing=east": {
+      "model": "interspace:block/query_slate",
+      "x": 90,
+      "y": 90
+    }
+  }
+}

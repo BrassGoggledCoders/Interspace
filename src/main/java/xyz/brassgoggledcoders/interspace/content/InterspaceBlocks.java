@@ -8,6 +8,7 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import xyz.brassgoggledcoders.interspace.Interspace;
 import xyz.brassgoggledcoders.interspace.block.ObeliskCoreBlock;
+import xyz.brassgoggledcoders.interspace.block.QuerySlateBlock;
 import xyz.brassgoggledcoders.interspace.registration.BiRegistryObject;
 import xyz.brassgoggledcoders.interspace.registration.BlockBiDeferredRegister;
 
@@ -20,10 +21,11 @@ public class InterspaceBlocks {
     );
 
     public static final BiRegistryObject<ObeliskCoreBlock, BlockItem> OBELISK_CORE = REGISTER.register(
-            "obelisk_core", () -> new ObeliskCoreBlock(nafasiProperties()
-                    .tickRandomly()
-                    .lootFrom(NAFASI_BLOCK.getPrimary())
-            )
+            "obelisk_core", () -> new ObeliskCoreBlock(nafasiProperties())
+    );
+
+    public static final BiRegistryObject<QuerySlateBlock, BlockItem> QUERY_SLATE = REGISTER.register(
+            "query_slate", () -> new QuerySlateBlock(nafasiProperties())
     );
 
     private static Block.Properties nafasiProperties() {

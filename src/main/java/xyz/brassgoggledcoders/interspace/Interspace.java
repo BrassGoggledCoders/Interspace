@@ -55,12 +55,10 @@ public class Interspace {
         InterspaceItems.register(modEventBus);
         InterspaceSpatialItemTypes.register(modEventBus);
         InterspaceSpatialTypes.register(modEventBus);
-        InterspaceEntities.register(modEventBus);
         InterspaceTileEntities.register(modEventBus);
 
         modEventBus.addListener(InterspaceDataGen::gatherData);
         modEventBus.addListener(this::commonSetup);
-        modEventBus.addListener(this::clientSetup);
 
         MinecraftForge.EVENT_BUS.addListener(this::serverAboutToStart);
 
@@ -78,17 +76,6 @@ public class Interspace {
         CapabilityManager.INSTANCE.register(ISpatialWorld.class, new EmptyNBTStorage<>(), () -> null);
         CapabilityManager.INSTANCE.register(ISpatialChunk.class, new EmptyNBTStorage<>(), () -> null);
         CapabilityManager.INSTANCE.register(ISpatial.class, new EmptyNBTStorage<>(), () -> null);
-    }
-
-    private void clientSetup(FMLClientSetupEvent event) {
-        EntityRendererManager rendererManager = event.getMinecraftSupplier()
-                .get()
-                .getRenderManager();
-        ItemRenderer itemRenderer = event.getMinecraftSupplier()
-                .get()
-                .getItemRenderer();
-
-        rendererManager.register(InterspaceEntities.QUERY_SLATE.get(), new ItemFrameRenderer(rendererManager, itemRenderer));
     }
 
     private void serverAboutToStart(FMLServerAboutToStartEvent event) {

@@ -1,11 +1,10 @@
 {
   "block.interspace.nafasi_block": "Block of Nafasi",
   "block.interspace.obelisk_core": "Obelisk Core",
-  "entity.interspace.query_slate": "Interspace Query Slate",
+  "block.interspace.query_slate": "Query Slate",
   "item.interspace.mirror": "Interspace Mirror",
   "item.interspace.nafasi_ingot": "Nafasi Ingot",
   "item.interspace.nafasi_nugget": "Nafasi Nugget",
-  "item.interspace.query_slate": "Interspace Query Slate",
   "itemGroup.interspace": "Interspace",
   "spatial_type.interspace.basic_cache": "Basic Cache",
   "spatial_type.interspace.empty": "Nothingness",

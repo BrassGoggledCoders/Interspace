@@ -16,13 +16,11 @@ public class InterspaceUSLangProvider extends LanguageProvider {
     protected void addTranslations() {
         this.add(InterspaceBlocks.NAFASI_BLOCK.getPrimary(), "Block of Nafasi");
         this.add(InterspaceBlocks.OBELISK_CORE.getPrimary(), "Obelisk Core");
+        this.add(InterspaceBlocks.QUERY_SLATE.getPrimary(), "Query Slate");
 
         this.add(InterspaceItems.MIRROR.get(), "Interspace Mirror");
-        this.add(InterspaceItems.QUERY_SLATE.get(), "Interspace Query Slate");
         this.add(InterspaceItems.NAFASI_INGOT.get(), "Nafasi Ingot");
         this.add(InterspaceItems.NAFASI_NUGGET.get(), "Nafasi Nugget");
-
-        this.add(InterspaceEntities.QUERY_SLATE.get(), "Interspace Query Slate");
 
         this.add(InterspaceSpatialTypes.BASIC_CACHE.get(), "Basic Cache");
         this.add(InterspaceSpatialTypes.EMPTY.get(), "Nothingness");

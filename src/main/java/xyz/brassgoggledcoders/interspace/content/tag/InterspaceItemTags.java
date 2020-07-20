@@ -9,6 +9,7 @@ public class InterspaceItemTags {
     public static final ItemTags.Wrapper INGOTS_NAFASI = forgeTag("ingots/nafasi");
     public static final ItemTags.Wrapper NUGGETS_NAFASI = forgeTag("nuggets/nafasi");
     public static final ItemTags.Wrapper STORAGE_BLOCKS_NAFASI = forgeTag("storage_blocks/nafasi");
+    public static final ItemTags.Wrapper OBELISK = new ItemTags.Wrapper(Interspace.rl("obelisk"));
 
     private static ItemTags.Wrapper forgeTag(String path) {
         return new ItemTags.Wrapper(new ResourceLocation("forge", path));

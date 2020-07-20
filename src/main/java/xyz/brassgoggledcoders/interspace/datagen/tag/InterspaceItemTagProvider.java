@@ -3,6 +3,7 @@ package xyz.brassgoggledcoders.interspace.datagen.tag;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.ItemTagsProvider;
 import net.minecraftforge.common.Tags;
+import xyz.brassgoggledcoders.interspace.Interspace;
 import xyz.brassgoggledcoders.interspace.content.InterspaceBlocks;
 import xyz.brassgoggledcoders.interspace.content.InterspaceItems;
 import xyz.brassgoggledcoders.interspace.content.tag.InterspaceItemTags;
@@ -24,6 +25,8 @@ public class InterspaceItemTagProvider extends ItemTagsProvider {
 
         this.getBuilder(InterspaceItemTags.STORAGE_BLOCKS_NAFASI).add(InterspaceBlocks.NAFASI_BLOCK.getSecondary());
         this.getBuilder(Tags.Items.STORAGE_BLOCKS).add(InterspaceItemTags.STORAGE_BLOCKS_NAFASI);
+
+        this.getBuilder(InterspaceItemTags.OBELISK).add(InterspaceBlocks.OBELISK_CORE.getSecondary());
     }
 
     @Override
