@@ -11,7 +11,7 @@ import xyz.brassgoggledcoders.interspace.tileentity.ObeliskControllerTileEntity;
 import xyz.brassgoggledcoders.interspace.tileentity.QuerySlateTileEntity;
 
 public class InterspaceTileEntities {
-    private static final DeferredRegister<TileEntityType<?>> TILE_ENTITIES = new DeferredRegister<>(
+    private static final DeferredRegister<TileEntityType<?>> TILE_ENTITIES = DeferredRegister.create(
             ForgeRegistries.TILE_ENTITIES, Interspace.ID);
 
     public static final RegistryObject<TileEntityType<ObeliskControllerTileEntity>> OBELISK_CONTROLLER =

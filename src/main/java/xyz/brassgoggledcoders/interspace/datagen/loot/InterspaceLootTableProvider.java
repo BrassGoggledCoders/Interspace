@@ -1,14 +1,12 @@
 package xyz.brassgoggledcoders.interspace.datagen.loot;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.LootTableProvider;
+import net.minecraft.loot.*;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.storage.loot.LootParameterSet;
-import net.minecraft.world.storage.loot.LootParameterSets;
-import net.minecraft.world.storage.loot.LootTable;
-import net.minecraft.world.storage.loot.ValidationTracker;
 import xyz.brassgoggledcoders.interspace.loot.InterspaceLoot;
 
 import javax.annotation.Nonnull;
@@ -28,14 +26,12 @@ public class InterspaceLootTableProvider extends LootTableProvider {
     @Nonnull
     protected List<Pair<Supplier<Consumer<BiConsumer<ResourceLocation, LootTable.Builder>>>, LootParameterSet>> getTables() {
         return Lists.newArrayList(
-                Pair.of(InterspaceBlockLootTables::new, LootParameterSets.BLOCK),
                 Pair.of(InterspaceSpatialLootTables::new, InterspaceLoot.SPATIAL)
         );
     }
 
     @Override
-    @ParametersAreNonnullByDefault
-    protected void validate(Map<ResourceLocation, LootTable> map, ValidationTracker validationtracker) {
+    protected void validate(Map<ResourceLocation, LootTable> map, @Nonnull ValidationTracker validationtracker) {
 
     }
 

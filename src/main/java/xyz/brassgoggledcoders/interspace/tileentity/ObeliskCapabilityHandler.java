@@ -22,9 +22,8 @@ public class ObeliskCapabilityHandler {
                                     IntSupplier coolDownSupplier) {
         this.capability = capability;
         this.newCapability = newCapability;
-        this.lazyOptional = newCapability.apply(capability)
-                .filter(value -> value instanceof ObeliskFunction)
-                .map(value -> ((ObeliskFunction) value));
+        //TODO Fix I guess, probably nuke
+        this.lazyOptional = LazyOptional.empty();
         if (this.lazyOptional.isPresent()) {
             this.lazyOptional.addListener(this::handleInvalidation);
         }
@@ -50,8 +49,6 @@ public class ObeliskCapabilityHandler {
     }
 
     private void handleInvalidation(LazyOptional<?> lazyOptional) {
-        this.lazyOptional = newCapability.apply(capability)
-                .filter(value -> value instanceof ObeliskFunction)
-                .map(value -> ((ObeliskFunction) value));
+        this.lazyOptional = LazyOptional.empty();
     }
 }

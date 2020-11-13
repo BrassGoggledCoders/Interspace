@@ -1,5 +1,6 @@
 package xyz.brassgoggledcoders.interspace.tileentity;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -24,7 +25,7 @@ public class ObeliskConnectedTileEntity extends TileEntity {
 
     @Nullable
     private ObeliskControllerTileEntity getController() {
-        if (controllerPosition != null && this.getWorld().isAreaLoaded(controllerPosition, 1)) {
+        if (controllerPosition != null && this.getWorld() != null && this.getWorld().isAreaLoaded(controllerPosition, 1)) {
             TileEntity tileEntity = this.getWorld().getTileEntity(controllerPosition);
             if (tileEntity instanceof ObeliskControllerTileEntity) {
                 return (ObeliskControllerTileEntity) tileEntity;
@@ -57,8 +58,8 @@ public class ObeliskConnectedTileEntity extends TileEntity {
     }
 
     @Override
-    public void read(@Nonnull CompoundNBT compound) {
-        super.read(compound);
+    public void read(@Nonnull BlockState blockState, @Nonnull CompoundNBT compound) {
+        super.read(blockState, compound);
         if (compound.contains("controllerPos")) {
             this.setControllerPosition(BlockPos.fromLong(compound.getLong("controllerPos")));
         }

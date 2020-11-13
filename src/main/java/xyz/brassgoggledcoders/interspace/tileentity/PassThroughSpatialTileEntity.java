@@ -31,7 +31,7 @@ public abstract class PassThroughSpatialTileEntity<T extends ISpatial> extends T
     @Nonnull
     private LazyOptional<ISpatial> supplyLazy() {
         return this.getCapabilityForPassThrough()
-                .map(PassThroughSpatial::new);
+                .lazyMap(PassThroughSpatial::new);
     }
 
     protected void invalidate() {

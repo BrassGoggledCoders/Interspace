@@ -10,6 +10,7 @@ import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.IWorld;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.Lazy;
 import org.apache.commons.lang3.tuple.Pair;
 import xyz.brassgoggledcoders.interspace.Interspace;
@@ -44,7 +45,7 @@ public class SpatialClient implements ISpatialClient, AutoCloseable {
     }
 
     @Override
-    public CompletableFuture<Integer> setupWorld(IWorld world) {
+    public CompletableFuture<Integer> setupWorld(World world) {
         return this.multiInsert(this.setupTableSql(this.getDatabaseTableNames(world))
                 .stream()
                 .map(sql -> Pair.of(sql, this.nothing()))
@@ -52,7 +53,7 @@ public class SpatialClient implements ISpatialClient, AutoCloseable {
     }
 
     @Override
-    public Transaction<Collection<SpatialItem>> offer(IWorld world, ChunkPos chunkPos,
+    public Transaction<Collection<SpatialItem>> offer(World world, ChunkPos chunkPos,
                                                       Collection<SpatialItem> offered) {
         return Transaction.of(transactionId -> CompletableFuture.supplyAsync(() -> {
             DatabaseTableNames databaseTableNames = this.getDatabaseTableNames(world);
@@ -84,7 +85,7 @@ public class SpatialClient implements ISpatialClient, AutoCloseable {
     }
 
     @Override
-    public Transaction<Collection<SpatialItem>> query(IWorld world, SpatialQueryBuilder spatialQueryBuilder) {
+    public Transaction<Collection<SpatialItem>> query(World world, SpatialQueryBuilder spatialQueryBuilder) {
         return Transaction.of(transactionId -> CompletableFuture.supplyAsync(() -> {
             DatabaseTableNames tableNames = this.getDatabaseTableNames(world);
             SpatialQuery query = spatialQueryBuilder.build();
@@ -147,12 +148,12 @@ public class SpatialClient implements ISpatialClient, AutoCloseable {
     }
 
     @Override
-    public Transaction<Collection<SpatialItem>> retrieve(IWorld world, SpatialQueryBuilder spatialQueryBuilder) {
+    public Transaction<Collection<SpatialItem>> retrieve(World world, SpatialQueryBuilder spatialQueryBuilder) {
         return Transaction.of(transactionId -> CompletableFuture.completedFuture(Lists.newArrayList()));
     }
 
     @Override
-    public Transaction<Either<String, Integer>> cancel(IWorld world, UUID transactionIdToCancel) {
+    public Transaction<Either<String, Integer>> cancel(World world, UUID transactionIdToCancel) {
         return Transaction.of(transactionId -> CompletableFuture.supplyAsync(() -> {
             DatabaseTableNames tableNames = this.getDatabaseTableNames(world);
             String sql = String.format(SQLStatements.DELETE_TRANSACTIONS, tableNames.getTransactionTableName());
@@ -166,8 +167,8 @@ public class SpatialClient implements ISpatialClient, AutoCloseable {
         }));
     }
 
-    private DatabaseTableNames getDatabaseTableNames(IWorld world) {
-        return databaseTableNamesMap.computeIfAbsent(Objects.requireNonNull(world.getDimension().getType().getRegistryName()),
+    private DatabaseTableNames getDatabaseTableNames(World world) {
+        return databaseTableNamesMap.computeIfAbsent(Objects.requireNonNull(world.getDimensionKey().getLocation()),
                 DatabaseTableNames::new);
     }
 

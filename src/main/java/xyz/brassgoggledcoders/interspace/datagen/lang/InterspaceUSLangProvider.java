@@ -14,10 +14,6 @@ public class InterspaceUSLangProvider extends LanguageProvider {
 
     @Override
     protected void addTranslations() {
-        this.add(InterspaceBlocks.NAFASI_BLOCK.getPrimary(), "Block of Nafasi");
-        this.add(InterspaceBlocks.OBELISK_CORE.getPrimary(), "Obelisk Core");
-        this.add(InterspaceBlocks.QUERY_SLATE.getPrimary(), "Query Slate");
-
         this.add(InterspaceItems.MIRROR.get(), "Interspace Mirror");
         this.add(InterspaceItems.NAFASI_INGOT.get(), "Nafasi Ingot");
         this.add(InterspaceItems.NAFASI_NUGGET.get(), "Nafasi Nugget");
@@ -29,7 +25,6 @@ public class InterspaceUSLangProvider extends LanguageProvider {
 
         this.add("text.interspace.gaze", "You gaze into the Mirror and see: %s");
         this.add("text.interspace.nothing", "Nothingness");
-        this.add("itemGroup.interspace", "Interspace");
     }
 
     protected void add(SpatialType spatialType, String message) {

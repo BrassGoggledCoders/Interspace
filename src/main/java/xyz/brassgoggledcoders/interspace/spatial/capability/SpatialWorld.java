@@ -7,7 +7,8 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SharedSeedRandom;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.ISeedReader;
+import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunk;
 import xyz.brassgoggledcoders.interspace.Interspace;
 import xyz.brassgoggledcoders.interspace.InterspaceRegistries;
@@ -33,12 +34,12 @@ public class SpatialWorld implements ISpatialWorld {
     private final ChunkPos ORIGIN = new ChunkPos(0, 0);
     private final CompletableFuture<Void> worldSetup;
 
-    private final IWorld world;
+    private final World world;
     private final Set<ChunkPos> activeChunks;
     private final Map<ChunkPos, SpatialInstance> chunks;
     private final Set<ChunkPos> awaitingLoad;
 
-    public SpatialWorld(IWorld world) {
+    public SpatialWorld(World world) {
         this.world = world;
         this.worldSetup = InterspaceAPI.getInterspaceClient()
                 .setupWorld(world)
@@ -53,7 +54,7 @@ public class SpatialWorld implements ISpatialWorld {
     public void tick() {
         if (worldSetup.isDone()) {
             if (!awaitingLoad.isEmpty()) {
-                for (ChunkPos chunkPos: awaitingLoad) {
+                for (ChunkPos chunkPos : awaitingLoad) {
                     SpatialInstance spatialInstance = chunks.get(chunkPos);
                     if (spatialInstance != null) {
                         spatialInstance.onLoad();
@@ -92,9 +93,9 @@ public class SpatialWorld implements ISpatialWorld {
     @Nonnull
     public SpatialInstance getSpacialInstance(ChunkPos chunkPos) {
         SpatialInstance spatialInstance = chunks.get(chunkPos);
-        if (!world.isRemote() && spatialInstance == null) {
+        if (world instanceof ISeedReader && spatialInstance == null) {
             SpatialEntry spatialEntry = InterspaceAPI.getSpacialEntryManager().getRandomSpatialEntryFor(world,
-                    SharedSeedRandom.seedSlimeChunk(chunkPos.x, chunkPos.z, world.getSeed(), 831129799101L));
+                    SharedSeedRandom.seedSlimeChunk(chunkPos.x, chunkPos.z, ((ISeedReader) world).getSeed(), 831129799101L));
             spatialInstance = spatialEntry.getType().createInstance(world, chunkPos);
             if (spatialEntry.getNBT() != null) {
                 spatialInstance.deserializeNBT(spatialEntry.getNBT());

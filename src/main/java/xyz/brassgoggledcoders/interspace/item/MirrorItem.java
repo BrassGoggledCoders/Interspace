@@ -13,7 +13,6 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunk;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import xyz.brassgoggledcoders.interspace.Interspace;
 import xyz.brassgoggledcoders.interspace.api.InterspaceAPI;
 import xyz.brassgoggledcoders.interspace.api.spatial.type.SpatialInstance;
 import xyz.brassgoggledcoders.interspace.block.ObeliskCoreBlock;
@@ -24,13 +23,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 public class MirrorItem extends Item {
-    public MirrorItem() {
-        this(new Item.Properties()
-                .maxStackSize(1)
-                .group(Interspace.ITEM_GROUP)
-        );
-    }
-
     public MirrorItem(Properties properties) {
         super(properties);
     }
@@ -63,10 +55,10 @@ public class MirrorItem extends Item {
         World world = context.getWorld();
         BlockPos hitPos = context.getPos();
         BlockState hitBlockState = world.getBlockState(hitPos);
-        if (InterspaceBlocks.OBELISK_CORE.matches(hitBlockState.getBlock())) {
+        if (InterspaceBlocks.OBELISK_CORE.has(hitBlockState)) {
             BlockPos centerPillarPos = hitPos.offset(context.getFace().getOpposite());
             BlockState centerPillar = world.getBlockState(centerPillarPos);
-            if (InterspaceBlocks.OBELISK_CORE.matches(centerPillar.getBlock())) {
+            if (InterspaceBlocks.OBELISK_CORE.has(centerPillar)) {
                 if (centerPillar.get(ObeliskCoreBlock.CORE_STATE) == ObeliskCoreState.INACTIVE) {
                     world.setBlockState(centerPillarPos, centerPillar.with(ObeliskCoreBlock.CORE_STATE,
                             ObeliskCoreState.CONTROLLER));

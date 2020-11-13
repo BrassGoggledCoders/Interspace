@@ -1,13 +1,13 @@
 package xyz.brassgoggledcoders.interspace.datagen.loot;
 
 import com.google.common.collect.Maps;
+import net.minecraft.loot.LootTable;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.storage.loot.LootTable;
-import xyz.brassgoggledcoders.interspace.Interspace;
 
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+
 
 public abstract class SpatialLootTables implements Consumer<BiConsumer<ResourceLocation, LootTable.Builder>> {
     private final Map<ResourceLocation, LootTable.Builder> tables;

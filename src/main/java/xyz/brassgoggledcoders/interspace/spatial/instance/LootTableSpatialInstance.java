@@ -1,13 +1,14 @@
 package xyz.brassgoggledcoders.interspace.spatial.instance;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.loot.LootContext;
+import net.minecraft.loot.LootParameters;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.server.ServerWorld;
-import net.minecraft.world.storage.loot.LootContext;
-import net.minecraft.world.storage.loot.LootParameters;
 import xyz.brassgoggledcoders.interspace.api.spatial.item.SpatialItem;
 import xyz.brassgoggledcoders.interspace.api.spatial.type.SpatialInstance;
 import xyz.brassgoggledcoders.interspace.api.spatial.type.SpatialType;
@@ -30,7 +31,7 @@ public abstract class LootTableSpatialInstance extends SpatialInstance {
             if (this.getWorld() instanceof ServerWorld) {
                 ServerWorld serverWorld = (ServerWorld) this.getWorld();
                 LootContext lootContext = new LootContext.Builder(serverWorld)
-                        .withParameter(LootParameters.POSITION, this.getChunkPos().asBlockPos())
+                        .withParameter(LootParameters.field_237457_g_, Vector3d.copyCentered(this.getChunkPos().asBlockPos()))
                         .build(InterspaceLoot.SPATIAL);
                 this.offer(this.convertEntries(serverWorld.getServer()
                         .getLootTableManager()

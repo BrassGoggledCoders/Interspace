@@ -9,7 +9,7 @@ import net.minecraft.resources.IResource;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.World;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import org.apache.commons.io.IOUtils;
 import xyz.brassgoggledcoders.interspace.Interspace;
@@ -62,7 +62,7 @@ public class SpatialEntryManager implements IFutureReloadListener, ISpatialEntry
                 for (IResource resource : resourceManager.getAllResources(prefixedResourceLocation)) {
                     try (
                             InputStream inputstream = resource.getInputStream();
-                            Reader reader = new BufferedReader(new InputStreamReader(inputstream, StandardCharsets.UTF_8));
+                            Reader reader = new BufferedReader(new InputStreamReader(inputstream, StandardCharsets.UTF_8))
                     ) {
                         JsonObject jsonObject = JSONUtils.fromJson(GSON, reader, JsonObject.class);
                         if (jsonObject == null) {
@@ -92,9 +92,9 @@ public class SpatialEntryManager implements IFutureReloadListener, ISpatialEntry
     }
 
     @Override
-    public Collection<SpatialEntry> getSpatialEntriesFor(IWorld world) {
-        if (spatialWorldEntries.containsKey(world.getDimension().getType().getRegistryName())) {
-            return this.spatialWorldEntries.get(world.getDimension().getType().getRegistryName()).getSpacialEntries();
+    public Collection<SpatialEntry> getSpatialEntriesFor(World world) {
+        if (spatialWorldEntries.containsKey(world.getDimensionKey().getLocation())) {
+            return this.spatialWorldEntries.get(world.getDimensionKey().getLocation()).getSpacialEntries();
         }
         return Collections.emptyList();
     }
@@ -105,8 +105,8 @@ public class SpatialEntryManager implements IFutureReloadListener, ISpatialEntry
     }
 
     @Override
-    public SpatialEntry getRandomSpatialEntryFor(IWorld world, Random random) {
-        SpatialWorldEntry worldEntry = this.spatialWorldEntries.get(world.getDimension().getType().getRegistryName());
+    public SpatialEntry getRandomSpatialEntryFor(World world, Random random) {
+        SpatialWorldEntry worldEntry = this.spatialWorldEntries.get(world.getDimensionKey().getLocation());
         if (worldEntry == null) {
             worldEntry = this.spatialWorldEntries.get(DEFAULT_LOCATION);
         }

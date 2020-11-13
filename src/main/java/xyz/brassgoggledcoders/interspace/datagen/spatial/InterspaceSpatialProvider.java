@@ -1,7 +1,7 @@
 package xyz.brassgoggledcoders.interspace.datagen.spatial;
 
 import net.minecraft.data.DataGenerator;
-import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.World;
 import xyz.brassgoggledcoders.interspace.Interspace;
 import xyz.brassgoggledcoders.interspace.content.InterspaceSpatialTypes;
 import xyz.brassgoggledcoders.interspace.nbt.CompoundNBTBuilder;
@@ -13,7 +13,7 @@ public class InterspaceSpatialProvider extends SpatialProvider {
 
     @Override
     protected void registerSpacialWorldEntries() {
-        this.getBuilder(DimensionType.OVERWORLD)
+        this.getBuilder(World.OVERWORLD)
                 .withEntry(builder -> builder.withType(InterspaceSpatialTypes.BASIC_CACHE)
                         .withNBT(CompoundNBTBuilder.create()
                                 .withString("lootTable", "minecraft:chests/abandoned_mineshaft")

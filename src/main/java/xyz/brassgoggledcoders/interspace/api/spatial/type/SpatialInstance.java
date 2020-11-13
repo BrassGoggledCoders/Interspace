@@ -66,9 +66,9 @@ public class SpatialInstance implements ISpatial, INBTSerializable<CompoundNBT> 
     @Override
     public void deserializeNBT(CompoundNBT compoundNBT) {
         if (compoundNBT.contains("customName", Constants.NBT.TAG_STRING)) {
-            this.customName = ITextComponent.Serializer.fromJson(compoundNBT.getString("customName"));
+            this.customName = ITextComponent.Serializer.getComponentFromJson(compoundNBT.getString("customName"));
         } else if (compoundNBT.contains("customName", Constants.NBT.TAG_COMPOUND)) {
-            this.customName = ITextComponent.Serializer.fromJson(compoundNBT.getCompound("customName").toString());
+            this.customName = ITextComponent.Serializer.getComponentFromJson(compoundNBT.getCompound("customName").toString());
         }
     }
 

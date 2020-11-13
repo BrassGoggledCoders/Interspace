@@ -1,30 +1,38 @@
 package xyz.brassgoggledcoders.interspace.datagen.model.builderplus;
 
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.generators.BlockModelBuilder;
-import net.minecraftforge.client.model.generators.ExistingFileHelper;
 import net.minecraftforge.client.model.generators.ModelFile;
 
 import java.util.function.Consumer;
 
-public class BlockModelBuilderPlus extends BlockModelBuilder {
+public class BlockModelBuilderPlus {
+    private final BlockModelBuilder blockModelBuilder;
 
-    public BlockModelBuilderPlus(ResourceLocation outputLocation, ExistingFileHelper existingFileHelper) {
-        super(outputLocation, existingFileHelper);
+    public BlockModelBuilderPlus(BlockModelBuilder blockModelBuilder) {
+        this.blockModelBuilder = blockModelBuilder;
     }
 
     public BlockModelBuilderPlus withElement(Consumer<ElementBuilderPlus<BlockModelBuilder>> element) {
-        element.accept(new ElementBuilderPlus<>(this.element()));
+        element.accept(new ElementBuilderPlus<>(blockModelBuilder.element()));
         return this;
     }
 
     public BlockModelBuilderPlus withParent(ModelFile parent) {
-        super.parent(parent);
+        blockModelBuilder.parent(parent);
         return this;
     }
 
     public BlockModelBuilderPlus withTexture(String key, String texture) {
-        this.texture(key, texture);
+        blockModelBuilder.texture(key, texture);
         return this;
+    }
+
+    public ModelFile getModel() {
+        return blockModelBuilder;
+    }
+
+
+    public static BlockModelBuilderPlus create(BlockModelBuilder builder) {
+        return new BlockModelBuilderPlus(builder);
     }
 }

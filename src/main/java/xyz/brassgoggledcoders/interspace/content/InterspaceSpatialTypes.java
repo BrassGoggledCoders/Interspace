@@ -5,7 +5,6 @@ import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import xyz.brassgoggledcoders.interspace.Interspace;
 import xyz.brassgoggledcoders.interspace.api.spatial.type.SpatialType;
-import xyz.brassgoggledcoders.interspace.registration.LazyForgeRegistry;
 import xyz.brassgoggledcoders.interspace.spatial.instance.BasicCacheSpatialInstance;
 import xyz.brassgoggledcoders.interspace.spatial.instance.EmptySpatialInstance;
 import xyz.brassgoggledcoders.interspace.spatial.instance.ShallowSpringSpatialInstance;
@@ -13,8 +12,7 @@ import xyz.brassgoggledcoders.interspace.spatial.instance.StorageSpatialInstance
 
 @SuppressWarnings("unused")
 public class InterspaceSpatialTypes {
-    private static final DeferredRegister<SpatialType> SPACIAL_TYPE = new DeferredRegister<>(
-            LazyForgeRegistry.<SpatialType>of(Interspace.rl("spacial_type")), Interspace.ID);
+    private static final DeferredRegister<SpatialType> SPACIAL_TYPE = DeferredRegister.create(SpatialType.class, Interspace.ID);
 
     public static final RegistryObject<SpatialType> EMPTY = SPACIAL_TYPE.register("empty", () ->
             new SpatialType(EmptySpatialInstance::new));

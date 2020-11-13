@@ -11,7 +11,7 @@ import xyz.brassgoggledcoders.interspace.spatial.itemtype.ItemStackSpatialItemTy
 
 public class InterspaceSpatialItemTypes {
 
-    private static final DeferredRegister<SpatialItemType<?>> SPACIAL_ITEM_TYPES = new DeferredRegister<>(
+    private static final DeferredRegister<SpatialItemType<?>> SPACIAL_ITEM_TYPES = DeferredRegister.create(
             InterspaceRegistries.SPACIAL_ITEM_TYPES, Interspace.ID);
 
     public static final RegistryObject<ItemStackSpatialItemType> ITEM_STACK = SPACIAL_ITEM_TYPES.register(

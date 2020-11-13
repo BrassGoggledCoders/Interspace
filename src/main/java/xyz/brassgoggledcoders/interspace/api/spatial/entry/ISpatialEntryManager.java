@@ -1,14 +1,15 @@
 package xyz.brassgoggledcoders.interspace.api.spatial.entry;
 
 import net.minecraft.world.IWorld;
+import net.minecraft.world.World;
 
 import java.util.Collection;
 import java.util.Random;
 
 public interface ISpatialEntryManager {
-    Collection<SpatialEntry> getSpatialEntriesFor(IWorld world);
+    Collection<SpatialEntry> getSpatialEntriesFor(World world);
 
     Collection<SpatialEntry> getDefaultEntries();
 
-    SpatialEntry getRandomSpatialEntryFor(IWorld world, Random random);
+    SpatialEntry getRandomSpatialEntryFor(World world, Random random);
 }
