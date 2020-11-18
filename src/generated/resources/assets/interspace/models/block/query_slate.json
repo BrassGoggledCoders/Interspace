@@ -1,8 +1,0 @@
-{
-  "parent": "interspace:block/slate",
-  "textures": {
-    "down": "interspace:block/nafasi_block",
-    "up": "interspace:block/query_slate_front",
-    "side": "interspace:block/nafasi_block"
-  }
-}
