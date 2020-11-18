@@ -1,12 +1,20 @@
-modLoader="javafml"
-loaderVersion="[31,)"
-issueTrackerURL="https://github.com/Brass-Goggled-Coders/Interspace/issues"
+modLoader = "javafml"
+loaderVersion = "[${loader_version},)"
+issueTrackerURL = "https://github.com/Brass-Goggled-Coders/Interspace/issues"
+license = "MIT"
 
 [[mods]]
-    modId="interspace"
-    version="${file.jarVersion}"
-    displayName="Interspace"
-    authors="SkySom, DivineAspect"
-    description='''
+modId = "interspace"
+version = "${version}"
+displayName = "Interspace"
+authors = "SkySom, DivineAspect"
+description = '''
 
     '''
+
+[[dependencies.interspace]]
+modId = "forge"
+mandatory = true
+versionRange = "[${forge_version},)"
+ordering = "NONE"
+side = "BOTH"

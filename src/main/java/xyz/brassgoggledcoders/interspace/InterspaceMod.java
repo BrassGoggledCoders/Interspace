@@ -4,6 +4,8 @@ import com.tterrag.registrate.Registrate;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.NonNullLazy;
 import net.minecraftforge.fml.common.Mod;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import xyz.brassgoggledcoders.interspace.api.InterspaceAPI;
 import xyz.brassgoggledcoders.interspace.content.InterspaceBlocks;
 import xyz.brassgoggledcoders.interspace.content.InterspaceItems;
@@ -14,6 +16,7 @@ import javax.annotation.Nonnull;
 @Mod(InterspaceMod.ID)
 public class InterspaceMod {
     public static final String ID = "interspace";
+    public static final Logger LOGGER = LogManager.getLogger(ID);
 
     private static final NonNullLazy<Registrate> REGISTRATE = NonNullLazy.of(() -> Registrate.create(ID));
 

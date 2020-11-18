@@ -125,7 +125,6 @@ dependencies {
 
 def version_properties = [
         "version"       : version,
-        "mc_version"    : minecraft_version,
         "forge_version" : min_forge_version,
         "loader_version": loader_version
 ]

@@ -3,8 +3,11 @@ package xyz.brassgoggledcoders.interspace.api.task;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.util.INBTSerializable;
 
+import javax.annotation.Nullable;
+
 public abstract class Task implements INBTSerializable<CompoundNBT> {
 
+    @Nullable
     public abstract Object getResult();
 
     public abstract boolean isDone();
