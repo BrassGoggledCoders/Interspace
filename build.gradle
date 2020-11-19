@@ -30,9 +30,8 @@ minecraft {
     runs {
         client {
             workingDirectory project.file('run')
-
-            property 'forge.logging.console.level', 'debug'
-            property 'mixin.env.disableRefMap': 'true'
+            
+            property 'mixin.env.disableRefMap', 'true'
 
             mods {
                 interspace {
@@ -44,8 +43,7 @@ minecraft {
         server {
             workingDirectory project.file('run')
 
-            property 'forge.logging.console.level', 'debug'
-            property 'mixin.env.disableRefMap': 'true'
+            property 'mixin.env.disableRefMap', 'true'
 
             mods {
                 interspace {
@@ -58,10 +56,10 @@ minecraft {
             workingDirectory project.file("run")
             environment 'target', 'fmluserdevdata'
 
-            property 'fml.earlyprogresswindow': 'false'
-            properties 'mixin.env.disableRefMap': 'true'
+            property 'fml.earlyprogresswindow', 'false'
+            property 'mixin.env.disableRefMap', 'true'
 
-            args '--all', '--output', file('src/generated/resources/'),
+            args '--all', '--output', file('src/generated/resources/').toString(),
                     '--mod', 'interspace', '--reports',
                     '--existing', sourceSets.main.resources.srcDirs[0]
 
@@ -112,7 +110,8 @@ dependencies {
     implementation fg.deobf(registrate)
     shade registrate
 
-    compile "org.xerial:sqlite-jdbc:3.30.1"
+    implementation "org.xerial:sqlite-jdbc:3.30.1"
+    shade "org.xerial:sqlite-jdbc:3.30.1"
 
     compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}:api")
     runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}")
