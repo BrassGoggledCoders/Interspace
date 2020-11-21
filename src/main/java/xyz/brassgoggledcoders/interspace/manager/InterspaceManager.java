@@ -18,13 +18,13 @@ import xyz.brassgoggledcoders.interspace.api.task.Task;
 import xyz.brassgoggledcoders.interspace.api.task.TaskType;
 import xyz.brassgoggledcoders.interspace.api.task.interspace.InterspaceTask;
 import xyz.brassgoggledcoders.interspace.api.task.world.WorldTask;
+import xyz.brassgoggledcoders.interspace.sql.SQLClient;
 
 import javax.annotation.Nonnull;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
-import java.nio.file.StandardOpenOption;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Objects;
@@ -37,17 +37,12 @@ public class InterspaceManager implements IInterspaceManager {
 
     private static final FolderName FOLDER = new FolderName("interspace");
     private static Path path;
-    private static Connection connection;
     private static InterspaceRunnable runnable;
     private static Thread thread;
+    private static SQLClient sqlClient;
 
     private static Queue<InterspaceTask> interspaceTaskQueue;
     private static Queue<WorldTask> worldTaskQueue;
-
-    @Nonnull
-    public static Connection getConnection() {
-        return Objects.requireNonNull(connection, "Interspace Connection not Setup");
-    }
 
     @Nonnull
     public static InterspaceRunnable getRunnable() {
@@ -68,6 +63,7 @@ public class InterspaceManager implements IInterspaceManager {
         return runnable != null;
     }
 
+    @SubscribeEvent
     public static void serverStarted(FMLServerStartedEvent event) {
         if (runnable != null) {
             thread = new Thread(runnable, InterspaceMod.ID);
@@ -84,13 +80,11 @@ public class InterspaceManager implements IInterspaceManager {
 
         try {
             Files.createDirectories(path);
-            Class.forName("org.sqlite.JDBC");
+            sqlClient = SQLClient.create(path);
 
-            SQLiteConnectionPoolDataSource dataSource = new SQLiteConnectionPoolDataSource();
-            dataSource.setUrl("jdbc:sqlite:" + path.resolve("main.db").toString());
-            connection = dataSource.getConnection();
-            runnable = new InterspaceRunnable();
             interspaceTaskQueue = new PriorityBlockingQueue<>();
+            runnable = new InterspaceRunnable(INSTANCE, interspaceTaskQueue::poll,
+                    sqlClient, InterspaceMod.getServerConfig().maxRunningTasks.get());
             readTaskQueueFile(interspaceTaskQueue, path.resolve("interspaceTaskQueue.nbt"), InterspaceTask.class);
             worldTaskQueue = new PriorityBlockingQueue<>();
             readTaskQueueFile(worldTaskQueue, path.resolve("worldTaskQueue.nbt"), WorldTask.class);
@@ -136,9 +130,9 @@ public class InterspaceManager implements IInterspaceManager {
         }
         interspaceTaskQueue = null;
 
-        if (connection != null) {
+        if (sqlClient != null) {
             try {
-                connection.close();
+                sqlClient.close();
             } catch (SQLException exception) {
                 InterspaceMod.LOGGER.warn("Failed to Close Interspace Connection", exception);
             }
@@ -170,12 +164,11 @@ public class InterspaceManager implements IInterspaceManager {
     private static <T extends Task<?>> void writeTaskQueueFile(Queue<T> queue, Path path) {
         ListNBT queueNBT = new ListNBT();
         T task;
-        while((task = queue.poll()) != null) {
+        while ((task = queue.poll()) != null) {
             if (task.shouldSave()) {
                 queueNBT.add(TaskType.serializeTask(task));
             }
         }
-
 
         if (!queueNBT.isEmpty()) {
             try {

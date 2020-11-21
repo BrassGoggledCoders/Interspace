@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "GMG",
+    "PEP",
+    "GMG"
+  ],
+  "key": {
+    "G": {
+      "tag": "forge:ingots/gold"
+    },
+    "M": {
+      "tag": "forge:glass"
+    },
+    "P": {
+      "tag": "minecraft:planks"
+    },
+    "E": {
+      "tag": "forge:ender_pearls"
+    }
+  },
+  "result": {
+    "item": "interspace:interspace_mirror"
+  }
+}

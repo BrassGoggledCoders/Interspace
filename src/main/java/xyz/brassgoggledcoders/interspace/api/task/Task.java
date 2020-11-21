@@ -2,17 +2,14 @@ package xyz.brassgoggledcoders.interspace.api.task;
 
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.util.INBTSerializable;
-import xyz.brassgoggledcoders.interspace.api.source.Source;
 
 import javax.annotation.Nonnull;
 
 public abstract class Task<T extends ITaskRunner> implements INBTSerializable<CompoundNBT>, Comparable<Task<?>> {
     private final TaskType type;
-    private final Source<?> source;
 
-    protected Task(TaskType taskType, Source<?> source) {
+    protected Task(TaskType taskType) {
         this.type = taskType;
-        this.source = source;
     }
 
     /**
@@ -28,10 +25,6 @@ public abstract class Task<T extends ITaskRunner> implements INBTSerializable<Co
 
     public abstract boolean isDone();
 
-    public Source<?> getSource() {
-        return source;
-    }
-
     /**
      * @return a priority. Higher numbers will be prioritized. Database setup is Priority 1000
      */
@@ -46,9 +39,7 @@ public abstract class Task<T extends ITaskRunner> implements INBTSerializable<Co
 
     @Override
     public CompoundNBT serializeNBT() {
-        CompoundNBT nbt = new CompoundNBT();
-        nbt.put("source", this.getSource().serializeNBT());
-        return nbt;
+        return new CompoundNBT();
     }
 
     public abstract void run(T taskRunner);
