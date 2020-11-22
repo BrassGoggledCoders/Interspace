@@ -1,6 +1,7 @@
 package xyz.brassgoggledcoders.interspace.manager;
 
 import com.google.common.collect.Maps;
+import com.google.common.collect.Queues;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.RegistryKey;
@@ -13,13 +14,11 @@ import xyz.brassgoggledcoders.interspace.api.InterspaceCapabilities;
 import xyz.brassgoggledcoders.interspace.api.interspace.IInterspacePostOffice;
 import xyz.brassgoggledcoders.interspace.api.mail.IMailBoxStorage;
 import xyz.brassgoggledcoders.interspace.api.mail.Mail;
+import xyz.brassgoggledcoders.interspace.api.mail.MailBoxStatus;
 import xyz.brassgoggledcoders.interspace.capability.WeakNonNullConsumer;
 
 import javax.annotation.Nonnull;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class InterspacePostOffice implements IInterspacePostOffice {
     private final MinecraftServer minecraftServer;
@@ -46,38 +45,17 @@ public class InterspacePostOffice implements IInterspacePostOffice {
 
     @Nonnull
     @Override
-    public Collection<Mail> receiveMail(@Nonnull UUID address) {
-        return this.getMailBoxStorage(World.OVERWORLD)
-                .map(storage -> storage.getMail(address))
-                .orElseGet(Collections::emptyList);
-    }
-
-    @Nonnull
-    @Override
-    public Collection<Mail> receiveMail(@Nonnull RegistryKey<World> world, @Nonnull UUID address) {
+    public Collection<Mail> receiveMail(@Nonnull RegistryKey<World> world, @Nonnull UUID address, int maxReceive) {
         return this.getMailBoxStorage(world)
-                .map(storage -> storage.getMail(address))
-                .orElseGet(Collections::emptyList);
+                .map(storage -> storage.getMail(address, maxReceive))
+                .orElseGet(Queues::newArrayDeque);
     }
 
     @Override
-    public UUID createMailBox() {
-        return null;
-    }
-
-    @Override
-    public UUID createMailBox(@Nonnull RegistryKey<World> world) {
-        return null;
-    }
-
-    @Override
-    public boolean createMailBox(@Nonnull UUID address) {
-        return false;
-    }
-
-    @Override
-    public boolean createMailBox(@Nonnull RegistryKey<World> world, @Nonnull UUID address) {
-        return false;
+    public MailBoxStatus createMailBox(@Nonnull RegistryKey<World> world, @Nonnull UUID address) {
+        return this.getMailBoxStorage(world)
+                .map(storage -> storage.createMailBox(address))
+                .orElse(MailBoxStatus.FAILED);
     }
 
     private LazyOptional<IMailBoxStorage> getMailBoxStorage(@Nonnull RegistryKey<World> world) {

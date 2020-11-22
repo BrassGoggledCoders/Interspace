@@ -46,7 +46,6 @@ public class InterspaceManager implements IInterspaceManager {
         this.runnable = new InterspaceRunnable(this, interspaceTaskQueue::poll,
                 sqlClient, InterspaceMod.getServerConfig().maxRunningTasks.get());
         this.thread = new Thread(this.runnable);
-
     }
 
     public void start() {

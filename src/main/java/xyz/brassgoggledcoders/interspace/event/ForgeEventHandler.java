@@ -1,12 +1,16 @@
 package xyz.brassgoggledcoders.interspace.event;
 
 import com.google.common.collect.Sets;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -20,7 +24,7 @@ import xyz.brassgoggledcoders.interspace.api.InterspaceAPI;
 import xyz.brassgoggledcoders.interspace.api.InterspaceCapabilities;
 import xyz.brassgoggledcoders.interspace.api.mail.IMailBoxStorage;
 import xyz.brassgoggledcoders.interspace.capability.SingleCapabilityProvider;
-import xyz.brassgoggledcoders.interspace.mail.MailboxStorage;
+import xyz.brassgoggledcoders.interspace.capability.MailboxStorage;
 import xyz.brassgoggledcoders.interspace.manager.InterspaceManager;
 import xyz.brassgoggledcoders.interspace.manager.InterspacePostOffice;
 import xyz.brassgoggledcoders.interspace.task.interspace.SetupInterspaceTask;
@@ -42,8 +46,22 @@ public class ForgeEventHandler {
     }
 
     @SubscribeEvent
+    public static void playerLoadFromFile(PlayerEvent.LoadFromFile loadFromFileEvent) {
+        InterspaceAPI.getPostOffice().createMailBox(World.OVERWORLD, loadFromFileEvent.getPlayer().getUniqueID());
+    }
+
+    @SubscribeEvent
+    public static void playerEvent(TickEvent.PlayerTickEvent playerTickEvent) {
+        PlayerEntity playerEntity = playerTickEvent.player;
+        if (playerTickEvent.phase == TickEvent.Phase.START && playerEntity.getEntityWorld().getGameTime() % 20 == 0) {
+            InterspaceAPI.getPostOffice().receiveMail(World.OVERWORLD, playerEntity.getUniqueID(), 5)
+                    .forEach(mail -> mail.receive(playerEntity));
+        }
+    }
+
+    @SubscribeEvent
     public static void worldCapabilities(AttachCapabilitiesEvent<World> attachCapabilitiesEvent) {
-        SingleCapabilityProvider<IMailBoxStorage> mailBoxProvider = new SingleCapabilityProvider<>(
+        SingleCapabilityProvider<IMailBoxStorage, ListNBT> mailBoxProvider = new SingleCapabilityProvider<>(
                 InterspaceCapabilities.MAILBOXES, new MailboxStorage()
         );
         attachCapabilitiesEvent.addCapability(MAILBOXES, mailBoxProvider);
@@ -80,7 +98,7 @@ public class ForgeEventHandler {
         interspaceManager = InterspaceManager.create(event.getServer());
         InterspaceAPI.setManager(interspaceManager);
         interspacePost = new InterspacePostOffice(event.getServer());
-        InterspaceAPI.setPost(interspacePost);
+        InterspaceAPI.setPostOffice(interspacePost);
     }
 
     @SubscribeEvent
@@ -98,7 +116,7 @@ public class ForgeEventHandler {
         }
         if (interspacePost != null) {
             interspacePost = null;
-            InterspaceAPI.setPost(null);
+            InterspaceAPI.setPostOffice(null);
         }
     }
 }

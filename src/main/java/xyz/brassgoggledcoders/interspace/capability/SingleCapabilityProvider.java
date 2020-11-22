@@ -1,6 +1,7 @@
 package xyz.brassgoggledcoders.interspace.capability;
 
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
@@ -10,7 +11,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class SingleCapabilityProvider<CAP extends INBTSerializable<CompoundNBT>> implements ICapabilitySerializable<CompoundNBT> {
+public class SingleCapabilityProvider<CAP extends INBTSerializable<NBT>, NBT extends INBT> implements ICapabilitySerializable<NBT> {
     private final Capability<CAP> providedCapability;
     private final CAP providedInstance;
     private final LazyOptional<CAP> lazyInstance;
@@ -33,12 +34,12 @@ public class SingleCapabilityProvider<CAP extends INBTSerializable<CompoundNBT>>
     }
 
     @Override
-    public CompoundNBT serializeNBT() {
+    public NBT serializeNBT() {
         return providedInstance.serializeNBT();
     }
 
     @Override
-    public void deserializeNBT(CompoundNBT nbt) {
+    public void deserializeNBT(NBT nbt) {
         providedInstance.deserializeNBT(nbt);
     }
 
