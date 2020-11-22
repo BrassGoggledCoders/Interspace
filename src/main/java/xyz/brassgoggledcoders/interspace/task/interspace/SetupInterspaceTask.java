@@ -2,7 +2,6 @@ package xyz.brassgoggledcoders.interspace.task.interspace;
 
 import net.minecraft.util.RegistryKey;
 import net.minecraft.world.World;
-import org.apache.logging.log4j.Level;
 import xyz.brassgoggledcoders.interspace.api.task.TaskType;
 import xyz.brassgoggledcoders.interspace.api.task.interspace.IInterspaceTaskRunner;
 import xyz.brassgoggledcoders.interspace.api.task.interspace.InterspaceTask;
@@ -27,6 +26,7 @@ public class SetupInterspaceTask extends InterspaceTask {
     public void run(IInterspaceTaskRunner taskRunner) {
         final String name = this.registryKey.getLocation().toString();
         this.setupTransaction = taskRunner.getSQLClient().inTransaction(sqlClient -> {
+            sqlClient.blockingCall(String.format(SQLStatements.CHUNK_SQL, name));
             sqlClient.blockingCall(String.format(SQLStatements.ITEM_TABLE_SQL, name));
             sqlClient.blockingCall(String.format(SQLStatements.TRANSACTION_TABLE_SQL, name));
             sqlClient.blockingCall(String.format(SQLStatements.TRANSACTION_TRIGGER_SQL, name));

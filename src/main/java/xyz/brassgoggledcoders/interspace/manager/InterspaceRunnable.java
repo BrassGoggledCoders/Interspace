@@ -1,9 +1,13 @@
 package xyz.brassgoggledcoders.interspace.manager;
 
 import com.google.common.collect.Lists;
+import net.minecraft.util.RegistryKey;
+import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.World;
 import org.apache.logging.log4j.Level;
 import xyz.brassgoggledcoders.interspace.InterspaceMod;
 import xyz.brassgoggledcoders.interspace.api.interspace.IInterspaceManager;
+import xyz.brassgoggledcoders.interspace.api.interspace.Interspace;
 import xyz.brassgoggledcoders.interspace.api.sql.ISQLClient;
 import xyz.brassgoggledcoders.interspace.api.task.Task;
 import xyz.brassgoggledcoders.interspace.api.task.interspace.IInterspaceTaskRunner;
@@ -12,6 +16,7 @@ import xyz.brassgoggledcoders.interspace.api.task.interspace.InterspaceTask;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
 
@@ -62,6 +67,11 @@ public class InterspaceRunnable implements Runnable, IInterspaceTaskRunner {
     @Nonnull
     public ISQLClient getSQLClient() {
         return sqlClient;
+    }
+
+    @Override
+    public Future<Interspace> getInterspace(RegistryKey<World> world, ChunkPos chunkPos) {
+        return null;
     }
 
     @Override
