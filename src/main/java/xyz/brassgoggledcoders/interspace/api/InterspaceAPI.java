@@ -2,6 +2,7 @@ package xyz.brassgoggledcoders.interspace.api;
 
 import xyz.brassgoggledcoders.interspace.api.interspace.IInterspaceManager;
 import xyz.brassgoggledcoders.interspace.api.interspace.IInterspacePostOffice;
+import xyz.brassgoggledcoders.interspace.api.interspace.IInterspaceVolumeManager;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -13,7 +14,7 @@ public class InterspaceAPI {
 
     private static IInterspaceManager interspaceManager;
     private static IInterspacePostOffice interspacePostOffice;
-
+    private static IInterspaceVolumeManager interspaceVolumeManager;
 
     public static void setManager(@Nullable IInterspaceManager interspaceManager) {
         InterspaceAPI.interspaceManager = interspaceManager;
@@ -31,5 +32,14 @@ public class InterspaceAPI {
     @Nonnull
     public static IInterspacePostOffice getPostOffice() {
         return Objects.requireNonNull(interspacePostOffice, "Called for InterspacePost before it was Ready");
+    }
+
+    public static void setVolumeManager(IInterspaceVolumeManager interspaceVolumeManager) {
+        InterspaceAPI.interspaceVolumeManager = interspaceVolumeManager;
+    }
+
+    @Nonnull
+    public static IInterspaceVolumeManager getVolumeManager() {
+        return Objects.requireNonNull(interspaceVolumeManager, "Called for InterspaceVolume Manager before it was Ready");
     }
 }

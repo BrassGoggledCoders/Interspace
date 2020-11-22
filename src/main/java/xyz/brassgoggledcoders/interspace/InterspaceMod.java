@@ -77,7 +77,6 @@ public class InterspaceMod {
         CapabilityManager.INSTANCE.register(IMailBoxStorage.class, CapabilityNBTStorage.listNBT(), MailboxStorage::new);
     }
 
-
     @Nonnull
     public static ResourceLocation rl(@Nonnull String path) {
         return new ResourceLocation(ID, path);

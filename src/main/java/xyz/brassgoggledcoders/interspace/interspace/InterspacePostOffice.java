@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.interspace.manager;
+package xyz.brassgoggledcoders.interspace.interspace;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Queues;

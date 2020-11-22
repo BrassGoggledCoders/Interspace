@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.interspace.manager;
+package xyz.brassgoggledcoders.interspace.interspace;
 
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.CompressedStreamTools;

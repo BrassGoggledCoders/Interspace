@@ -19,6 +19,7 @@ public class SendMessageMail extends Mail {
     public SendMessageMail(ITextComponent message) {
         this(message, true);
     }
+
     public SendMessageMail(ITextComponent message, boolean shouldSave) {
         this(InterspaceMailTypes.SEND_MESSAGE.get());
         this.message = message;

@@ -7,6 +7,7 @@ import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
@@ -25,8 +26,9 @@ import xyz.brassgoggledcoders.interspace.api.InterspaceCapabilities;
 import xyz.brassgoggledcoders.interspace.api.mail.IMailBoxStorage;
 import xyz.brassgoggledcoders.interspace.capability.SingleCapabilityProvider;
 import xyz.brassgoggledcoders.interspace.capability.MailboxStorage;
-import xyz.brassgoggledcoders.interspace.manager.InterspaceManager;
-import xyz.brassgoggledcoders.interspace.manager.InterspacePostOffice;
+import xyz.brassgoggledcoders.interspace.interspace.InterspaceManager;
+import xyz.brassgoggledcoders.interspace.interspace.InterspacePostOffice;
+import xyz.brassgoggledcoders.interspace.interspace.InterspaceVolumeManager;
 import xyz.brassgoggledcoders.interspace.task.interspace.SetupInterspaceTask;
 
 import java.util.Set;
@@ -43,6 +45,13 @@ public class ForgeEventHandler {
     @SubscribeEvent
     public static void registerCommands(RegisterCommandsEvent commandEvent) {
         commandEvent.getDispatcher().register(InterspaceCommand.create());
+    }
+
+    @SubscribeEvent
+    public static void registerJsonListeners(AddReloadListenerEvent event) {
+        InterspaceVolumeManager interspaceVolumeManager = new InterspaceVolumeManager();
+        event.addListener(interspaceVolumeManager);
+        InterspaceAPI.setVolumeManager(interspaceVolumeManager);
     }
 
     @SubscribeEvent

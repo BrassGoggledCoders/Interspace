@@ -3,10 +3,10 @@ package xyz.brassgoggledcoders.interspace.sql;
 public class SQLStatements {
     public static final String CHUNK_SQL = "CREATE TABLE IF NOT EXISTS \"%s_chunks\"" +
             "(" +
-            "    id       INTEGER PRIMARY KEY AUTOINCREMENT," +
-            "    max_size INTEGER NOT NULL," +
-            "    x        INTEGER NOT NULL," +
-            "    z        INTEGER NOT NULL," +
+            "    id         INTEGER PRIMARY KEY AUTOINCREMENT," +
+            "    max_volume INTEGER NOT NULL," +
+            "    x          INTEGER NOT NULL," +
+            "    z          INTEGER NOT NULL," +
             "    UNIQUE (x, z)" +
             ")";
 
