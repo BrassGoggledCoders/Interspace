@@ -66,7 +66,7 @@ public class InterspaceRunnable implements Runnable, IInterspaceTaskRunner {
 
     @Override
     @Nonnull
-    public IInterspaceManager getManager() {
+    public IInterspaceManager getInterspaceManager() {
         return this.interspaceManager;
     }
 

@@ -3,25 +3,36 @@ package xyz.brassgoggledcoders.interspace;
 import com.tterrag.registrate.Registrate;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.INBT;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.util.NonNullLazy;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.RegistryBuilder;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xyz.brassgoggledcoders.interspace.api.InterspaceAPI;
+import xyz.brassgoggledcoders.interspace.api.mail.IMailBoxStorage;
 import xyz.brassgoggledcoders.interspace.api.task.TaskType;
+import xyz.brassgoggledcoders.interspace.capability.CapabilityNBTStorage;
 import xyz.brassgoggledcoders.interspace.config.InterspaceServerConfig;
 import xyz.brassgoggledcoders.interspace.content.InterspaceBlocks;
 import xyz.brassgoggledcoders.interspace.content.InterspaceItems;
 import xyz.brassgoggledcoders.interspace.content.InterspaceTaskTypes;
+import xyz.brassgoggledcoders.interspace.mail.MailboxStorage;
 import xyz.brassgoggledcoders.interspace.manager.InterspaceManager;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 @Mod(InterspaceMod.ID)
 public class InterspaceMod {
@@ -44,7 +55,9 @@ public class InterspaceMod {
     );
 
     public InterspaceMod() {
-        InterspaceAPI.setManager(InterspaceManager.INSTANCE);
+        IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
+
+        modBus.addListener(this::commonSetup);
 
         new RegistryBuilder<TaskType>()
                 .setType(TaskType.class)
@@ -55,8 +68,11 @@ public class InterspaceMod {
         InterspaceItems.setup();
         InterspaceTaskTypes.setup();
 
-
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, SERVER_CONFIG.getRight());
+    }
+
+    public void commonSetup(FMLCommonSetupEvent event) {
+        CapabilityManager.INSTANCE.register(IMailBoxStorage.class, new CapabilityNBTStorage<>(), MailboxStorage::new);
     }
 
 

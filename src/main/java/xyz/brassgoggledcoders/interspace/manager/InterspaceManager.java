@@ -3,15 +3,11 @@ package xyz.brassgoggledcoders.interspace.manager;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.ListNBT;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.storage.FolderName;
 import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
-import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
-import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
-import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
-import org.sqlite.javax.SQLiteConnectionPoolDataSource;
 import xyz.brassgoggledcoders.interspace.InterspaceMod;
 import xyz.brassgoggledcoders.interspace.api.interspace.IInterspaceManager;
 import xyz.brassgoggledcoders.interspace.api.task.Task;
@@ -20,86 +16,55 @@ import xyz.brassgoggledcoders.interspace.api.task.interspace.InterspaceTask;
 import xyz.brassgoggledcoders.interspace.api.task.world.WorldTask;
 import xyz.brassgoggledcoders.interspace.sql.SQLClient;
 
-import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Objects;
 import java.util.Queue;
 import java.util.concurrent.PriorityBlockingQueue;
 
 @EventBusSubscriber(modid = InterspaceMod.ID, bus = Bus.FORGE)
 public class InterspaceManager implements IInterspaceManager {
-    public static final InterspaceManager INSTANCE = new InterspaceManager();
-
     private static final FolderName FOLDER = new FolderName("interspace");
-    private static Path path;
-    private static InterspaceRunnable runnable;
-    private static Thread thread;
-    private static SQLClient sqlClient;
 
-    private static Queue<InterspaceTask> interspaceTaskQueue;
-    private static Queue<WorldTask> worldTaskQueue;
+    private final Path path;
+    private final InterspaceRunnable runnable;
+    private final Thread thread;
+    private final SQLClient sqlClient;
 
-    @Nonnull
-    public static InterspaceRunnable getRunnable() {
-        return Objects.requireNonNull(runnable, "Interspace Runnable not Setup");
+    private final Queue<InterspaceTask> interspaceTaskQueue;
+    private final Queue<WorldTask> worldTaskQueue;
+
+    public InterspaceManager(Path folderPath, SQLClient sqlClient, Queue<InterspaceTask> interspaceTaskQueue,
+                             Queue<WorldTask> worldTaskQueue) {
+        this.path = folderPath;
+        this.sqlClient = sqlClient;
+
+        this.interspaceTaskQueue = interspaceTaskQueue;
+        this.worldTaskQueue = worldTaskQueue;
+        this.runnable = new InterspaceRunnable(this, interspaceTaskQueue::poll,
+                sqlClient, InterspaceMod.getServerConfig().maxRunningTasks.get());
+        this.thread = new Thread(this.runnable);
+
     }
 
-    @Nonnull
-    public static Queue<InterspaceTask> getInterspaceTaskQueue() {
-        return Objects.requireNonNull(interspaceTaskQueue, "Interspace Task Queue not Setup");
+    public void start() {
+        this.thread.setDaemon(true);
+        this.thread.start();
     }
 
-    @Nonnull
-    public static Queue<WorldTask> getWorldTaskQueue() {
-        return Objects.requireNonNull(worldTaskQueue, "Interspace World Task Queue not Setup");
+    @Override
+    public boolean submitTask(InterspaceTask task) {
+        return interspaceTaskQueue != null && interspaceTaskQueue.offer(task);
     }
 
-    public static boolean isReady() {
-        return runnable != null;
+    @Override
+    public boolean submitTask(WorldTask task) {
+        return worldTaskQueue != null && worldTaskQueue.offer(task);
     }
 
-    @SubscribeEvent
-    public static void serverStarted(FMLServerStartedEvent event) {
-        if (runnable != null) {
-            thread = new Thread(runnable, InterspaceMod.ID);
-            thread.setDaemon(true);
-            thread.start();
-        }
-    }
-
-    @SubscribeEvent
-    public static void serverStarting(FMLServerAboutToStartEvent event) {
-        close();
-
-        path = event.getServer().func_240776_a_(FOLDER);
-
-        try {
-            Files.createDirectories(path);
-            sqlClient = SQLClient.create(path);
-
-            interspaceTaskQueue = new PriorityBlockingQueue<>();
-            runnable = new InterspaceRunnable(INSTANCE, interspaceTaskQueue::poll,
-                    sqlClient, InterspaceMod.getServerConfig().maxRunningTasks.get());
-            readTaskQueueFile(interspaceTaskQueue, path.resolve("interspaceTaskQueue.nbt"), InterspaceTask.class);
-            worldTaskQueue = new PriorityBlockingQueue<>();
-            readTaskQueueFile(worldTaskQueue, path.resolve("worldTaskQueue.nbt"), WorldTask.class);
-
-        } catch (IOException | ClassNotFoundException | SQLException exception) {
-            InterspaceMod.LOGGER.fatal("Failed to Setup Interspace", exception);
-        }
-    }
-
-    @SubscribeEvent
-    public static void serverStopping(FMLServerStoppingEvent event) {
-        close();
-    }
-
-    private static void close() {
+    public void close() {
         if (runnable != null) {
             runnable.close();
         }
@@ -119,7 +84,6 @@ public class InterspaceManager implements IInterspaceManager {
                 InterspaceMod.LOGGER.fatal("Interspace World Task Queue was not Empty, and Path was null");
             }
         }
-        worldTaskQueue = null;
 
         if (interspaceTaskQueue != null && !interspaceTaskQueue.isEmpty()) {
             if (path != null) {
@@ -128,7 +92,6 @@ public class InterspaceManager implements IInterspaceManager {
                 InterspaceMod.LOGGER.fatal("Interspace Task Queue was not Empty, and Path was null");
             }
         }
-        interspaceTaskQueue = null;
 
         if (sqlClient != null) {
             try {
@@ -182,13 +145,19 @@ public class InterspaceManager implements IInterspaceManager {
         }
     }
 
-    @Override
-    public boolean submitTask(InterspaceTask task) {
-        return interspaceTaskQueue != null && interspaceTaskQueue.offer(task);
-    }
+    public static InterspaceManager create(MinecraftServer minecraftServer) {
+        Path path = minecraftServer.func_240776_a_(FOLDER);
 
-    @Override
-    public boolean submitTask(WorldTask task) {
-        return worldTaskQueue != null && worldTaskQueue.offer(task);
+        try {
+            Files.createDirectories(path);
+            SQLClient sqlClient = SQLClient.create(path);
+            Queue<InterspaceTask> interspaceTaskQueue = new PriorityBlockingQueue<>();
+            readTaskQueueFile(interspaceTaskQueue, path.resolve("interspaceTaskQueue.nbt"), InterspaceTask.class);
+            Queue<WorldTask> worldTaskQueue = new PriorityBlockingQueue<>();
+            readTaskQueueFile(worldTaskQueue, path.resolve("worldTaskQueue.nbt"), WorldTask.class);
+            return new InterspaceManager(path, sqlClient, interspaceTaskQueue, worldTaskQueue);
+        } catch (IOException | ClassNotFoundException | SQLException exception) {
+            throw new IllegalStateException("Failed to Setup Interspace");
+        }
     }
 }
