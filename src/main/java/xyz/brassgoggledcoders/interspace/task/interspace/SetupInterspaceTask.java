@@ -28,8 +28,6 @@ public class SetupInterspaceTask extends InterspaceTask {
         this.setupTransaction = taskRunner.getSQLClient().inTransaction(sqlClient -> {
             sqlClient.blockingCall(String.format(SQLStatements.CHUNK_SQL, name));
             sqlClient.blockingCall(String.format(SQLStatements.ITEM_TABLE_SQL, name));
-            sqlClient.blockingCall(String.format(SQLStatements.TRANSACTION_TABLE_SQL, name));
-            sqlClient.blockingCall(String.format(SQLStatements.TRANSACTION_TRIGGER_SQL, name));
             sqlClient.blockingCall(String.format(SQLStatements.ITEM_CHECK_INVENTORY_TRIGGER, name));
             return true;
         });
