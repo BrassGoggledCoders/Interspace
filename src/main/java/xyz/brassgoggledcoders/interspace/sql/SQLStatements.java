@@ -4,11 +4,18 @@ public class SQLStatements {
     public static final String CHUNK_SQL = "CREATE TABLE IF NOT EXISTS \"%s_chunks\"" +
             "(" +
             "    id     INTEGER PRIMARY KEY AUTOINCREMENT," +
-            "    volume INTEGER NOT NULL," +
             "    x      INTEGER NOT NULL," +
             "    z      INTEGER NOT NULL," +
+            "    volume INTEGER NOT NULL," +
+            "    cache  TEXT," +
+            "    luck   INTEGER," +
             "    UNIQUE (x, z)" +
             ")";
+
+    public static final String INSERT_CHUNK_SQL = "INSERT OR %s INTO \"%s_chunks\"" +
+            "(x, z, volume, cache, luck) " +
+            "VALUES " +
+            "(?, ?, ?, ?, ?)";
 
     public static final String ITEM_TABLE_SQL = "CREATE TABLE IF NOT EXISTS \"%1$s_items\"" +
             "(" +
@@ -17,7 +24,7 @@ public class SQLStatements {
             "    registry_name TEXT    NOT NULL," +
             "    count         INTEGER NOT NULL," +
             "    nbt           TEXT    NOT NULL," +
-            "    chunk_id      INT     NOT NULL," +
+            "    chunk_id      INTEGER NOT NULL," +
             "    FOREIGN KEY (chunk_id) REFERENCES \"%1$s_chunks\"(id)," +
             "    UNIQUE (type, registry_name, nbt, chunk_id)" +
             ")";

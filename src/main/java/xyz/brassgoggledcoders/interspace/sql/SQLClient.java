@@ -13,6 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 import java.util.function.Supplier;
 
 public class SQLClient implements ISQLClient, AutoCloseable {
@@ -30,6 +31,11 @@ public class SQLClient implements ISQLClient, AutoCloseable {
                 this.getConnection().setAutoCommit(false);
                 return transaction.apply(this);
             } catch (SQLException sqlException) {
+                try {
+                    this.getConnection().rollback();
+                } catch (SQLException rollBackException) {
+                    InterspaceMod.LOGGER.error("Tried to rollback, Failed", rollBackException);
+                }
                 throw new IllegalStateException("Failed to Run Interspace Transaction", sqlException);
             } finally {
                 try {
@@ -45,6 +51,18 @@ public class SQLClient implements ISQLClient, AutoCloseable {
     @Override
     public Connection getConnection() {
         return this.connection;
+    }
+
+    @Override
+    public Future<Void> call(@Nonnull String sql) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                blockingCall(sql);
+                return null;
+            } catch (SQLException sqlException) {
+                throw new IllegalStateException("Failed to Call Interspace", sqlException);
+            }
+        });
     }
 
     @Override

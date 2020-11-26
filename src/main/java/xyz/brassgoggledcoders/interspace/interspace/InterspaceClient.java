@@ -18,12 +18,10 @@ import java.util.function.IntSupplier;
 public class InterspaceClient implements IInterspaceClient {
     private final ISQLClient sqlClient;
     private final Map<ResourceLocation, LoadingCache<ChunkPos, Interspace>> interspaceCache;
-    private final NonNullFunction<ResourceLocation, IntSupplier> volumeSuppliers;
 
-    public InterspaceClient(ISQLClient sqlClient, NonNullFunction<ResourceLocation, IntSupplier> volumeSuppliers) {
+    public InterspaceClient(ISQLClient sqlClient) {
         this.sqlClient = sqlClient;
         this.interspaceCache = Maps.newConcurrentMap();
-        this.volumeSuppliers = volumeSuppliers;
     }
 
     @Override
@@ -36,6 +34,6 @@ public class InterspaceClient implements IInterspaceClient {
     private LoadingCache<ChunkPos, Interspace> createWorldCache(ResourceLocation world) {
         return CacheBuilder.newBuilder()
                 .expireAfterWrite(2, TimeUnit.MINUTES)
-                .build(new InterspaceCacheLoader(sqlClient, world, volumeSuppliers.apply(world)));
+                .build(new InterspaceCacheLoader(sqlClient, world));
     }
 }

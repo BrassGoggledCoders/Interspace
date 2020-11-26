@@ -10,11 +10,11 @@ import xyz.brassgoggledcoders.interspace.sql.SQLStatements;
 
 import java.util.concurrent.Future;
 
-public class SetupInterspaceTask extends InterspaceTask {
+public class SetupWorldInterspaceTask extends InterspaceTask {
     private Future<Boolean> setupTransaction = null;
     private RegistryKey<World> registryKey;
 
-    public SetupInterspaceTask(TaskType type) {
+    public SetupWorldInterspaceTask(TaskType type) {
         super(type);
     }
 
@@ -53,9 +53,9 @@ public class SetupInterspaceTask extends InterspaceTask {
         return 1000;
     }
 
-    public static SetupInterspaceTask create(RegistryKey<World> registryKey) {
-        SetupInterspaceTask setupInterspaceTask = new SetupInterspaceTask(InterspaceTaskTypes.SETUP_INTERSPACE.get());
-        setupInterspaceTask.setRegistryKey(registryKey);
-        return setupInterspaceTask;
+    public static SetupWorldInterspaceTask create(RegistryKey<World> registryKey) {
+        SetupWorldInterspaceTask setupWorldInterspaceTask = new SetupWorldInterspaceTask(InterspaceTaskTypes.SETUP_WORLD_INTERSPACE.get());
+        setupWorldInterspaceTask.setRegistryKey(registryKey);
+        return setupWorldInterspaceTask;
     }
 }

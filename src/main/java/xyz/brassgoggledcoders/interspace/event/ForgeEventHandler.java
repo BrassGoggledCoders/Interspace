@@ -5,13 +5,17 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.ChunkStatus;
+import net.minecraft.world.chunk.IChunk;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.world.ChunkDataEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -24,12 +28,13 @@ import xyz.brassgoggledcoders.interspace.InterspaceMod;
 import xyz.brassgoggledcoders.interspace.api.InterspaceAPI;
 import xyz.brassgoggledcoders.interspace.api.InterspaceCapabilities;
 import xyz.brassgoggledcoders.interspace.api.mail.IMailBoxStorage;
-import xyz.brassgoggledcoders.interspace.capability.SingleCapabilityProvider;
 import xyz.brassgoggledcoders.interspace.capability.MailboxStorage;
+import xyz.brassgoggledcoders.interspace.capability.SingleCapabilityProvider;
 import xyz.brassgoggledcoders.interspace.interspace.InterspaceManager;
 import xyz.brassgoggledcoders.interspace.interspace.InterspacePostOffice;
 import xyz.brassgoggledcoders.interspace.interspace.InterspaceVolumeManager;
-import xyz.brassgoggledcoders.interspace.task.interspace.SetupInterspaceTask;
+import xyz.brassgoggledcoders.interspace.task.interspace.SetupChunkInterspaceTask;
+import xyz.brassgoggledcoders.interspace.task.interspace.SetupWorldInterspaceTask;
 
 import java.util.Set;
 
@@ -82,7 +87,7 @@ public class ForgeEventHandler {
         if (!worldLoadEvent.getWorld().isRemote() && worldLoadEvent.getWorld() instanceof ServerWorld) {
             ServerWorld world = (ServerWorld) worldLoadEvent.getWorld();
             if (HANDLED.add(world.getDimensionKey())) {
-                InterspaceAPI.getManager().submitTask(SetupInterspaceTask.create(world.getDimensionKey()));
+                InterspaceAPI.getManager().submitTask(SetupWorldInterspaceTask.create(world.getDimensionKey()));
             }
         }
     }
@@ -92,6 +97,31 @@ public class ForgeEventHandler {
         if (interspacePost != null && worldEvent.getWorld() instanceof World) {
             interspacePost.removeStorage(((World) worldEvent.getWorld()).getDimensionKey().getLocation());
         }
+    }
+
+    @SubscribeEvent
+    public static void onChunkDataLoad(ChunkDataEvent.Load loadDataEvent) {
+        IWorld world = loadDataEvent.getWorld();
+        IChunk chunk = loadDataEvent.getChunk();
+        if (chunk.getStatus() == ChunkStatus.FULL && world instanceof ServerWorld) {
+            if (!loadDataEvent.getData().getBoolean(InterspaceMod.ID)) {
+                ServerWorld serverWorld = (ServerWorld) world;
+                InterspaceAPI.getManager()
+                        .submitTask(new SetupChunkInterspaceTask(
+                                serverWorld.getDimensionKey().getLocation(),
+                                chunk.getPos(),
+                                InterspaceAPI.getVolumeManager().getVolume(serverWorld.getDimensionKey(),
+                                        serverWorld.getRandom()),
+                                null,
+                                false
+                        ));
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onChunkDataSave(ChunkDataEvent.Save saveDataEvent) {
+        saveDataEvent.getData().putBoolean(InterspaceMod.ID, true);
     }
 
     @SubscribeEvent

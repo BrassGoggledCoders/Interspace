@@ -18,13 +18,11 @@ public class InterspaceCacheLoader extends CacheLoader<ChunkPos, Interspace> {
     private final ISQLClient sqlClient;
     private final String world;
     private final ThrowingFunction<ResultSet, Interspace, SQLException> interspaceTransformer;
-    private final IntSupplier volumeSupplier;
 
-    public InterspaceCacheLoader(ISQLClient sqlClient, ResourceLocation world, IntSupplier volumeSupplier) {
+    public InterspaceCacheLoader(ISQLClient sqlClient, ResourceLocation world) {
         this.sqlClient = sqlClient;
         this.interspaceTransformer = SQLResultSetTransformers.INTERSPACE.apply(world);
         this.world = world.toString();
-        this.volumeSupplier = volumeSupplier;
     }
 
     @Override
@@ -40,16 +38,7 @@ public class InterspaceCacheLoader extends CacheLoader<ChunkPos, Interspace> {
                     () -> null);
 
             if (interspace == null) {
-                int volume = volumeSupplier.getAsInt();
-                long interspaceId = transactionClient.insert(
-                        "INSERT INTO \"" + world + "_chunks\"(volume, x, z) VALUES(?, ?, ?)",
-                        preparedStatement -> {
-                            preparedStatement.setInt(1, volume);
-                            preparedStatement.setInt(2, key.x);
-                            preparedStatement.setInt(3, key.z);
-                        }
-                );
-                interspace = new Interspace(interspaceId, new ResourceLocation(world), volume, key);
+                interspace = new Interspace(-1, new ResourceLocation(world), 0, key);
             }
 
             return interspace;

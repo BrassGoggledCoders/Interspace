@@ -42,10 +42,7 @@ public class InterspaceRunnable implements Runnable, IInterspaceTaskRunner {
         this.taskSupplier = taskSupplier;
         this.sqlClient = sqlClient;
         this.maxRunningTasks = maxRunningTasks;
-        this.interspaceClient = new InterspaceClient(sqlClient, world -> {
-            Stream<InterspaceVolume> stream = InterspaceAPI.getVolumeManager().getVolumes(RegistryKey.getOrCreateKey(Registry.WORLD_KEY, world));
-            return () -> stream.mapToInt(InterspaceVolume::getVolume).findAny().orElse(0);
-        });
+        this.interspaceClient = new InterspaceClient(sqlClient);
     }
 
     @Override

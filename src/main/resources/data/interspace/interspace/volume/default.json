@@ -1,5 +1,11 @@
 [
   {
+    "volume": 16,
+    "weight": 0.30,
+    "cacheChance": 0.75,
+    "cacheLuck": 4
+  },
+  {
     "volume": 64,
     "weight": 0.30
   },

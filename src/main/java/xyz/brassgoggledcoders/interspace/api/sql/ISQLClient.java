@@ -9,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 import java.util.function.Supplier;
 
 public interface ISQLClient {
@@ -17,6 +18,8 @@ public interface ISQLClient {
 
     @Nonnull
     Connection getConnection();
+
+    Future<Void> call(@Nonnull String sql) throws SQLException;
 
     void blockingCall(@Nonnull String sql) throws SQLException;
 
