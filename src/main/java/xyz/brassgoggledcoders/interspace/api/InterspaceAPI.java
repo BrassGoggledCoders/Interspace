@@ -1,5 +1,6 @@
 package xyz.brassgoggledcoders.interspace.api;
 
+import net.minecraft.util.ResourceLocation;
 import xyz.brassgoggledcoders.interspace.api.interspace.IInterspaceManager;
 import xyz.brassgoggledcoders.interspace.api.interspace.IInterspacePostOffice;
 import xyz.brassgoggledcoders.interspace.api.interspace.IInterspaceVolumeManager;
@@ -41,5 +42,9 @@ public class InterspaceAPI {
     @Nonnull
     public static IInterspaceVolumeManager getVolumeManager() {
         return Objects.requireNonNull(interspaceVolumeManager, "Called for InterspaceVolume Manager before it was Ready");
+    }
+
+    public static ResourceLocation rl(String location) {
+        return new ResourceLocation("interspace", location);
     }
 }

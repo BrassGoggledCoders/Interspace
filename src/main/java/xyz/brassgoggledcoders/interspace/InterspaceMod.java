@@ -1,6 +1,7 @@
 package xyz.brassgoggledcoders.interspace;
 
 import com.tterrag.registrate.Registrate;
+import com.tterrag.registrate.providers.ProviderType;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -22,10 +23,7 @@ import xyz.brassgoggledcoders.interspace.api.mail.MailType;
 import xyz.brassgoggledcoders.interspace.api.task.TaskType;
 import xyz.brassgoggledcoders.interspace.capability.CapabilityNBTStorage;
 import xyz.brassgoggledcoders.interspace.config.InterspaceServerConfig;
-import xyz.brassgoggledcoders.interspace.content.InterspaceBlocks;
-import xyz.brassgoggledcoders.interspace.content.InterspaceItems;
-import xyz.brassgoggledcoders.interspace.content.InterspaceMailTypes;
-import xyz.brassgoggledcoders.interspace.content.InterspaceTaskTypes;
+import xyz.brassgoggledcoders.interspace.content.*;
 import xyz.brassgoggledcoders.interspace.capability.MailboxStorage;
 
 import javax.annotation.Nonnull;
@@ -39,6 +37,7 @@ public class InterspaceMod {
             .configure(InterspaceServerConfig::new);
 
     private static final NonNullLazy<Registrate> REGISTRATE = NonNullLazy.of(() -> Registrate.create(ID)
+            .addDataGenerator(ProviderType.LANG, InterspaceAdditionalData::generateText)
             .itemGroup(() -> new ItemGroup(ID) {
                 @Override
                 @Nonnull
@@ -47,7 +46,7 @@ public class InterspaceMod {
                             .map(ItemStack::new)
                             .orElse(ItemStack.EMPTY);
                 }
-            })
+            }, "Interspace")
     );
 
     public InterspaceMod() {

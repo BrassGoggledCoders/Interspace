@@ -2,12 +2,15 @@ package xyz.brassgoggledcoders.interspace.interspace;
 
 import com.google.common.collect.Lists;
 import net.minecraft.util.RegistryKey;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.World;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.Registry;
 import org.apache.logging.log4j.Level;
 import xyz.brassgoggledcoders.interspace.InterspaceMod;
+import xyz.brassgoggledcoders.interspace.api.InterspaceAPI;
+import xyz.brassgoggledcoders.interspace.api.interspace.IInterspaceClient;
 import xyz.brassgoggledcoders.interspace.api.interspace.IInterspaceManager;
-import xyz.brassgoggledcoders.interspace.api.interspace.Interspace;
+import xyz.brassgoggledcoders.interspace.api.interspace.InterspaceVolume;
+import xyz.brassgoggledcoders.interspace.api.mail.Mail;
 import xyz.brassgoggledcoders.interspace.api.sql.ISQLClient;
 import xyz.brassgoggledcoders.interspace.api.task.Task;
 import xyz.brassgoggledcoders.interspace.api.task.interspace.IInterspaceTaskRunner;
@@ -15,10 +18,12 @@ import xyz.brassgoggledcoders.interspace.api.task.interspace.InterspaceTask;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
-import java.util.concurrent.Future;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 public class InterspaceRunnable implements Runnable, IInterspaceTaskRunner {
     private final AtomicBoolean running = new AtomicBoolean(true);
@@ -27,6 +32,7 @@ public class InterspaceRunnable implements Runnable, IInterspaceTaskRunner {
     private final IInterspaceManager interspaceManager;
     private final Supplier<InterspaceTask> taskSupplier;
     private final ISQLClient sqlClient;
+    private final IInterspaceClient interspaceClient;
 
     private InterspaceTask blockingTask;
 
@@ -36,6 +42,10 @@ public class InterspaceRunnable implements Runnable, IInterspaceTaskRunner {
         this.taskSupplier = taskSupplier;
         this.sqlClient = sqlClient;
         this.maxRunningTasks = maxRunningTasks;
+        this.interspaceClient = new InterspaceClient(sqlClient, world -> {
+            Stream<InterspaceVolume> stream = InterspaceAPI.getVolumeManager().getVolumes(RegistryKey.getOrCreateKey(Registry.WORLD_KEY, world));
+            return () -> stream.mapToInt(InterspaceVolume::getVolume).findAny().orElse(0);
+        });
     }
 
     @Override
@@ -69,15 +79,23 @@ public class InterspaceRunnable implements Runnable, IInterspaceTaskRunner {
         return sqlClient;
     }
 
+    @Nonnull
     @Override
-    public Future<Interspace> getInterspace(RegistryKey<World> world, ChunkPos chunkPos) {
-        return null;
+    public IInterspaceClient getInterspaceClient() {
+        return interspaceClient;
     }
 
     @Override
     @Nonnull
     public IInterspaceManager getInterspaceManager() {
         return this.interspaceManager;
+    }
+
+    @Override
+    @ParametersAreNonnullByDefault
+    public boolean sendMail(ResourceLocation world, UUID address, Mail mail) {
+        return InterspaceAPI.getPostOffice().sendMail(RegistryKey.getOrCreateKey(Registry.WORLD_KEY, world),
+                address, mail);
     }
 
     @Override
