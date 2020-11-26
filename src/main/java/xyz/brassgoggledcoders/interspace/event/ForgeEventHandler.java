@@ -15,6 +15,7 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.event.world.ChunkDataEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -30,6 +31,7 @@ import xyz.brassgoggledcoders.interspace.api.InterspaceCapabilities;
 import xyz.brassgoggledcoders.interspace.api.mail.IMailBoxStorage;
 import xyz.brassgoggledcoders.interspace.capability.MailboxStorage;
 import xyz.brassgoggledcoders.interspace.capability.SingleCapabilityProvider;
+import xyz.brassgoggledcoders.interspace.content.InterspaceFeatures;
 import xyz.brassgoggledcoders.interspace.interspace.InterspaceManager;
 import xyz.brassgoggledcoders.interspace.interspace.InterspacePostOffice;
 import xyz.brassgoggledcoders.interspace.interspace.InterspaceVolumeManager;
@@ -100,6 +102,11 @@ public class ForgeEventHandler {
     }
 
     @SubscribeEvent
+    public static void onBiomeLoad(BiomeLoadingEvent event) {
+        InterspaceFeatures.onBiomeLoad(event);
+    }
+
+    @SubscribeEvent
     public static void onChunkDataLoad(ChunkDataEvent.Load loadDataEvent) {
         IWorld world = loadDataEvent.getWorld();
         IChunk chunk = loadDataEvent.getChunk();
@@ -121,7 +128,9 @@ public class ForgeEventHandler {
 
     @SubscribeEvent
     public static void onChunkDataSave(ChunkDataEvent.Save saveDataEvent) {
-        saveDataEvent.getData().putBoolean(InterspaceMod.ID, true);
+        if (saveDataEvent.getChunk().getStatus() == ChunkStatus.FULL) {
+            saveDataEvent.getData().putBoolean(InterspaceMod.ID, true);
+        }
     }
 
     @SubscribeEvent

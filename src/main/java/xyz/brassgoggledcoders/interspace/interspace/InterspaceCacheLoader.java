@@ -12,7 +12,6 @@ import javax.annotation.Nonnull;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.concurrent.TimeUnit;
-import java.util.function.IntSupplier;
 
 public class InterspaceCacheLoader extends CacheLoader<ChunkPos, Interspace> {
     private final ISQLClient sqlClient;
@@ -29,7 +28,7 @@ public class InterspaceCacheLoader extends CacheLoader<ChunkPos, Interspace> {
     public Interspace load(@Nonnull ChunkPos key) throws Exception {
         return sqlClient.inTransaction(transactionClient -> {
             Interspace interspace = transactionClient.blockingQuery(
-                    "SELECT * FROM \"" + world + "_chunks\" WHERE x = ? AND z = ?",
+                    "SELECT id, volume, x, z FROM \"" + world + "_chunks\" WHERE x = ? AND z = ?",
                     preparedStatement -> {
                         preparedStatement.setInt(1, key.x);
                         preparedStatement.setInt(2, key.z);

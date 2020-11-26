@@ -68,6 +68,7 @@ public class InterspaceMod {
         InterspaceItems.setup();
         InterspaceTaskTypes.setup();
         InterspaceMailTypes.setup();
+        InterspaceFeatures.setup();
 
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, SERVER_CONFIG.getRight());
     }
