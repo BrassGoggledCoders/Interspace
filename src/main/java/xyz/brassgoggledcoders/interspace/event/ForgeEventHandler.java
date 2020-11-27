@@ -42,8 +42,6 @@ import java.util.Set;
 
 @EventBusSubscriber(modid = InterspaceMod.ID, bus = Bus.FORGE)
 public class ForgeEventHandler {
-    private static final Set<RegistryKey<World>> HANDLED = Sets.newHashSet();
-
     private static final ResourceLocation MAILBOXES = InterspaceMod.rl("mailboxes");
 
     private static InterspacePostOffice interspacePost;
@@ -86,11 +84,9 @@ public class ForgeEventHandler {
 
     @SubscribeEvent
     public static void onWorldLoad(WorldEvent.Load worldLoadEvent) {
-        if (!worldLoadEvent.getWorld().isRemote() && worldLoadEvent.getWorld() instanceof ServerWorld) {
-            ServerWorld world = (ServerWorld) worldLoadEvent.getWorld();
-            if (HANDLED.add(world.getDimensionKey())) {
-                InterspaceAPI.getManager().submitTask(SetupWorldInterspaceTask.create(world.getDimensionKey()));
-            }
+        IWorld world = worldLoadEvent.getWorld();
+        if (!world.isRemote() && world instanceof ServerWorld) {
+            SetupWorldInterspaceTask.submit(((ServerWorld) world).getDimensionKey());
         }
     }
 
@@ -112,16 +108,8 @@ public class ForgeEventHandler {
         IChunk chunk = loadDataEvent.getChunk();
         if (chunk.getStatus() == ChunkStatus.FULL && world instanceof ServerWorld) {
             if (!loadDataEvent.getData().getBoolean(InterspaceMod.ID)) {
-                ServerWorld serverWorld = (ServerWorld) world;
-                InterspaceAPI.getManager()
-                        .submitTask(new SetupChunkInterspaceTask(
-                                serverWorld.getDimensionKey().getLocation(),
-                                chunk.getPos(),
-                                InterspaceAPI.getVolumeManager().getVolume(serverWorld.getDimensionKey(),
-                                        serverWorld.getRandom()),
-                                null,
-                                false
-                        ));
+                SetupChunkInterspaceTask.submit(((ServerWorld) world).getDimensionKey(), world.getRandom(),
+                        chunk.getPos());
             }
         }
     }
@@ -155,7 +143,7 @@ public class ForgeEventHandler {
     }
 
     private static void close() {
-        HANDLED.clear();
+        SetupWorldInterspaceTask.clearSubmitted();
 
         if (interspaceManager != null) {
             interspaceManager.close();

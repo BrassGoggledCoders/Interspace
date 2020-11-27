@@ -1,9 +1,12 @@
 package xyz.brassgoggledcoders.interspace.task.interspace;
 
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.World;
 import xyz.brassgoggledcoders.interspace.InterspaceMod;
+import xyz.brassgoggledcoders.interspace.api.InterspaceAPI;
 import xyz.brassgoggledcoders.interspace.api.interspace.InterspaceVolume;
 import xyz.brassgoggledcoders.interspace.api.task.TaskType;
 import xyz.brassgoggledcoders.interspace.api.task.interspace.IInterspaceTaskRunner;
@@ -14,6 +17,7 @@ import xyz.brassgoggledcoders.interspace.util.NBTTransformers;
 
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
@@ -102,5 +106,16 @@ public class SetupChunkInterspaceTask extends InterspaceTask {
         if (nbt.contains("cache")) {
             this.cache = new ResourceLocation(nbt.getString("cache"));
         }
+    }
+
+    public static void submit(RegistryKey<World> world, Random random, ChunkPos chunkPos) {
+        InterspaceAPI.getManager()
+                .submitTask(new SetupChunkInterspaceTask(
+                        world.getLocation(),
+                        chunkPos,
+                        InterspaceAPI.getVolumeManager().getVolume(world, random),
+                        null,
+                        false
+                ));
     }
 }

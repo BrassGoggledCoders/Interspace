@@ -8,8 +8,8 @@ import net.minecraft.world.World;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
-import xyz.brassgoggledcoders.interspace.api.InterspaceAPI;
 import xyz.brassgoggledcoders.interspace.task.interspace.SetupChunkInterspaceTask;
+import xyz.brassgoggledcoders.interspace.task.interspace.SetupWorldInterspaceTask;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Random;
@@ -23,14 +23,8 @@ public class InterspaceFeature extends Feature<NoFeatureConfig> {
     @ParametersAreNonnullByDefault
     public boolean generate(ISeedReader reader, ChunkGenerator generator, Random rand, BlockPos pos, NoFeatureConfig config) {
         RegistryKey<World> registryKey = reader.getWorld().getDimensionKey();
-        InterspaceAPI.getManager()
-                .submitTask(new SetupChunkInterspaceTask(
-                        registryKey.getLocation(),
-                        new ChunkPos(pos),
-                        InterspaceAPI.getVolumeManager().getVolume(registryKey, rand),
-                        null,
-                        false
-                ));
+        SetupWorldInterspaceTask.submit(registryKey);
+        SetupChunkInterspaceTask.submit(registryKey, rand, new ChunkPos(pos));
         return true;
     }
 }

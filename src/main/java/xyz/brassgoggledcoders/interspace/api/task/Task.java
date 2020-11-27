@@ -46,7 +46,7 @@ public abstract class Task<T extends ITaskRunner> implements INBTSerializable<Co
 
     @Override
     public int compareTo(@Nonnull Task<?> o) {
-        return Integer.compare(this.getPriority(), o.getPriority());
+        return Integer.compare(o.getPriority(), this.getPriority());
     }
 
     public TaskType getType() {
