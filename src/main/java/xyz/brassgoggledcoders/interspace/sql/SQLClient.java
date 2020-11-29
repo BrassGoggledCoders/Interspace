@@ -134,10 +134,8 @@ public class SQLClient implements ISQLClient, AutoCloseable {
 
     public static SQLClient create(Path path) throws ClassNotFoundException, SQLException {
         Class.forName("org.sqlite.JDBC");
-
         SQLiteConnectionPoolDataSource dataSource = new SQLiteConnectionPoolDataSource();
         dataSource.setUrl("jdbc:sqlite:" + path.resolve("main.db").toString());
-
         return new SQLClient(dataSource.getConnection());
     }
 }

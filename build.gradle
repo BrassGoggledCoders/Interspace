@@ -33,6 +33,16 @@ minecraft {
             
             property 'mixin.env.disableRefMap', 'true'
 
+            if (project.hasProperty('mc_uuid')) {
+                args '--uuid', project.getProperty('mc_uuid')
+            }
+            if (project.hasProperty('mc_username')) {
+                args '--username', project.getProperty('mc_username')
+            }
+            if (project.hasProperty('mc_accessToken')) {
+                args '--accessToken', project.getProperty('mc_accessToken')
+            }
+
             mods {
                 interspace {
                     source sourceSets.main

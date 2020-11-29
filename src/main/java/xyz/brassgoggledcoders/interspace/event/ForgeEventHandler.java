@@ -1,9 +1,7 @@
 package xyz.brassgoggledcoders.interspace.event;
 
-import com.google.common.collect.Sets;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
@@ -37,8 +35,6 @@ import xyz.brassgoggledcoders.interspace.interspace.InterspacePostOffice;
 import xyz.brassgoggledcoders.interspace.interspace.InterspaceVolumeManager;
 import xyz.brassgoggledcoders.interspace.task.interspace.SetupChunkInterspaceTask;
 import xyz.brassgoggledcoders.interspace.task.interspace.SetupWorldInterspaceTask;
-
-import java.util.Set;
 
 @EventBusSubscriber(modid = InterspaceMod.ID, bus = Bus.FORGE)
 public class ForgeEventHandler {
@@ -125,6 +121,7 @@ public class ForgeEventHandler {
     public static void onServerStarting(FMLServerStartingEvent event) {
         if (interspaceManager != null) {
             interspaceManager.start();
+            event.getServer().getWorlds().forEach(world -> SetupWorldInterspaceTask.submit(world.getDimensionKey()));
         }
     }
 
