@@ -12,13 +12,15 @@ public class InterspaceVolume {
     private final int volume;
     private final double weight;
     private final float cacheChance;
+    private final int cacheTries;
     private final Float cacheLuck;
 
-    public InterspaceVolume(int volume, double weight, float cacheChance, Float luck) {
+    public InterspaceVolume(int volume, double weight, float cacheChance, int cacheTries, Float cacheLuck) {
         this.volume = volume;
         this.weight = weight;
         this.cacheChance = cacheChance;
-        this.cacheLuck = luck;
+        this.cacheTries = cacheTries;
+        this.cacheLuck = cacheLuck;
     }
 
     public int getVolume() {
@@ -53,6 +55,7 @@ public class InterspaceVolume {
                 nbt.getInt("volume"),
                 nbt.getDouble("weight"),
                 nbt.getFloat("cacheChance"),
+                nbt.getInt("cacheTries"),
                 nbt.contains("cacheLuck") ? nbt.getFloat("cacheLuck") : null
         );
     }
@@ -60,14 +63,20 @@ public class InterspaceVolume {
     public static InterspaceVolume fromJson(JsonElement jsonElement) throws JsonParseException {
         if (jsonElement.isJsonObject()) {
             JsonObject volumeObject = jsonElement.getAsJsonObject();
+            JsonObject cacheObject = null;
+            if (volumeObject.has("cache") && volumeObject.get("cache").isJsonObject()) {
+                cacheObject = volumeObject.getAsJsonObject("cache");
+            } else {
+                cacheObject = new JsonObject();
+            }
             return new InterspaceVolume(
                     JSONUtils.getInt(volumeObject, "volume", 64),
                     JSONUtils.getFloat(volumeObject, "weight", 1.0F),
-                    JSONUtils.getFloat(volumeObject, "cacheChance", InterspaceMod.getServerConfig()
+                    JSONUtils.getFloat(cacheObject, "chance", InterspaceMod.getServerConfig()
                             .getDefaultCacheChance()
                             .floatValue()),
-                    volumeObject.has("cacheLuck") ? JSONUtils.getFloat(volumeObject,
-                            "cacheLuck") : null
+                    JSONUtils.getInt(cacheObject, "tries", 1),
+                    cacheObject.has("luck") ? JSONUtils.getFloat(volumeObject, "luck") : null
             );
         } else if (jsonElement.isJsonPrimitive()) {
             JsonPrimitive volumePrimitive = jsonElement.getAsJsonPrimitive();
@@ -78,6 +87,7 @@ public class InterspaceVolume {
                         InterspaceMod.getServerConfig()
                                 .getDefaultCacheChance()
                                 .floatValue(),
+                        1,
                         null
                 );
             } else {

@@ -64,6 +64,10 @@ public class InterspaceRunnable implements Runnable, IInterspaceTaskRunner {
                 blockingTask = null;
             }
         }
+
+        while (!runningTasks.isEmpty()) {
+            runningTasks.removeIf(Task::isDone);
+        }
     }
 
     public void close() {

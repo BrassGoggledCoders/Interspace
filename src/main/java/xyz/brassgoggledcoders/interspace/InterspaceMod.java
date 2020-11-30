@@ -8,23 +8,19 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.util.NonNullLazy;
-import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.RegistryBuilder;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xyz.brassgoggledcoders.interspace.api.mail.IMailBoxStorage;
-import xyz.brassgoggledcoders.interspace.api.mail.MailType;
-import xyz.brassgoggledcoders.interspace.api.task.TaskType;
 import xyz.brassgoggledcoders.interspace.capability.CapabilityNBTStorage;
+import xyz.brassgoggledcoders.interspace.capability.MailboxStorage;
 import xyz.brassgoggledcoders.interspace.config.InterspaceServerConfig;
 import xyz.brassgoggledcoders.interspace.content.*;
-import xyz.brassgoggledcoders.interspace.capability.MailboxStorage;
 
 import javax.annotation.Nonnull;
 
@@ -50,19 +46,7 @@ public class InterspaceMod {
     );
 
     public InterspaceMod() {
-        IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
-
-        modBus.addListener(this::commonSetup);
-
-        new RegistryBuilder<MailType>()
-                .setType(MailType.class)
-                .setName(rl("mail_type"))
-                .create();
-
-        new RegistryBuilder<TaskType>()
-                .setType(TaskType.class)
-                .setName(rl("task_type"))
-                .create();
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonSetup);
 
         InterspaceBlocks.setup();
         InterspaceItems.setup();

@@ -32,6 +32,7 @@ public class SetupWorldInterspaceTask extends InterspaceTask {
         final String name = this.registryKey.getLocation().toString();
         this.setupTransaction = taskRunner.getSQLClient().inTransaction(sqlClient -> {
             sqlClient.blockingCall(String.format(SQLStatements.CHUNK_SQL, name));
+            sqlClient.blockingCall(String.format(SQLStatements.CACHE_SQL, name));
             sqlClient.blockingCall(String.format(SQLStatements.ITEM_TABLE_SQL, name));
             sqlClient.blockingCall(String.format(SQLStatements.ITEM_CHECK_INVENTORY_TRIGGER, name));
             return true;

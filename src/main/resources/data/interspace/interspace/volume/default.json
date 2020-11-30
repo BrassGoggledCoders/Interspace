@@ -2,8 +2,10 @@
   {
     "volume": 16,
     "weight": 0.30,
-    "cacheChance": 0.75,
-    "cacheLuck": 4
+    "cache": {
+      "chance": 0.75,
+      "luck": 4
+    }
   },
   {
     "volume": 64,

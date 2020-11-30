@@ -156,7 +156,7 @@ public class InterspaceManager implements IInterspaceManager {
             readTaskQueueFile(worldTaskQueue, path.resolve("worldTaskQueue.nbt"), WorldTask.class);
             return new InterspaceManager(path, sqlClient, interspaceTaskQueue, worldTaskQueue);
         } catch (IOException | ClassNotFoundException | SQLException exception) {
-            throw new IllegalStateException("Failed to Setup Interspace");
+            throw new IllegalStateException("Failed to Setup Interspace", exception);
         }
     }
 }

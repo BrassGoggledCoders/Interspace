@@ -39,7 +39,7 @@ public class AnnounceInterspaceTask extends InterspaceTask {
             queryResult = taskRunner.getInterspaceClient()
                     .query(world, queryPos)
                     .thenAccept(interspace -> taskRunner.sendMail(world, address, new SendMessageMail(
-                            interspace.getAdjective()
+                            interspace.getDescriptor()
                     )));
         } else {
             queryResult = CompletableFuture.completedFuture(null);

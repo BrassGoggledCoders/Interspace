@@ -8,21 +8,21 @@ import net.minecraftforge.common.util.NonNullLazy;
 
 public class Interspace {
     private final long id;
-    private final ResourceLocation name;
+    private final ResourceLocation world;
     private final int volume;
     private final ChunkPos chunkPos;
-    private final NonNullLazy<ITextComponent> loadAdjective;
+    private final NonNullLazy<ITextComponent> loadDescriptor;
 
     public Interspace(long id, ResourceLocation world, int volume, ChunkPos chunkPos) {
         this.id = id;
-        this.name = world;
+        this.world = world;
         this.volume = volume;
         this.chunkPos = chunkPos;
-        this.loadAdjective = NonNullLazy.concurrentOf(this::loadAdjective);
+        this.loadDescriptor = NonNullLazy.concurrentOf(this::loadDescriptor);
     }
 
-    public ResourceLocation getName() {
-        return name;
+    public ResourceLocation getWorld() {
+        return world;
     }
 
     public int getVolume() {
@@ -33,11 +33,11 @@ public class Interspace {
         return chunkPos;
     }
 
-    public ITextComponent getAdjective() {
-        return loadAdjective.get();
+    public ITextComponent getDescriptor() {
+        return loadDescriptor.get();
     }
 
-    private ITextComponent loadAdjective() {
+    private ITextComponent loadDescriptor() {
         int power = 0;
         if (this.getVolume() > 0) {
             power = (int) Math.ceil(Math.log(this.volume) / Math.log(2));

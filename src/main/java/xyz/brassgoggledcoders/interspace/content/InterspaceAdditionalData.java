@@ -4,8 +4,8 @@ import com.tterrag.registrate.providers.RegistrateLangProvider;
 
 public class InterspaceAdditionalData {
     private static final String[] VOLUMES = new String[]{
-            "Zero", "Transient", "Transient", "Transient", "Transient",
-            "Transient", "Shallow", "Average", "Shelf", "Deep", "Abyssal", "Cosmic",
+            "Zero", "Sandbar", "Sandbar", "Sandbar", "Sandbar", "Transient",
+            "Shallow", "Average", "Shelf", "Deep", "Abyssal", "Cosmic",
     };
 
     public static void generateText(RegistrateLangProvider provider) {
