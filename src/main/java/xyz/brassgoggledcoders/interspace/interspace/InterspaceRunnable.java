@@ -9,7 +9,6 @@ import xyz.brassgoggledcoders.interspace.InterspaceMod;
 import xyz.brassgoggledcoders.interspace.api.InterspaceAPI;
 import xyz.brassgoggledcoders.interspace.api.interspace.IInterspaceClient;
 import xyz.brassgoggledcoders.interspace.api.interspace.IInterspaceManager;
-import xyz.brassgoggledcoders.interspace.api.interspace.InterspaceVolume;
 import xyz.brassgoggledcoders.interspace.api.mail.Mail;
 import xyz.brassgoggledcoders.interspace.api.sql.ISQLClient;
 import xyz.brassgoggledcoders.interspace.api.task.Task;
@@ -23,7 +22,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
-import java.util.stream.Stream;
 
 public class InterspaceRunnable implements Runnable, IInterspaceTaskRunner {
     private final AtomicBoolean running = new AtomicBoolean(true);
@@ -33,8 +31,6 @@ public class InterspaceRunnable implements Runnable, IInterspaceTaskRunner {
     private final Supplier<InterspaceTask> taskSupplier;
     private final ISQLClient sqlClient;
     private final IInterspaceClient interspaceClient;
-
-    private InterspaceTask blockingTask;
 
     public InterspaceRunnable(IInterspaceManager interspaceManager, Supplier<InterspaceTask> taskSupplier,
                               ISQLClient sqlClient, int maxRunningTasks) {
@@ -48,20 +44,21 @@ public class InterspaceRunnable implements Runnable, IInterspaceTaskRunner {
     @Override
     public void run() {
         while (running.get()) {
+            long startMs = System.currentTimeMillis();
+            int availableTaskSpace = maxRunningTasks - runningTasks.size();
+            int totalTasksStarted = 0;
+            InterspaceTask currentTask;
+            while (availableTaskSpace > 0 && (currentTask = taskSupplier.get()) != null) {
+                availableTaskSpace--;
+                totalTasksStarted++;
+                currentTask.run(this);
+                runningTasks.add(currentTask);
+            }
             runningTasks.removeIf(Task::isDone);
-            if (blockingTask == null) {
-                int availableTaskSpace = maxRunningTasks - runningTasks.size();
-                InterspaceTask currentTask;
-                while (blockingTask == null && availableTaskSpace > 0 && (currentTask = taskSupplier.get()) != null) {
-                    availableTaskSpace--;
-                    currentTask.run(this);
-                    runningTasks.add(currentTask);
-                    if (currentTask.isBlocking()) {
-                        blockingTask = currentTask;
-                    }
-                }
-            } else if (blockingTask.isDone()) {
-                blockingTask = null;
+            long endMs = System.currentTimeMillis();
+            long totalMs = endMs - startMs;
+            if (totalMs > 100 || totalTasksStarted > 0) {
+                InterspaceMod.LOGGER.warn("Interspace ran for {} ms, starting {} tasks. Current running tasks: {}", totalMs, totalTasksStarted, runningTasks.size());
             }
         }
 

@@ -29,7 +29,7 @@ public class InterspaceVolumeManager extends JsonManager<InterspaceVolume> imple
     protected InterspaceVolume createDefault() {
         return new InterspaceVolume(16, 1.0, InterspaceMod.getServerConfig()
                 .getDefaultCacheChance()
-                .floatValue(), 1, null);
+                .floatValue(), 1, 0F);
     }
 
     @Override

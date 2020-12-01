@@ -13,9 +13,9 @@ public class InterspaceVolume {
     private final double weight;
     private final float cacheChance;
     private final int cacheTries;
-    private final Float cacheLuck;
+    private final float cacheLuck;
 
-    public InterspaceVolume(int volume, double weight, float cacheChance, int cacheTries, Float cacheLuck) {
+    public InterspaceVolume(int volume, double weight, float cacheChance, int cacheTries, float cacheLuck) {
         this.volume = volume;
         this.weight = weight;
         this.cacheChance = cacheChance;
@@ -35,7 +35,11 @@ public class InterspaceVolume {
         return cacheChance;
     }
 
-    public Float getCacheLuck() {
+    public int getCacheTries() {
+        return cacheTries;
+    }
+
+    public float getCacheLuck() {
         return cacheLuck;
     }
 
@@ -44,9 +48,7 @@ public class InterspaceVolume {
         nbt.putInt("volume", this.getVolume());
         nbt.putDouble("weight", this.getWeight());
         nbt.putFloat("cacheChance", this.getCacheChance());
-        if (this.getCacheLuck() != null) {
-            nbt.putFloat("cacheLuck", this.getCacheLuck());
-        }
+        nbt.putFloat("cacheLuck", this.getCacheLuck());
         return nbt;
     }
 
@@ -56,7 +58,7 @@ public class InterspaceVolume {
                 nbt.getDouble("weight"),
                 nbt.getFloat("cacheChance"),
                 nbt.getInt("cacheTries"),
-                nbt.contains("cacheLuck") ? nbt.getFloat("cacheLuck") : null
+                nbt.getFloat("cacheLuck")
         );
     }
 
@@ -76,7 +78,7 @@ public class InterspaceVolume {
                             .getDefaultCacheChance()
                             .floatValue()),
                     JSONUtils.getInt(cacheObject, "tries", 1),
-                    cacheObject.has("luck") ? JSONUtils.getFloat(volumeObject, "luck") : null
+                    JSONUtils.getFloat(cacheObject, "luck", 0F)
             );
         } else if (jsonElement.isJsonPrimitive()) {
             JsonPrimitive volumePrimitive = jsonElement.getAsJsonPrimitive();
@@ -88,7 +90,7 @@ public class InterspaceVolume {
                                 .getDefaultCacheChance()
                                 .floatValue(),
                         1,
-                        null
+                        0F
                 );
             } else {
                 throw new JsonParseException("Single Values in array must be integer");
@@ -97,4 +99,6 @@ public class InterspaceVolume {
             throw new JsonParseException("Values in Array must be object or integer");
         }
     }
+
+
 }

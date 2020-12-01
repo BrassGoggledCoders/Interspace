@@ -16,18 +16,16 @@ import xyz.brassgoggledcoders.interspace.api.task.TaskType;
 import xyz.brassgoggledcoders.interspace.api.task.interspace.IInterspaceTaskRunner;
 import xyz.brassgoggledcoders.interspace.api.task.interspace.InterspaceTask;
 import xyz.brassgoggledcoders.interspace.content.InterspaceTaskTypes;
+import xyz.brassgoggledcoders.interspace.sql.SQLPreparations;
 import xyz.brassgoggledcoders.interspace.sql.SQLStatements;
 import xyz.brassgoggledcoders.interspace.util.NBTTransformers;
 
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
 public class SetupChunkInterspaceTask extends InterspaceTask {
-    private Future<Void> future;
-
     private ResourceLocation world;
     private ChunkPos chunkPos;
     private InterspaceVolume volume;
@@ -49,32 +47,29 @@ public class SetupChunkInterspaceTask extends InterspaceTask {
     }
 
     @Override
-    public boolean isDone() {
-        return future != null && future.isDone();
-    }
-
-    @Override
     public int getPriority() {
         return 750;
     }
 
     @Override
     public void run(IInterspaceTaskRunner taskRunner) {
-        future = CompletableFuture.supplyAsync(() -> {
-            try {
+        try {
+            long chunkId = taskRunner.getSQLClient()
+                    .insert(String.format(SQLStatements.INSERT_CHUNK_SQL, force ? "REPLACE" : "IGNORE", world.toString()),
+                            preparedStatement -> {
+                                preparedStatement.setInt(1, chunkPos.x);
+                                preparedStatement.setInt(2, chunkPos.z);
+                                preparedStatement.setInt(3, volume.getVolume());
+                            }
+                    );
+            if (!caches.isEmpty()) {
                 taskRunner.getSQLClient()
-                        .insert(String.format(SQLStatements.INSERT_CHUNK_SQL, force ? "REPLACE" : "IGNORE", world.toString()),
-                                preparedStatement -> {
-                                    preparedStatement.setInt(1, chunkPos.x);
-                                    preparedStatement.setInt(2, chunkPos.z);
-                                    preparedStatement.setInt(3, volume.getVolume());
-                                }
-                        );
-            } catch (SQLException sqlException) {
-                InterspaceMod.LOGGER.error("Failed to Insert Interspace Chunk", sqlException);
+                        .batchedInsert(String.format(SQLStatements.INSERT_CACHE_SQL, world.toString()),
+                                SQLPreparations.CACHE_PREPARATION.apply(chunkId, volume), caches);
             }
-            return null;
-        });
+        } catch (SQLException sqlException) {
+            InterspaceMod.LOGGER.error("Failed to Insert Interspace Chunk", sqlException);
+        }
     }
 
     @Override
@@ -111,13 +106,11 @@ public class SetupChunkInterspaceTask extends InterspaceTask {
     }
 
     public static void submit(RegistryKey<World> world, Random random, ChunkPos chunkPos) {
+        InterspaceVolume volume = InterspaceAPI.getVolumeManager().getVolume(world, random);
         InterspaceAPI.getManager()
-                .submitTask(new SetupChunkInterspaceTask(
-                        world.getLocation(),
-                        chunkPos,
-                        InterspaceAPI.getVolumeManager().getVolume(world, random),
-                        caches,
-                        false
+                .submitTask(new SetupChunkInterspaceTask(world.getLocation(), chunkPos, volume,
+                        InterspaceAPI.getCacheManager().getRandomCaches(world, random, volume.getCacheChance(),
+                                volume.getCacheTries()), false
                 ));
     }
 }

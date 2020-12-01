@@ -1,6 +1,7 @@
 package xyz.brassgoggledcoders.interspace.api;
 
 import net.minecraft.util.ResourceLocation;
+import xyz.brassgoggledcoders.interspace.api.interspace.IInterspaceCacheManager;
 import xyz.brassgoggledcoders.interspace.api.interspace.IInterspaceManager;
 import xyz.brassgoggledcoders.interspace.api.interspace.IInterspacePostOffice;
 import xyz.brassgoggledcoders.interspace.api.interspace.IInterspaceVolumeManager;
@@ -16,6 +17,7 @@ public class InterspaceAPI {
     private static IInterspaceManager interspaceManager;
     private static IInterspacePostOffice interspacePostOffice;
     private static IInterspaceVolumeManager interspaceVolumeManager;
+    private static IInterspaceCacheManager interspaceCacheManager;
 
     public static void setManager(@Nullable IInterspaceManager interspaceManager) {
         InterspaceAPI.interspaceManager = interspaceManager;
@@ -32,7 +34,7 @@ public class InterspaceAPI {
 
     @Nonnull
     public static IInterspacePostOffice getPostOffice() {
-        return Objects.requireNonNull(interspacePostOffice, "Called for InterspacePost before it was Ready");
+        return Objects.requireNonNull(interspacePostOffice, "Called for Interspace Post Office before it was Ready");
     }
 
     public static void setVolumeManager(IInterspaceVolumeManager interspaceVolumeManager) {
@@ -41,7 +43,16 @@ public class InterspaceAPI {
 
     @Nonnull
     public static IInterspaceVolumeManager getVolumeManager() {
-        return Objects.requireNonNull(interspaceVolumeManager, "Called for InterspaceVolume Manager before it was Ready");
+        return Objects.requireNonNull(interspaceVolumeManager, "Called for Interspace Volume Manager before it was Ready");
+    }
+
+    public static void setCacheManager(IInterspaceCacheManager interspaceCacheManager) {
+        InterspaceAPI.interspaceCacheManager = interspaceCacheManager;
+    }
+
+    @Nonnull
+    public static IInterspaceCacheManager getCacheManager() {
+        return Objects.requireNonNull(interspaceCacheManager, "Called for Interspace Cache Manager before it was Ready");
     }
 
     public static ResourceLocation rl(String location) {

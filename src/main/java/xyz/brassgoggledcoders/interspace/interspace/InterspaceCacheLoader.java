@@ -11,7 +11,6 @@ import xyz.brassgoggledcoders.interspace.sql.SQLResultSetTransformers;
 import javax.annotation.Nonnull;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.concurrent.TimeUnit;
 
 public class InterspaceCacheLoader extends CacheLoader<ChunkPos, Interspace> {
     private final ISQLClient sqlClient;
@@ -26,21 +25,19 @@ public class InterspaceCacheLoader extends CacheLoader<ChunkPos, Interspace> {
 
     @Override
     public Interspace load(@Nonnull ChunkPos key) throws Exception {
-        return sqlClient.inTransaction(transactionClient -> {
-            Interspace interspace = transactionClient.blockingQuery(
-                    "SELECT id, volume, x, z FROM \"" + world + "_chunks\" WHERE x = ? AND z = ?",
-                    preparedStatement -> {
-                        preparedStatement.setInt(1, key.x);
-                        preparedStatement.setInt(2, key.z);
-                    },
-                    interspaceTransformer,
-                    () -> null);
+        Interspace interspace = sqlClient.blockingQuery(
+                "SELECT id, volume, x, z FROM \"" + world + "_chunks\" WHERE x = ? AND z = ?",
+                preparedStatement -> {
+                    preparedStatement.setInt(1, key.x);
+                    preparedStatement.setInt(2, key.z);
+                },
+                interspaceTransformer,
+                () -> null);
 
-            if (interspace == null) {
-                interspace = new Interspace(-1, new ResourceLocation(world), 0, key);
-            }
+        if (interspace == null) {
+            interspace = new Interspace(-1, new ResourceLocation(world), 0, key);
+        }
 
-            return interspace;
-        }).get(5, TimeUnit.SECONDS);
+        return interspace;
     }
 }

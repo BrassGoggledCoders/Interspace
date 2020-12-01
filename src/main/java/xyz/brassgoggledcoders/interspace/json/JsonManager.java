@@ -13,6 +13,7 @@ import net.minecraft.util.ResourceLocation;
 import xyz.brassgoggledcoders.interspace.InterspaceMod;
 import xyz.brassgoggledcoders.interspace.util.RandomSelector;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collections;
 import java.util.List;
@@ -68,6 +69,7 @@ public abstract class JsonManager<T> extends JsonReloadListener {
         }
     }
 
+    @Nonnull
     protected RandomSelector<T> getValue(ResourceLocation location) {
         return results.getOrDefault(location, defaultResult);
     }

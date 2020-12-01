@@ -12,18 +12,13 @@ public abstract class Task<T extends ITaskRunner> implements INBTSerializable<Co
         this.type = taskType;
     }
 
-    /**
-     * @return true if this task should be completed before any others are handled (Generally reserved for Database setup)
-     */
-    public boolean isBlocking() {
-        return false;
-    }
-
     public boolean shouldSave() {
         return true;
     }
 
-    public abstract boolean isDone();
+    public boolean isDone() {
+        return true;
+    }
 
     /**
      * @return a priority. Higher numbers will be prioritized. Database setup is Priority 1000

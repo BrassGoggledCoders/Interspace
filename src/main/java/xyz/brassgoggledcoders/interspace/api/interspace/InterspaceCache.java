@@ -13,9 +13,9 @@ public class InterspaceCache {
     private final ResourceLocation name;
     private final boolean deep;
     private final double weight;
-    private final Float luck;
+    private final float luck;
 
-    public InterspaceCache(ResourceLocation name, boolean deep, double weight, Float luck) {
+    public InterspaceCache(ResourceLocation name, boolean deep, double weight, float luck) {
         this.name = name;
         this.deep = deep;
         this.weight = weight;
@@ -26,7 +26,7 @@ public class InterspaceCache {
         return name;
     }
 
-    public Float getLuck() {
+    public float getLuck() {
         return luck;
     }
 
@@ -39,11 +39,21 @@ public class InterspaceCache {
     }
 
     public CompoundNBT toNBT() {
-
+        CompoundNBT nbt = new CompoundNBT();
+        nbt.putString("name", this.getName().toString());
+        nbt.putBoolean("deep", this.isDeep());
+        nbt.putDouble("weight", this.getWeight());
+        nbt.putFloat("luck", this.getLuck());
+        return nbt;
     }
 
     public static InterspaceCache fromNBT(CompoundNBT nbt) {
-
+        return new InterspaceCache(
+                new ResourceLocation(nbt.getString("name")),
+                nbt.getBoolean("deep"),
+                nbt.getDouble("weight"),
+                nbt.getFloat("luck")
+        );
     }
 
     public static InterspaceCache fromJson(JsonElement jsonElement) {
@@ -56,14 +66,13 @@ public class InterspaceCache {
                             .getDefaultCacheChance()
                             .floatValue()
                     ),
-                    volumeObject.has("luck") ? JSONUtils.getFloat(volumeObject,
-                            "luck") : null
+                    JSONUtils.getFloat(volumeObject, "luck", 0F)
             );
         } else if (jsonElement.isJsonPrimitive()) {
             JsonPrimitive volumePrimitive = jsonElement.getAsJsonPrimitive();
             if (volumePrimitive.isString()) {
                 return new InterspaceCache(new ResourceLocation(volumePrimitive.getAsString()), false, 1.0D,
-                        null);
+                        0F);
             } else {
                 throw new JsonParseException("Single Values in array must be Strings");
             }

@@ -11,12 +11,10 @@ import xyz.brassgoggledcoders.interspace.content.InterspaceTaskTypes;
 import xyz.brassgoggledcoders.interspace.sql.SQLStatements;
 
 import java.util.Set;
-import java.util.concurrent.Future;
 
 public class SetupWorldInterspaceTask extends InterspaceTask {
     private static final Set<RegistryKey<World>> SUBMITTED = Sets.newConcurrentHashSet();
 
-    private Future<Boolean> setupTransaction = null;
     private RegistryKey<World> registryKey;
 
     public SetupWorldInterspaceTask(TaskType type) {
@@ -30,23 +28,13 @@ public class SetupWorldInterspaceTask extends InterspaceTask {
     @Override
     public void run(IInterspaceTaskRunner taskRunner) {
         final String name = this.registryKey.getLocation().toString();
-        this.setupTransaction = taskRunner.getSQLClient().inTransaction(sqlClient -> {
+        taskRunner.getSQLClient().inTransaction(sqlClient -> {
             sqlClient.blockingCall(String.format(SQLStatements.CHUNK_SQL, name));
             sqlClient.blockingCall(String.format(SQLStatements.CACHE_SQL, name));
             sqlClient.blockingCall(String.format(SQLStatements.ITEM_TABLE_SQL, name));
             sqlClient.blockingCall(String.format(SQLStatements.ITEM_CHECK_INVENTORY_TRIGGER, name));
             return true;
         });
-    }
-
-    @Override
-    public boolean isBlocking() {
-        return true;
-    }
-
-    @Override
-    public boolean isDone() {
-        return setupTransaction != null && setupTransaction.isDone();
     }
 
     @Override

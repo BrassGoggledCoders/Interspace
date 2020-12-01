@@ -7,7 +7,6 @@ public class SQLStatements {
             "    x      INTEGER NOT NULL," +
             "    z      INTEGER NOT NULL," +
             "    volume INTEGER NOT NULL," +
-            "    luck   INTEGER," +
             "    UNIQUE (x, z)" +
             ")";
 
@@ -21,9 +20,15 @@ public class SQLStatements {
             "    id       INTEGER PRIMARY KEY AUTOINCREMENT," +
             "    chunk_id INTEGER NOT NULL," +
             "    name     TEXT    NOT NULL," +
-            "    luck     INTEGER," +
+            "    luck     REAL    NOT NULL," +
             "    FOREIGN KEY (chunk_id) REFERENCES \"%1$s_chunks\"(id)" +
             ")";
+
+    public static final String INSERT_CACHE_SQL = "INSERT INTO \"%s_caches\"" +
+            "(chunk_id, name, luck) " +
+            "VALUES " +
+            "(?, ?, ?)";
+
 
     public static final String ITEM_TABLE_SQL = "CREATE TABLE IF NOT EXISTS \"%1$s_items\"" +
             "(" +

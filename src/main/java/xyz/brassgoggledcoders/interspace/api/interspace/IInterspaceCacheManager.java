@@ -7,5 +7,5 @@ import java.util.List;
 import java.util.Random;
 
 public interface IInterspaceCacheManager {
-    List<InterspaceCache> getRandomCaches(RegistryKey<World> world, Random random, float chance);
+    List<InterspaceCache> getRandomCaches(RegistryKey<World> world, Random random, float chance, int tries);
 }

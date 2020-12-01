@@ -30,6 +30,7 @@ import xyz.brassgoggledcoders.interspace.api.mail.IMailBoxStorage;
 import xyz.brassgoggledcoders.interspace.capability.MailboxStorage;
 import xyz.brassgoggledcoders.interspace.capability.SingleCapabilityProvider;
 import xyz.brassgoggledcoders.interspace.content.InterspaceFeatures;
+import xyz.brassgoggledcoders.interspace.interspace.InterspaceCacheManager;
 import xyz.brassgoggledcoders.interspace.interspace.InterspaceManager;
 import xyz.brassgoggledcoders.interspace.interspace.InterspacePostOffice;
 import xyz.brassgoggledcoders.interspace.interspace.InterspaceVolumeManager;
@@ -53,6 +54,10 @@ public class ForgeEventHandler {
         InterspaceVolumeManager interspaceVolumeManager = new InterspaceVolumeManager();
         event.addListener(interspaceVolumeManager);
         InterspaceAPI.setVolumeManager(interspaceVolumeManager);
+
+        InterspaceCacheManager interspaceCacheManager = new InterspaceCacheManager();
+        event.addListener(interspaceCacheManager);
+        InterspaceAPI.setCacheManager(interspaceCacheManager);
     }
 
     @SubscribeEvent

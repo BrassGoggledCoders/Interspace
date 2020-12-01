@@ -1,5 +1,6 @@
 package xyz.brassgoggledcoders.interspace.api.sql;
 
+import xyz.brassgoggledcoders.interspace.api.functional.ThrowingBiConsumer;
 import xyz.brassgoggledcoders.interspace.api.functional.ThrowingConsumer;
 import xyz.brassgoggledcoders.interspace.api.functional.ThrowingFunction;
 
@@ -8,13 +9,14 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 import java.util.function.Supplier;
 
 public interface ISQLClient {
     @Nonnull
-    <T> CompletableFuture<T> inTransaction(@Nonnull ThrowingFunction<ISQLClient, T, SQLException> transaction);
+    <T> T inTransaction(@Nonnull ThrowingFunction<ISQLClient, T, SQLException> transaction);
 
     @Nonnull
     Connection getConnection();
@@ -33,4 +35,7 @@ public interface ISQLClient {
                                    ThrowingFunction<ResultSet, T, SQLException> resultTransformer, Supplier<T> defaultSupplier);
 
     long insert(@Nonnull String sql, ThrowingConsumer<PreparedStatement, SQLException> prepare) throws SQLException;
+
+    <T> List<Long> batchedInsert(@Nonnull String sql, ThrowingBiConsumer<PreparedStatement, T, SQLException> prepare,
+                                 List<T> inserts) throws SQLException;
 }
