@@ -1,5 +1,8 @@
 package xyz.brassgoggledcoders.interspace.api;
 
+import net.minecraft.loot.LootParameterSet;
+import net.minecraft.loot.LootParameterSets;
+import net.minecraft.loot.LootParameters;
 import net.minecraft.util.ResourceLocation;
 import xyz.brassgoggledcoders.interspace.api.interspace.IInterspaceCacheManager;
 import xyz.brassgoggledcoders.interspace.api.interspace.IInterspaceManager;

@@ -21,6 +21,7 @@ import xyz.brassgoggledcoders.interspace.capability.CapabilityNBTStorage;
 import xyz.brassgoggledcoders.interspace.capability.MailboxStorage;
 import xyz.brassgoggledcoders.interspace.config.InterspaceServerConfig;
 import xyz.brassgoggledcoders.interspace.content.*;
+import xyz.brassgoggledcoders.interspace.registrate.RegistrateCacheLootTables;
 
 import javax.annotation.Nonnull;
 
@@ -34,6 +35,9 @@ public class InterspaceMod {
 
     private static final NonNullLazy<Registrate> REGISTRATE = NonNullLazy.of(() -> Registrate.create(ID)
             .addDataGenerator(ProviderType.LANG, InterspaceAdditionalData::generateText)
+            .addDataGenerator(ProviderType.LOOT, lootTableProvider -> lootTableProvider.addLootAction(
+                    RegistrateCacheLootTables.CACHE_LOOT_TYPE, InterspaceAdditionalData::generateCacheLootTables
+            ))
             .itemGroup(() -> new ItemGroup(ID) {
                 @Override
                 @Nonnull

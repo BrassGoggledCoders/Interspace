@@ -62,7 +62,7 @@ public class SetupChunkInterspaceTask extends InterspaceTask {
                                 preparedStatement.setInt(3, volume.getVolume());
                             }
                     );
-            if (!caches.isEmpty()) {
+            if (!caches.isEmpty() && chunkId >= 0) {
                 taskRunner.getSQLClient()
                         .batchedInsert(String.format(SQLStatements.INSERT_CACHE_SQL, world.toString()),
                                 SQLPreparations.CACHE_PREPARATION.apply(chunkId, volume), caches);
